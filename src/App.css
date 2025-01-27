@@ -1,3 +1,10 @@
+body {
+    background-color: #302e2e; /* Dark greyish/black background */
+    color: white; /* White text for better contrast */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
 .App {
   text-align: center;
 }
@@ -14,14 +21,16 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  position: fixed; /* Make the header float */
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between; /* Space between items */
+  align-items: center; /* Center items vertically */
+  padding: 10px 20px; /* Padding for the header */
+  z-index: 1000; /* Ensure it stays on top */
 }
 
 .App-link {
@@ -35,4 +44,42 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.hamburger-menu {
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.menu {
+    display: none; /* Initially hide the menu */
+    position: fixed; /* Position it fixed */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    bottom: 0; /* Align to the bottom */
+    background-color: rgba(0, 0, 0, 0.9); /* Dark background for the modal */
+    justify-content: center; /* Center the content */
+    align-items: center; /* Center the content */
+    z-index: 999; /* Ensure it stays above other content */
+}
+
+.menu.active {
+    display: flex; /* Show the menu when active */
+}
+
+.menu-item {
+    color: white; /* White text for menu items */
+    padding: 15px 20px; /* Padding for menu items */
+    cursor: pointer; /* Change cursor to pointer */
+    text-align: center; /* Center text */
+    width: 100%; /* Full width for items */
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Highlight on hover */
+}
+
+.page-content {
+    margin-top: 60px; /* Space for the fixed header */
+    padding: 20px; /* Padding for page content */
 }

@@ -1,0 +1,42 @@
+.quiz-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.quiz-question {
+    margin-bottom: 20px;
+}
+
+.quiz-image {
+    max-width: 300px; /* Adjust size as needed */
+    height: auto;
+    margin: 20px 0;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+button.correct {
+    background-color: green; /* Green for correct answers */
+}
+
+button.incorrect {
+    background-color: red; /* Red for incorrect answers */
+}
+
+.quiz-result {
+    margin-top: 20px;
+}
