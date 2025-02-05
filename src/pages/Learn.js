@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import ChartDisplay from '../components/ChartDisplay';
+import './Learn.css';
 import terminologyData from '../terminologyData';
-import './Terminology.css';
 
-const Terminology = () => {
+const Learn = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('All');
     const [selectedTerm, setSelectedTerm] = useState(null);
@@ -22,7 +23,7 @@ const Terminology = () => {
     };
 
     return (
-        <div className="terminology-container">
+        <div className="learn-container">
             <div className="search-filter">
                 <input
                     type="text"
@@ -33,14 +34,16 @@ const Terminology = () => {
                 <select onChange={(e) => setFilterCategory(e.target.value)} value={filterCategory}>
                     <option value="All">All Categories</option>
                     <option value="Price Levels">Price Levels</option>
-                    <option value="Market Trends">Market Trends</option>
-                    {/* Add more categories as needed */}
+                    <option value="Chart Patterns">Chart Patterns</option>
+                    <option value="Moving Averages">Moving Averages</option>
+                    <option value="Momentum Indicators">Momentum Indicators</option>
+                    <option value="Technical Analysis Tools">Technical Analysis Tools</option>
                 </select>
             </div>
-            <div className="terminology-list">
+            <div className="learn-list">
                 {filteredTerms.map((term, index) => (
                     <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                        <img src={term.image} />
+                        <ChartDisplay chartType={term.chartType} data={term.data} />
                         <h3>{term.name}</h3>
                         <p>{term.value}</p>
                     </div>
@@ -52,7 +55,7 @@ const Terminology = () => {
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <span className="close" onClick={handleCloseModal}>&times;</span>
                         <h2>{selectedTerm.name}</h2>
-                        <img src={selectedTerm.image} alt={selectedTerm.name} className="modal-image" />
+                        <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} />
                         <p>{selectedTerm.value}</p>
                     </div>
                 </div>
@@ -61,4 +64,4 @@ const Terminology = () => {
     );
 };
 
-export default Terminology;
+export default Learn;

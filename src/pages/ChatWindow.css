@@ -1,0 +1,126 @@
+/* trading_tutor_ui/src/components/ChatWindow.css */
+.chat-window {
+    width: 90%; /* Set the width of the chat window */
+    height: 700px; /* Set the height of the chat window */
+    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(134, 123, 123, 0.495); /* Background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    margin: 40px auto 0; /* Center the chat window */
+}
+
+.chat-messages {
+    flex: 1; /* Allow the messages area to grow */
+    padding: 10px; /* Padding for the messages area */
+    overflow-y: auto; /* Scrollable area for messages */
+}
+
+.chat-message {
+    margin-bottom: 10px; /* Space between messages */
+}
+
+.chat-message.user {
+    text-align: right; /* Align user messages to the right */
+    color: #f0f0f0; /* Slightly off-white color for user text */
+}
+
+.chat-message.ai {
+    color: #ffffff; /* White color for AI responses */
+}
+
+.chat-image {
+    max-width: 100%; /* Responsive image */
+    max-height: 200px; /* Limit height of images */
+    border-radius: 5px; /* Rounded corners for images */
+}
+
+.chat-input {
+    display: flex; /* Flexbox for input area */
+    padding: 10px; /* Padding for input area */
+    border-top: 1px solid #ccc; /* Top border for input area */
+}
+
+.chat-input input[type="text"] {
+    flex: 1; /* Allow the text input to grow */
+    padding: 10px; /* Padding for text input */
+    border: 1px solid #ccc; /* Border for text input */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.upload-button {
+    margin-left: 10px; /* Space between text input and button */
+    padding: 10px 15px; /* Padding for button */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: white; /* Button color */
+    color: black; /* Button text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: flex; /* Flexbox for icon and text */
+    align-items: center; /* Center items vertically */
+}
+
+.upload-button i {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+.upload-button:hover {
+    background-color: rgba(200, 200, 200, 0.5); /* Change color on hover */
+}
+
+.send-button {
+    margin-left: 10px; /* Space between file input and button */
+    padding: 10px 15px; /* Padding for button */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: white; /* Button color */
+    color: black; /* Button text color */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.send-button:hover {
+    background-color: rgba(200, 200, 200, 0.5); /* Change color on hover */
+}
+
+/* Add styles for the paperclip icon */
+.file-input::before {
+    content: '📎'; /* Use a paperclip emoji as an icon */
+    margin-right: 5px; /* Space between icon and text */
+    font-size: 16px; /* Adjust icon size */
+    vertical-align: middle; /* Align icon vertically */
+}
+
+.loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3); /* Light border */
+    border-top: 4px solid #ffffff; /* White top border */
+    border-radius: 50%; /* Circular shape */
+    width: 20px; /* Spinner width */
+    height: 20px; /* Spinner height */
+    animation: spin 1s linear infinite; /* Spin animation */
+    margin: 10px auto; /* Center the spinner */
+}
+
+/* Spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.uploaded-image {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    margin-left: 10px; /* Space between input and uploaded image button */
+}
+
+.remove-button {
+    padding: 10px 15px; /* Padding for button */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: white; /* Button color */
+    color: black; /* Button text color */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.remove-button i {
+    margin-right: 5px; /* Space between icon and text */
+}
