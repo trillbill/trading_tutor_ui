@@ -93,6 +93,56 @@ const ChatWindow = () => {
       } finally {
         setLoading(false);
       }
+    } else if (inputValue.trim()) { // Handle text-only messages
+        const newMessage = {
+            text: inputValue, // User text
+            sender: 'user',
+        };
+        setMessages((prev) => [...prev, newMessage]);
+
+        // Reset input fields
+        setInputValue('');
+        setLoading(true);
+
+        try {
+            const payload = {
+                model: "gpt-4o-mini", // Ensure you have access to this model.
+                messages: [
+                    {
+                        role: "user",
+                        content: [{ type: "text", text: inputValue }],
+                    },
+                ],
+            };
+
+            const response = await axios.post(
+                "https://api.openai.com/v1/chat/completions",
+                payload,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            // Process the AI's response and format it for better readability
+            const aiResponse = response.data.choices[0].message.content;
+            const formattedResponse = aiResponse
+                .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
+                .replace(/\n/g, '<br />') // Replace new lines with <br />
+                .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
+
+            const aiMessage = {
+                text: formattedResponse,
+                sender: 'ai',
+            };
+            setMessages((prevMessages) => [...prevMessages, aiMessage]);
+        } catch (error) {
+            console.error('Error communicating with OpenAI API:', error);
+        } finally {
+            setLoading(false);
+        }
     }
   };
 

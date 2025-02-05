@@ -18,7 +18,6 @@ const Quiz = () => {
     useEffect(() => {
         // Generate questions from terminology data
         const generatedQuestions = generateQuestions();
-        console.log("Generated Questions:", generatedQuestions); // Debugging line
         setQuestions(generatedQuestions);
     }, []);
 
