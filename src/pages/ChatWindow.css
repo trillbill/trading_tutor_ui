@@ -22,7 +22,7 @@
 
 .chat-message.user {
     text-align: right; /* Align user messages to the right */
-    color: #f0f0f0; /* Slightly off-white color for user text */
+    color: #dac6c6; /* Slightly off-white color for user text */
 }
 
 .chat-message.ai {
