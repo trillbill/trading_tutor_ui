@@ -1,12 +1,26 @@
-body {
+html, body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
     background-color: #302e2e; /* Dark greyish/black background */
     color: white; /* White text for better contrast */
-    margin: 0;
     font-family: Arial, sans-serif;
 }
 
+*,
+*:before,
+*:after {
+    box-sizing: inherit; /* Apply box-sizing to all elements */
+}
+
 .App {
-  text-align: center;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    width: 100%; /* Full width for the app */
+    text-align: center;
 }
 
 .App-logo {
@@ -21,16 +35,18 @@ body {
 }
 
 .App-header {
-  position: fixed; /* Make the header float */
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
-  display: flex;
-  justify-content: space-between; /* Space between items */
-  align-items: center; /* Center items vertically */
-  padding: 10px 20px; /* Padding for the header */
-  z-index: 1000; /* Ensure it stays on top */
+    position: fixed; /* Make the header float */
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%; /* Ensure the header takes the full width */
+    background-color: black; /* Solid black background */
+    display: flex;
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
+    padding: 10px 20px; /* Padding for the header */
+    z-index: 1000; /* Ensure it stays on top */
+    height: 65px; /* Set a fixed height for the header */
 }
 
 .App-link {
@@ -46,40 +62,128 @@ body {
   }
 }
 
-.hamburger-menu {
-    cursor: pointer; /* Change cursor to pointer */
-}
-
-.menu {
-    display: none; /* Initially hide the menu */
-    position: fixed; /* Position it fixed */
-    top: 0; /* Align to the top */
-    left: 0; /* Align to the left */
-    right: 0; /* Align to the right */
-    bottom: 0; /* Align to the bottom */
-    background-color: rgba(0, 0, 0, 0.9); /* Dark background for the modal */
-    justify-content: center; /* Center the content */
-    align-items: center; /* Center the content */
-    z-index: 999; /* Ensure it stays above other content */
-}
-
-.menu.active {
-    display: flex; /* Show the menu when active */
-}
-
-.menu-item {
-    color: white; /* White text for menu items */
-    padding: 15px 20px; /* Padding for menu items */
-    cursor: pointer; /* Change cursor to pointer */
-    text-align: center; /* Center text */
-    width: 100%; /* Full width for items */
-}
-
-.menu-item:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Highlight on hover */
-}
-
 .page-content {
     margin-top: 60px; /* Space for the fixed header */
     padding: 20px; /* Padding for page content */
+}
+
+.app-layout {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack elements vertically */
+}
+
+.header {
+    display: flex; /* Use flexbox for header layout */
+    width: 100%; /* Full width */
+    background-color: #f8f9fa; /* Optional: Background color for the header */
+    align-items: center; /* Center items vertically */
+}
+
+.header-column {
+    display: flex; /* Use flexbox for each column */
+    align-items: center; /* Center items vertically */
+}
+
+.logo-column {
+    width: 25%; /* 25% width for the logo column */
+    padding: 10px 0 10px 20px; /* Padding for the logo */
+}
+
+.nav-column {
+    width: 50%; /* 50% width for the nav column */
+    justify-content: center; /* Center nav items */
+}
+
+.nav-options {
+    display: flex; /* Use flexbox for navigation items */
+    justify-content: center; /* Center items horizontally */
+}
+
+.nav-item {
+    color: white; /* Text color */
+    font-weight: bold; /* Bold text */
+    margin: 0 20px; /* Space between nav items */
+    text-decoration: none; /* Remove underline from links */
+    padding: 10px 15px; /* Padding for the pill effect */
+    border-radius: 20px; /* Rounded corners for pill effect */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.nav-item:hover {
+    background-color: lightgrey; /* Light grey background on hover */
+    color: black; /* Change text color on hover for contrast */
+}
+
+.login-column {
+    width: 25%; /* 25% width for the login column */
+    justify-content: flex-end; /* Align login button to the right */
+    padding: 10px; /* Optional padding */
+}
+
+.login-button {
+    background-color: transparent; /* No background */
+    color: white; /* Text color */
+    font-weight: bold; /* Bold text */
+    border: none; /* No border */
+    padding: 10px 15px; /* Padding for the pill effect */
+    border-radius: 20px; /* Rounded corners for pill effect */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.login-button:hover {
+    background-color: lightgrey; /* Light grey background on hover */
+    color: black; /* Change text color on hover for contrast */
+}
+
+/* Hamburger Menu Styles */
+.hamburger-button {
+    display: none; /* Hide the hamburger button by default */
+    background: none; /* No background */
+    border: none; /* No border */
+    color: white; /* Text color */
+    font-size: 24px; /* Font size for the hamburger icon */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .nav-column {
+        display: none; /* Hide the nav column */
+    }
+
+    .login-column {
+        display: none; /* Hide the login column */
+    }
+
+    .hamburger-button {
+        display: block; /* Show the hamburger button */
+        margin-left: auto; /* Align to the right */
+    }
+
+    .header {
+        justify-content: space-between; /* Space between logo and hamburger */
+    }
+}
+
+.hamburger-menu {
+    position: absolute; /* Position it absolutely */
+    top: 60px; /* Adjust based on header height */
+    right: 0; /* Align to the right */
+    background-color: #717272; /* Background color for the menu */
+    width: 100%; /* Full width */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.hamburger-menu .nav-options {
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the left */
+    padding: 10px; /* Padding for the menu */
+}
+
+.hamburger-menu .nav-item {
+    margin: 10px 0; /* Space between items */
+    width: 100%; /* Full width for each item */
+    text-align: left; /* Align text to the left */
 }

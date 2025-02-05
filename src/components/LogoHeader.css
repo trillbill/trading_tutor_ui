@@ -1,0 +1,21 @@
+.header {
+    display: flex;
+    justify-content: left; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    padding: 5px; /* Add some padding */
+    background-color: #000000; /* Optional: Background color for the header */
+}
+
+.logo-container {
+    display: flex; /* Use flexbox to arrange logos side by side */
+    align-items: center; /* Center logos vertically */
+}
+
+.logo-icon {
+    margin-right: 18px; /* Space between the two logos */
+    height: 27px; /* Adjust height as needed */
+}
+
+.logo-text {
+    height: 15px; /* Adjust height as needed */
+}

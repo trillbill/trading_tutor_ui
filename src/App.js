@@ -1,45 +1,61 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
-import Terminology from './pages/Terminology';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import LogoHeader from './components/LogoHeader';
+import Learn from './pages/Learn';
 import Quiz from './pages/Quiz';
-import ChartAnalysis from './pages/ChartAnalysis';
+import ChatWindow from './pages/ChatWindow';
 
-function App() {
-    const [menuActive, setMenuActive] = useState(false); // State to manage menu visibility
+const App = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
-        setMenuActive(!menuActive); // Toggle menu visibility
+        setIsMenuOpen(!isMenuOpen);
     };
 
     return (
         <Router>
-            <div className="App">
-                <header className="App-header">
-                    <div className="hamburger-menu" onClick={toggleMenu}>
-                        <div style={{ width: '30px', height: '3px', backgroundColor: 'white', margin: '5px' }} />
-                        <div style={{ width: '30px', height: '3px', backgroundColor: 'white', margin: '5px' }} />
-                        <div style={{ width: '30px', height: '3px', backgroundColor: 'white', margin: '5px' }} />
+            <div className="app-layout">
+                <header className="header">
+                    <div className="header-column logo-column">
+                        <LogoHeader />
                     </div>
-                    <h1 style={{ textAlign: 'center', flex: 1 }}>TradingTutor</h1>
+                    <div className="header-column nav-column">
+                        <nav className="nav-options">
+                            <Link to="/" className="nav-item">Learn</Link>
+                            <Link to="/quiz" className="nav-item">Quiz</Link>
+                            <Link to="/chartanalysis" className="nav-item">Chat</Link>
+                        </nav>
+                    </div>
+                    <div className="header-column login-column">
+                        <button className="login-button">Login</button>
+                    </div>
+                    <button className="hamburger-button" onClick={toggleMenu}>
+                        &#9776;
+                    </button>
                 </header>
-                <div className={`menu ${menuActive ? 'active' : ''}`} onClick={toggleMenu}>
-                    <div onClick={(e) => e.stopPropagation()}> {/* Prevent closing when clicking inside the modal */}
-                        <Link to="/" className="menu-item" onClick={toggleMenu}>Terminology</Link>
-                        <Link to="/quiz" className="menu-item" onClick={toggleMenu}>Quiz</Link>
-                        <Link to="/chartanalysis" className="menu-item" onClick={toggleMenu}>Chart Analysis</Link>
+                {isMenuOpen && (
+                    <div className="hamburger-menu">
+                        <nav className="nav-options">
+                            <Link to="/" className="nav-item" onClick={toggleMenu}>Learn</Link>
+                            <Link to="/quiz" className="nav-item" onClick={toggleMenu}>Quiz</Link>
+                            <Link to="/chartanalysis" className="nav-item" onClick={toggleMenu}>Chat</Link>
+                            <Link to="/login" className="nav-item" onClick={toggleMenu}>Login</Link>
+                        </nav>
                     </div>
-                </div>
-                <div className="page-content">
+                )}
+                <div className="content">
                     <Routes>
-                        <Route path="/" element={<Terminology />} />
                         <Route path="/quiz" element={<Quiz />} />
-                        <Route path="/chartanalysis" element={<ChartAnalysis />} />
+                        <Route path="/learn" element={<Learn />} />
+                        <Route path="/chartanalysis" element={<ChatWindow />} />
+                        <Route path="/" element={<Learn />} />
                     </Routes>
                 </div>
             </div>
         </Router>
     );
-}
+};
 
 export default App;

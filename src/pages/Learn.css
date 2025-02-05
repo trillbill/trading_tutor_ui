@@ -1,4 +1,4 @@
-.terminology-container {
+.learn-container {
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -10,6 +10,7 @@
     justify-content: center;
     margin-bottom: 20px;
     width: 100%;
+    max-width: 600px;
     padding-top: 20px;
 }
 
@@ -18,6 +19,7 @@
     width: 70%;
     border: 1px solid #ccc;
     border-radius: 5px;
+    outline: none;
 }
 
 .search-filter select {
@@ -25,15 +27,15 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-left: 10px;
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-.terminology-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+.learn-list {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 1200px;
-    justify-content: center;
+    max-width: 600px;
 }
 
 .term-card {
@@ -42,6 +44,8 @@
     padding: 15px;
     text-align: center;
     color: white;
+    width: 100%;
+    margin: 10px 0;
 }
 
 .term-card img {
@@ -91,4 +95,17 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Chart display styles */
+.chart-container {
+    width: 100%;
+    height: 300px;
+}
+
+.terminology-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
 }
