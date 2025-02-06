@@ -43,7 +43,7 @@ const Learn = () => {
             <div className="learn-list">
                 {filteredTerms.map((term, index) => (
                     <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                        <ChartDisplay chartType={term.chartType} data={term.data} />
+                        <ChartDisplay chartType={term.chartType} data={term.data} color={term.lineColor} />
                         <h3>{term.name}</h3>
                         <p>{term.value}</p>
                     </div>
@@ -55,7 +55,7 @@ const Learn = () => {
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <span className="close" onClick={handleCloseModal}>&times;</span>
                         <h2>{selectedTerm.name}</h2>
-                        <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} />
+                        <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
                         <p>{selectedTerm.value}</p>
                     </div>
                 </div>
