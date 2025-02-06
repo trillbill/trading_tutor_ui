@@ -1,7 +1,7 @@
 /* trading_tutor_ui/src/components/ChatWindow.css */
 .chat-window {
     width: 90%; /* Set the width of the chat window */
-    height: 700px; /* Set the height of the chat window */
+    height: 600px; /* Set the height of the chat window */
     border-radius: 8px; /* Rounded corners */
     display: flex;
     flex-direction: column;
