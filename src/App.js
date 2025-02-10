@@ -6,6 +6,7 @@ import LogoHeader from './components/LogoHeader';
 import Learn from './pages/Learn';
 import Quiz from './pages/Quiz';
 import ChatWindow from './pages/ChatWindow';
+import Login from './pages/Login';
 
 const App = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +30,7 @@ const App = () => {
                         </nav>
                     </div>
                     <div className="header-column login-column">
-                        <button className="login-button">Login</button>
+                        <Link to="/login" className="nav-item">Login</Link>
                     </div>
                     <button className="hamburger-button" onClick={toggleMenu}>
                         &#9776;
@@ -50,6 +51,7 @@ const App = () => {
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/learn" element={<Learn />} />
                         <Route path="/chartanalysis" element={<ChatWindow />} />
+                        <Route path="/login" element={<Login />} />
                         <Route path="/" element={<Learn />} />
                     </Routes>
                 </div>
