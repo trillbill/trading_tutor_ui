@@ -23,7 +23,6 @@ function Login({ setIsAuthenticated }) {
       const response = await axios.post(endpoint, { email, password });
       
       if (isLogin) {
-        console.log(response.data.user)
         // On Login: store token and email, then update state
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userEmail', response.data.user.email);

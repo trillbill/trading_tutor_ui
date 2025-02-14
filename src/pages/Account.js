@@ -60,7 +60,6 @@ function Account({ setIsAuthenticated }) {
       const response = await axios.post('http://localhost:8080/api/wallet/holdings', {
         solanaAddress: address,
       });
-      console.log('API Response:', response.data);
       setWalletHoldings(response.data.holdings);
       localStorage.setItem('walletHoldings', JSON.stringify(response.data.holdings));
     } catch (error) {
