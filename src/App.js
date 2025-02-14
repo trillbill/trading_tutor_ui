@@ -7,9 +7,11 @@ import Learn from './pages/Learn';
 import Quiz from './pages/Quiz';
 import ChatWindow from './pages/ChatWindow';
 import Login from './pages/Login';
+import Account from './pages/Account';
 
 const App = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -30,7 +32,11 @@ const App = () => {
                         </nav>
                     </div>
                     <div className="header-column login-column">
-                        <Link to="/login" className="nav-item">Login</Link>
+                        {isAuthenticated ? (
+                            <Link to="/account" className="nav-item">Account</Link>
+                        ) : (
+                            <Link to="/login" className="nav-item">Login</Link>
+                        )}
                     </div>
                     <button className="hamburger-button" onClick={toggleMenu}>
                         &#9776;
@@ -42,7 +48,11 @@ const App = () => {
                             <Link to="/" className="nav-item" onClick={toggleMenu}>Learn</Link>
                             <Link to="/quiz" className="nav-item" onClick={toggleMenu}>Quiz</Link>
                             <Link to="/chartanalysis" className="nav-item" onClick={toggleMenu}>Chat</Link>
-                            <Link to="/login" className="nav-item" onClick={toggleMenu}>Login</Link>
+                            {isAuthenticated ? (
+                                <Link to="/account" className="nav-item" onClick={toggleMenu}>Account</Link>
+                            ) : (
+                                <Link to="/login" className="nav-item" onClick={toggleMenu}>Login</Link>
+                            )}
                         </nav>
                     </div>
                 )}
@@ -51,7 +61,8 @@ const App = () => {
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/learn" element={<Learn />} />
                         <Route path="/chartanalysis" element={<ChatWindow />} />
-                        <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+                        <Route path="/account" element={<Account setIsAuthenticated={setIsAuthenticated} />} />
                         <Route path="/" element={<Learn />} />
                     </Routes>
                 </div>

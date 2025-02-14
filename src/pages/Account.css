@@ -1,0 +1,171 @@
+.account-container {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  margin: 5px auto;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.profile-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.user-email {
+  font-size: 1.2em;
+  margin: 10px 0;
+  color: #fff;
+}
+
+.update-email-button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #26a69a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-email-button:hover {
+  background-color: #21867a;
+}
+
+.signout-button {
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.signout-button:hover {
+  background-color: #8e8989;
+}
+
+/* Solana address input container */
+.solana-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto 20px auto;
+}
+
+.solana-input {
+  flex: 8;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-right: 10px;
+}
+
+.solana-input:focus {
+  outline: none;
+  border-color: #aaa;
+}
+
+.solana-submit {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  background-color: #26a69a;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.solana-submit:hover {
+  background-color: #21867a;
+}
+
+/* Solana address display container */
+.solana-address-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto 20px auto;
+}
+
+/* Make the wallet address clickable and use the same color as the refresh button */
+.solana-address-display {
+  font-size: 1em;
+  color: #26a69a;
+  cursor: pointer;
+}
+.solana-address-display:hover {
+  text-decoration: underline;
+}
+
+/* Wallet holdings section */
+.wallet-holdings {
+  width: 80%;
+  margin: 0 auto 20px auto;
+  text-align: center;
+  color: white;
+}
+
+.wallet-holdings h2 {
+  margin-bottom: 15px;
+}
+
+/* Updated holdings-list using CSS Grid with centering */
+.holdings-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  justify-content: center; /* Centers the grid within the container */
+}
+
+.holding-card {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  color: #fff;
+  width: 100%;
+}
+
+/* Load More button styled like the Sign Out button */
+.load-more-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-more-button:hover {
+  background-color: #8e8989;
+}
+
+/* Mobile: Stack cards vertically */
+@media (max-width: 768px) {
+  .holdings-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { createChart, LineStyle } from 'lightweight-charts';
 
 const ChartDisplay = ({ data, chartType, lineColor }) => {
-  console.log(lineColor)
   const chartContainerRef = useRef();
 
   // Helper functions to support both full OHLC and singular-value data.

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';

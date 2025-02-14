@@ -26,6 +26,12 @@
   font-size: 1em;
 }
 
+/* Remove blue outline when inputs are focused */
+.login-form input:focus {
+  outline: none;
+  border-color: #aaa;
+}
+
 .submit-button {
   margin-top: 20px;
   padding: 10px;

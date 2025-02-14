@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-function Login() {
+function Login({ setIsAuthenticated }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,19 +13,32 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      // Update the endpoint URLs with the correct API server address and port
+      const endpoint = isLogin
+        ? 'http://localhost:8080/api/auth/login'
+        : 'http://localhost:8080/api/auth/register';
+        
       const response = await axios.post(endpoint, { email, password });
-
+      
       if (isLogin) {
+        console.log(response.data.user)
+        // On Login: store token and email, then update state
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userEmail', response.data.user.email);
+        localStorage.setItem('userId', response.data.user.id);
+        localStorage.setItem('solanaAddress', response.data.user.solana_address);
+        setIsAuthenticated(true);
         setMessage('Login successful!');
-        navigate('/dashboard');
+        navigate('/'); // Adjust as needed
       } else {
+        // For registration, prompt user to log in after a successful account creation
         setMessage('Account created successfully. Please log in.');
         setIsLogin(true);
       }
     } catch (error) {
+      console.error('API error:', error);
       setMessage(error.response?.data?.error || 'An error occurred.');
     }
   };
