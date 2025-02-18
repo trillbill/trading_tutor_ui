@@ -15,6 +15,9 @@ function Account({ setIsAuthenticated }) {
   const userEmail = localStorage.getItem('userEmail');
   const userId = localStorage.getItem('userId');
 
+  // API Endpoint
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/'
+
   // On component mount, load the solana address and cached wallet holdings (if available)
   useEffect(() => {
     let storedSolanaAddress = localStorage.getItem('solanaAddress');
@@ -57,7 +60,7 @@ function Account({ setIsAuthenticated }) {
   // Fetch wallet holdings from the API and cache the data in localStorage
   const fetchWalletHoldings = async (address) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/wallet/holdings', {
+      const response = await axios.post(`${API_ENDPOINT}api/wallet/holdings`, {
         solanaAddress: address,
       });
       setWalletHoldings(response.data.holdings);
@@ -72,7 +75,7 @@ function Account({ setIsAuthenticated }) {
     try {
       // Update the user's solana_address in your database
       await axios.put(
-        'http://localhost:8080/api/account/update',
+        `${API_ENDPOINT}api/account/update`,
         { solana_address: solanaAddress, userId },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -109,7 +112,7 @@ function Account({ setIsAuthenticated }) {
 
     try {
       const screenshotResponse = await axios.post(
-        'http://localhost:8080/api/image/screenshot',
+        `${API_ENDPOINT}api/image/screenshot`,
         { url: holding.dexscreenerChartUrl },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -131,7 +134,7 @@ function Account({ setIsAuthenticated }) {
       };
 
       const response = await axios.post(
-        'http://localhost:8080/api/chat/completions',
+        `${API_ENDPOINT}api/chat/completions`,
         payload,
         { headers: { 'Content-Type': 'application/json' } }
       );

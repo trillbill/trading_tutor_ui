@@ -11,6 +11,9 @@ const ChatWindow = () => {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // API Endpoint
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/'
+
   // When a user selects an image, convert it to a Base64 data URL.
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -92,7 +95,7 @@ const ChatWindow = () => {
     // Make API call to your backend chat endpoint
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/chat/completions',
+        `${API_ENDPOINT}api/chat/completions`,
         payload,
         { headers: { 'Content-Type': 'application/json' } }
       );

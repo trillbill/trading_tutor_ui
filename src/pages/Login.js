@@ -9,6 +9,9 @@ function Login({ setIsAuthenticated }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  // API Endpoint
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/' 
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,8 +20,8 @@ function Login({ setIsAuthenticated }) {
     try {
       // Update the endpoint URLs with the correct API server address and port
       const endpoint = isLogin
-        ? 'http://localhost:8080/api/auth/login'
-        : 'http://localhost:8080/api/auth/register';
+        ? `${API_ENDPOINT}api/auth/login`
+        : `${API_ENDPOINT}api/auth/register`;
         
       const response = await axios.post(endpoint, { email, password });
       
