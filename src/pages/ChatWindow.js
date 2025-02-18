@@ -11,6 +11,9 @@ const ChatWindow = () => {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // API Endpoint
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/'
+
   // When a user selects an image, convert it to a Base64 data URL.
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -33,6 +36,9 @@ const ChatWindow = () => {
   };
 
   const handleSendMessage = async () => {
+    setLoading(true);
+    let payload = null;
+
     if (image) {
       // Default prompt for AI analysis
       const defaultPrompt = "Please analyze this price chart and provide insights on bullish or bearish momentum, any indicators present (RSI, MACD, volume, price levels, etc.), and suggestions for trading.";
@@ -45,104 +51,71 @@ const ChatWindow = () => {
       };
       setMessages((prev) => [...prev, newMessage]);
 
+      // Setup the payload for the image
+      payload = {
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: defaultPrompt },
+              { type: "image_url", image_url: { url: image } },
+            ],
+          },
+        ],
+        store: true,
+      };
+
       // Reset input fields
       setInputValue('');
-      setLoading(true);
       handleRemoveImage(); // Clear the uploaded image after sending
-
-      try {
-        const payload = {
-          model: "gpt-4o-mini", // Ensure you have access to this model.
-          messages: [
-            {
-              role: "user",
-              content: [
-                { type: "text", text: defaultPrompt },
-                { type: "image_url", image_url: { url: image } },
-              ],
-            },
-          ],
-          store: true, // if you want to store the image for future reference; remove if not needed.
-        };
-
-        const response = await axios.post(
-          "https://api.openai.com/v1/chat/completions",
-          payload,
-          {
-            headers: {
-              'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_KEY}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        // Process the AI's response and format it for better readability
-        const aiResponse = response.data.choices[0].message.content;
-        const formattedResponse = aiResponse
-          .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
-          .replace(/\n/g, '<br />') // Replace new lines with <br />
-          .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
-
-        const aiMessage = {
-          text: formattedResponse,
-          sender: 'ai',
-        };
-        setMessages((prevMessages) => [...prevMessages, aiMessage]);
-      } catch (error) {
-        console.error('Error communicating with OpenAI API:', error);
-      } finally {
-        setLoading(false);
-      }
     } else if (inputValue.trim()) { // Handle text-only messages
+        // Display the user's text message
         const newMessage = {
             text: inputValue, // User text
             sender: 'user',
         };
         setMessages((prev) => [...prev, newMessage]);
+        
+        // Setup the payload for the text message
+        payload = {
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "user",
+                    content: [{ type: "text", text: inputValue }],
+                },
+            ],
+        };
 
         // Reset input fields
         setInputValue('');
-        setLoading(true);
+    }
 
-        try {
-            const payload = {
-                model: "gpt-4o-mini", // Ensure you have access to this model.
-                messages: [
-                    {
-                        role: "user",
-                        content: [{ type: "text", text: inputValue }],
-                    },
-                ],
-            };
+    // Make API call to your backend chat endpoint
+    try {
+      const response = await axios.post(
+        `${API_ENDPOINT}api/chat/completions`,
+        payload,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
-            const response = await axios.post(
-                "https://api.openai.com/v1/chat/completions",
-                payload,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_KEY}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+      // Process the AI's response and format it for better readability
+      const aiResponse = response.data.choices[0].message.content;
+      const formattedResponse = aiResponse
+        .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
+        .replace(/\n/g, '<br />') // Replace new lines with <br />
+        .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
 
-            // Process the AI's response and format it for better readability
-            const aiResponse = response.data.choices[0].message.content;
-            const formattedResponse = aiResponse
-                .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
-                .replace(/\n/g, '<br />') // Replace new lines with <br />
-                .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
-
-            const aiMessage = {
-                text: formattedResponse,
-                sender: 'ai',
-            };
-            setMessages((prevMessages) => [...prevMessages, aiMessage]);
-        } catch (error) {
-            console.error('Error communicating with OpenAI API:', error);
-        } finally {
-            setLoading(false);
-        }
+      const aiMessage = {
+        text: formattedResponse,
+        sender: 'ai',
+      };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+    } catch (error) {
+      console.error('Error communicating with AI API:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,16 +160,16 @@ const ChatWindow = () => {
         />
         {image ? (
           <div className="uploaded-image">
-            <button className="remove-button" onClick={handleRemoveImage} disabled={loading && true}>
+            <button className="remove-button" onClick={handleRemoveImage} disabled={loading}>
               <i className="fas fa-file"></i> X
             </button>
           </div>
         ) : (
-          <button onClick={handleFileButtonClick} className="upload-button" disabled={loading && true}>
+          <button onClick={handleFileButtonClick} className="upload-button" disabled={loading}>
             <i className="fas fa-paperclip"></i> Upload Chart
           </button>
         )}
-        <button onClick={handleSendMessage} className="send-button" disabled={loading && true}>
+        <button onClick={handleSendMessage} className="send-button" disabled={loading}>
           Send
         </button>
       </div>

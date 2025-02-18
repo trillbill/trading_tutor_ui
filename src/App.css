@@ -187,3 +187,53 @@ html, body {
     width: 100%; /* Full width for each item */
     text-align: left; /* Align text to the left */
 }
+
+/* Overall container styles */
+.app-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Header styling */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f8f8;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Navigation menu styling */
+.nav-menu {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link,
+.login-button,
+.account-button {
+  text-decoration: none;
+  color: #333;
+  padding: 10px 15px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover,
+.login-button:hover,
+.account-button:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* Main content area styling */
+.app-content {
+  margin: 20px;
+}
