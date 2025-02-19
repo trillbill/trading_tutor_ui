@@ -16,7 +16,7 @@ function Account({ setIsAuthenticated }) {
   const userId = localStorage.getItem('userId');
 
   // API Endpoint
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/'
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
 
   // On component mount, load the solana address and cached wallet holdings (if available)
   useEffect(() => {

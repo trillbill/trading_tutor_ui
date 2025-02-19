@@ -12,7 +12,7 @@ const ChatWindow = () => {
   const fileInputRef = useRef(null);
 
   // API Endpoint
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/'
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
 
   // When a user selects an image, convert it to a Base64 data URL.
   const handleImageUpload = (event) => {
