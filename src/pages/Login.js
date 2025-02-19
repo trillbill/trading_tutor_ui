@@ -10,7 +10,7 @@ function Login({ setIsAuthenticated }) {
   const [message, setMessage] = useState('');
 
   // API Endpoint
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT_DEV || 'http://trading-tutor-api-prod.eba-scnpdj3m.us-east-2.elasticbeanstalk.com/' 
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT 
 
   const navigate = useNavigate();
 
