@@ -216,7 +216,14 @@ function Account({ setIsAuthenticated }) {
           {walletHoldings.length > 0 ? (
             <>
               <div className="holdings-list">
-                {walletHoldings.slice(0, visibleHoldingsCount).map((holding, index) => (
+                {walletHoldings
+                  .slice(0, visibleHoldingsCount)
+                  .sort((a, b) => {
+                    const aBalanceUSD = Number(a.balance) * Number(a.price);
+                    const bBalanceUSD = Number(b.balance) * Number(b.price);
+                    return bBalanceUSD - aBalanceUSD; // Sort in descending order
+                  })
+                  .map((holding, index) => (
                   <div key={index} className="holding-card">
                     <h3>{holding.baseToken.symbol}</h3>
                     <p>

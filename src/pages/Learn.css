@@ -2,18 +2,88 @@
     padding: 20px;
 }
 
+.trading-tutor-intro {
+    background-color: #302e2e; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding for spacing */
+    margin-bottom: 20px; /* Space below the section */
+}
+
+.trading-tutor-intro h2 {
+    font-size: 24px; /* Larger font for the heading */
+    margin-bottom: 10px; /* Space below the heading */
+}
+
+.trading-tutor-intro p {
+    font-size: 16px; /* Standard font size for paragraphs */
+    line-height: 1.5; /* Improved line spacing */
+}
+
+.trading-tutor-intro ul {
+    list-style-type: disc; /* Bullet points for the list */
+    padding-left: 20px; /* Indentation for the list */
+}
+
+.trading-tutor-intro li {
+    margin-bottom: 5px; /* Space between list items */
+}
+
+/* Topic Grid Styles */
+.topic-grid {
+    display: flex; /* Use flexbox for centering */
+    justify-content: space-between; /* Space out the items evenly */
+    align-items: center; /* Center the items vertically */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    margin-bottom: 20px;
+    padding-top: 10px;
+    width: 100%; /* Ensure it takes full width */
+    margin: 0 auto; /* Center the grid */
+}
+
+.topic-card {
+    background-color: #4a4a4a; /* Dark background for contrast */
+    color: white;
+    padding: 50px 20px 20px; /* Increased top padding for larger cards */
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column; /* Stack icon and text vertically */
+    align-items: center; /* Center items horizontally */
+    flex: 1; /* Allow cards to grow and fill space */
+    margin: 10px; /* Add margin for spacing */
+}
+
+.topic-card:hover,
+.topic-card.selected { /* Highlight selected category */
+    background-color: #6a6a6a; /* Lighter on hover or when selected */
+}
+
+.topic-icon {
+    width: 100px; /* Set a fixed width for icons */
+    height: 100px; /* Set a fixed height for icons */
+    margin-bottom: 15px; /* Space between icon and text */
+}
+
+.topic-name {
+    font-weight: bold; /* Make the category name bold */
+    font-size: 24px; /* Increase font size for better legibility */
+    color: white; /* Ensure text is white */
+}
+
 .search-filter {
     display: flex;
-    justify-content: center;
-    margin: 0 auto 20px auto;
-    width: 100%;
-    /* max-width: 600px; */
-    padding-top: 20px;
+    justify-content: center; /* Center the search bar */
+    margin: 20px auto; /* Center the search bar with margin */
+    width: 100%; /* Full width */
+    max-width: 100%; /* Allow it to take full width of the container */
 }
 
 .search-filter input {
     padding: 10px;
-    width: 70%;
+    width: 100%; /* Full width to match the container */
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
@@ -109,4 +179,105 @@
 .chart-container {
     width: 100%;
     height: 300px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .topic-card {
+        padding: 30px 10px 10px; /* Adjusted padding for smaller cards */
+        margin: 5px; /* Reduce margin for smaller cards */
+    }
+
+    .topic-icon {
+        width: 50px; /* Set a smaller width for icons on mobile */
+        height: 50px; /* Set a smaller height for icons on mobile */
+    }
+
+    .topic-name {
+        font-size: 12px; /* Reduce font size for better legibility on mobile */
+    }
+}
+
+/* Hero Section */
+.hero-section {
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    height: 400px; /* Set a fixed height for the hero section */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    position: relative; /* Position relative for any absolute children */
+    border-radius: 15px; /* Round the corners */
+    overflow: hidden; /* Ensure content does not overflow the rounded corners */
+}
+
+.overlay {
+    position: absolute; /* Position overlay absolutely */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    z-index: 1; /* Ensure overlay is above the image */
+}
+
+.hero-content {
+    position: relative; /* Position relative for z-index */
+    z-index: 2; /* Ensure content is above the overlay */
+    text-align: left; /* Left align the text */
+    padding: 20px; /* Add padding to prevent text from touching edges */
+    max-width: 90%; /* Limit width to prevent overflow */
+}
+
+.hero-section h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 2rem; /* Adjust font size as needed */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for better visibility */
+}
+
+.hero-section p {
+    font-size: 1rem; /* Base font size for paragraphs */
+}
+
+.hero-section ul {
+    padding-left: 20px; /* Indent list items */
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 500px; /* Increase height for mobile view */
+    }
+
+    .hero-section h2 {
+        font-size: 1.5rem; /* Reduce font size for mobile */
+    }
+
+    .hero-section p {
+        font-size: 0.9rem; /* Reduce font size for paragraphs */
+    }
+
+    .hero-section ul {
+        padding-left: 10px; /* Reduce padding for list items */
+    }
+
+    .hero-content {
+        padding: 10px; /* Reduce padding for mobile */
+    }
+}
+
+.sign-up-button {
+    margin-top: 15px; /* Space above the button */
+    padding: 10px 20px; /* Padding for the button */
+    font-size: 1rem; /* Font size for the button */
+    color: rgb(0, 0, 0); /* Text color */
+    background-color: #fff; /* Button background color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.sign-up-button:hover {
+    background-color: #6a6a6a; /* Darker shade on hover */
 }
