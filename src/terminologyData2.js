@@ -2,7 +2,7 @@ const terminologyData = [
   // Price Levels
   {
     name: "Support",
-    category: "Charts",
+    category: "Price Levels",
     value:
       "A price level where a downtrend can be expected to pause due to a concentration of demand.",
     image:
@@ -24,7 +24,7 @@ const terminologyData = [
   },
   {
     name: "Resistance",
-    category: "Charts",
+    category: "Price Levels",
     value:
       "A price level where an uptrend can be expected to pause due to a concentration of supply.",
     image:
@@ -48,7 +48,7 @@ const terminologyData = [
   // Chart Patterns
   {
     name: "Head and Shoulders Pattern",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A reversal pattern formed by three peaks, where the middle peak is the highest.",
     image:
@@ -78,7 +78,7 @@ const terminologyData = [
   },
   {
     name: "Inverse Head and Shoulders",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bullish reversal pattern that mirrors the regular Head and Shoulders.",
     image:
@@ -109,7 +109,7 @@ const terminologyData = [
   },
   {
     name: "Double Top",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bearish reversal pattern where the price reaches a high level twice and is unable to break above that level.",
     image:
@@ -136,7 +136,7 @@ const terminologyData = [
   },
   {
     name: "Double Bottom",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bullish reversal pattern where the price reaches a low level twice with a hump in between.",
     image:
@@ -159,7 +159,7 @@ const terminologyData = [
   },
   {
     name: "Ascending Triangle",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bullish continuation pattern with a rising lower trendline and a horizontal resistance.",
     image:
@@ -187,7 +187,7 @@ const terminologyData = [
   },
   {
     name: "Descending Triangle",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bearish continuation pattern with a descending upper trendline and horizontal support.",
     image:
@@ -215,7 +215,7 @@ const terminologyData = [
   },
   {
     name: "Rising Wedge",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bearish reversal pattern with converging highs and lows as prices increase.",
     image:
@@ -238,7 +238,7 @@ const terminologyData = [
   },
   {
     name: "Falling Wedge",
-    category: "Charts",
+    category: "Chart Patterns",
     value:
       "A bullish reversal pattern with converging highs and lows as prices decrease.",
     image:
@@ -263,7 +263,7 @@ const terminologyData = [
   // Moving Averages
   {
     name: "Golden Cross",
-    category: "Tools",
+    category: "Moving Averages",
     value:
       "A bullish signal formed when a short-term moving average crosses above a longer-term moving average.",
     image:
@@ -307,7 +307,7 @@ const terminologyData = [
   },
   {
     name: "Death Cross",
-    category: "Tools",
+    category: "Moving Averages",
     value:
       "A bearish signal formed when a short-term moving average crosses below a longer-term moving average.",
     image:
@@ -329,7 +329,7 @@ const terminologyData = [
   },
   {
     name: "EMA (Exponential Moving Average)",
-    category: "Tools",
+    category: "Moving Averages",
     value:
       "A type of moving average that places greater weight on recent prices.",
     image:
@@ -351,7 +351,7 @@ const terminologyData = [
   },
   {
     name: "SMA (Simple Moving Average)",
-    category: "Tools",
+    category: "Moving Averages",
     value:
       "The simplest form of a moving average, calculated by averaging prices over a given period.",
     image:
@@ -375,7 +375,7 @@ const terminologyData = [
   // Momentum Indicators
   {
     name: "RSI (Relative Strength Index)",
-    category: "Tools",
+    category: "Momentum Indicators",
     value:
       "A momentum oscillator that measures the speed and change of price movements.",
     image:
@@ -397,7 +397,7 @@ const terminologyData = [
   },
   {
     name: "MACD (Moving Average Convergence Divergence)",
-    category: "Tools",
+    category: "Momentum Indicators",
     value:
       "A trend-following momentum indicator that shows the relationship between two moving averages.",
     image:
@@ -421,7 +421,7 @@ const terminologyData = [
   // Technical Analysis Tools
   {
     name: "Fibonacci Retracement",
-    category: "Tools",
+    category: "Technical Analysis Tools",
     value:
       "A technique using horizontal lines to indicate key Fibonacci levels during a retracement.",
     image:
@@ -440,78 +440,6 @@ const terminologyData = [
       { time: '2022-01-09', value: 54 },
       { time: '2022-01-10', value: 53 },
     ],
-  },
-  {
-    name: "Elliot Wave Theory",
-    category: "Theory",
-    value: "This theory posits that market prices move in predictable cycles, reflecting the emotions and behaviors of market participants. According to this theory, these cycles are influenced by the psychology of traders and investors, leading to patterns that can be identified and used for forecasting future price movements. The theory is based on the idea that market trends follow a specific structure of waves, which can be classified into impulse waves and corrective waves.",
-    image: "https://example.com/elliot-wave-theory.png", // Replace with actual image URL
-    chartType: "elliotWave",
-    lineColor: "blue",
-    data: [],
-  },
-  {
-      name: "Momentum Trading",
-      category: "Theory",
-      value: "A strategy that aims to capitalize on the continuation of existing trends in the market. Traders who employ this strategy believe that assets that have been rising steadily will continue to rise, while those that have been falling will continue to fall. This approach often involves using technical indicators to identify the strength of a trend and making trades based on the momentum of price movements. Traders typically look for stocks that are moving significantly in one direction on high volume.",
-      image: "https://example.com/momentum-trading.png", // Replace with actual image URL
-      chartType: "momentumTrading",
-      lineColor: "orange",
-      data: [],
-  },
-  {
-      name: "Dow Theory",
-      category: "Theory",
-      value: "This theory is a framework for understanding market trends and movements. It asserts that the stock market moves in trends, which can be identified and followed. The theory emphasizes the importance of confirming trends through various market indices. This theory also introduces concepts such as primary trends, secondary trends, and minor trends.",
-      image: "https://example.com/dow-theory.png", // Replace with actual image URL
-      chartType: "dowTheory",
-      lineColor: "purple",
-      data: [],
-  },
-  {
-      name: "Gann Theory",
-      category: "Theory",
-      value: "This theory involves a method of technical analysis that uses angles and time cycles to predict price movements. It asserts that the market moves in predictable patterns and that these patterns can be analyzed using geometric angles and time intervals. The theory incorporates various tools, such as angles, fans, and time cycles, to help traders identify potential support and resistance levels, as well as entry and exit points.",
-      image: "https://example.com/gann-theory.png", // Replace with actual image URL
-      chartType: "gannTheory",
-      lineColor: "brown",
-      data: [],
-  },
-  {
-      name: "Market Sentiment",
-      category: "Theory",
-      value: "A term which refers to the overall attitude of investors toward a particular security or financial market. It is often driven by news, economic indicators, and other external factors that influence how investors feel about the market's future direction. Understanding this can help traders make informed decisions, as it can lead to price movements that may not be justified by fundamental analysis. It can be measured through various indicators, including surveys, social media sentiment analysis, and market volatility.",
-      image: "https://example.com/market-sentiment.png", // Replace with actual image URL
-      chartType: "marketSentiment",
-      lineColor: "cyan",
-      data: [],
-  },
-  {
-      name: "Behavioral Finance",
-      category: "Theory",
-      value: "A field of study that examines the psychological factors that influence investor behavior and market outcomes. It challenges the traditional assumption that investors are rational and instead suggests that emotions, cognitive biases, and social influences can lead to irrational decision-making. This theory explores concepts such as overconfidence, loss aversion, and herd behavior, which can significantly impact market trends and individual investment choices.",
-      image: "https://example.com/behavioral-finance.png", // Replace with actual image URL
-      chartType: "behavioralFinance",
-      lineColor: "magenta",
-      data: [],
-  },
-  {
-      name: "Efficient Market Hypothesis (EMH)",
-      category: "Theory",
-      value: "The theory posits that asset prices reflect all available information, making it impossible for investors to consistently achieve higher returns than the overall market. According to this theory, any new information is quickly incorporated into stock prices, meaning that it is futile to try to outperform the market through stock selection or market timing. The theory has significant implications for investment strategies and portfolio management, suggesting that passive investing may be more effective than active trading.",
-      image: "https://example.com/efficient-market-hypothesis.png", // Replace with actual image URL
-      chartType: "efficientMarketHypothesis",
-      lineColor: "yellow",
-      data: [],
-  },
-  {
-      name: "Random Walk Theory",
-      category: "Theory",
-      value: "A theory which suggests that stock market prices evolve randomly and thus cannot be predicted. This theory implies that past price movements do not provide any information about future price movements, making it impossible to consistently outperform the market. The theory supports the idea that stock prices are influenced by a multitude of unpredictable factors, leading to a market that behaves in a seemingly random manner.",
-      image: "https://example.com/random-walk-theory.png", // Replace with actual image URL
-      chartType: "randomWalkTheory",
-      lineColor: "gray",
-      data: [],
   },
 ];
 

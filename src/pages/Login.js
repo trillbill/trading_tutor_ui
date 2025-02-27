@@ -35,9 +35,11 @@ function Login({ setIsAuthenticated }) {
         setMessage('Login successful!');
         navigate('/'); // Adjust as needed
       } else {
-        // For registration, prompt user to log in after a successful account creation
-        setMessage('Account created successfully. Please log in.');
-        setIsLogin(true);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userEmail', response.data.user.email);
+        localStorage.setItem('userId', response.data.user.id);
+        setIsAuthenticated(true);
+        navigate('/');
       }
     } catch (error) {
       console.error('API error:', error);

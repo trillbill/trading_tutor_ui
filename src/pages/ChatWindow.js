@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import './ChatWindow.css';
+import heroImage from '../assets/man-trading4.png'; // Use the same image
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
@@ -13,6 +14,23 @@ const ChatWindow = () => {
 
   // API Endpoint
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
+
+   // Prompt options
+  const prompts = [
+    "What are some trading strategies I can use to improve my performance?",
+    "Can you explain the concept of support and resistance?",
+    "What indicators should I use for technical analysis?",
+    "How can I manage risk in my trading?",
+    "What are the best practices for trading psychology?"
+  ];
+
+  const handlePromptClick = (prompt) => {
+    setInputValue(prompt); // Set the input value to the selected prompt
+  };
+
+  // const handleSendMessage = async () => {
+  //     // Existing send message logic...
+  // };
 
   // When a user selects an image, convert it to a Base64 data URL.
   const handleImageUpload = (event) => {
@@ -126,52 +144,74 @@ const ChatWindow = () => {
   };
 
   return (
-    <div className="chat-window">
-      <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <div key={index} className={`chat-message ${msg.sender}`}>
-            {msg.sender === 'ai' ? (
-              <div dangerouslySetInnerHTML={{ __html: msg.text }} />
-            ) : (
-              <p>{msg.text}</p>
-            )}
-            {msg.image && (
-              <img src={msg.image} alt="Uploaded chart" className="chat-image" />
-            )}
-          </div>
-        ))}
-        {loading && <div className="loading-spinner"></div>}
+    <div className='chat-container'>
+      <div className="title-section" style={{ backgroundImage: `url(${heroImage})` }}>
+        <div className="overlay"></div>
+        <div className="title-content">
+          <h2>Your AI Trading Tutor</h2>
+          <p>
+            You can talk to your AI tutor directly to work through trading strategies, learn more about trading terminology, or upload your own charts to receive analysis.
+          </p>
+        </div>
       </div>
-      <div className="chat-input">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Type your message..."
-          onKeyPress={handleKeyPress}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="file-input"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-        />
-        {image ? (
-          <div className="uploaded-image">
-            <button className="remove-button" onClick={handleRemoveImage} disabled={loading}>
-              <i className="fas fa-file"></i> X
-            </button>
+
+      <div className="chat-window">
+        {
+          messages.length < 1 &&
+          <div className="prompt-carousel">
+              {prompts.map((prompt, index) => (
+                  <button key={index} className="prompt-button" onClick={() => handlePromptClick(prompt)}>
+                      {prompt}
+                  </button>
+              ))}
           </div>
-        ) : (
-          <button onClick={handleFileButtonClick} className="upload-button" disabled={loading}>
-            <i className="fas fa-paperclip"></i> Upload Chart
+        }
+        <div className="chat-messages">
+          {messages.map((msg, index) => (
+            <div key={index} className={`chat-message ${msg.sender}`}>
+              {msg.sender === 'ai' ? (
+                <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+              ) : (
+                <p>{msg.text}</p>
+              )}
+              {msg.image && (
+                <img src={msg.image} alt="Uploaded chart" className="chat-image" />
+              )}
+            </div>
+          ))}
+          {loading && <div className="loading-spinner"></div>}
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Type your message..."
+            onKeyPress={handleKeyPress}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="file-input"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+          />
+          {image ? (
+            <div className="uploaded-image">
+              <button className="remove-button" onClick={handleRemoveImage} disabled={loading}>
+                <i className="fas fa-file"></i> X
+              </button>
+            </div>
+          ) : (
+            <button onClick={handleFileButtonClick} className="upload-button" disabled={loading}>
+              <i className="fas fa-paperclip"></i> Upload Chart
+            </button>
+          )}
+          <button onClick={handleSendMessage} className="send-button" disabled={loading}>
+            Send
           </button>
-        )}
-        <button onClick={handleSendMessage} className="send-button" disabled={loading}>
-          Send
-        </button>
+        </div>
       </div>
     </div>
   );

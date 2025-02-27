@@ -1,7 +1,10 @@
 /* trading_tutor_ui/src/components/ChatWindow.css */
+.chat-container {
+    padding: 20px;
+}
+
 .chat-window {
-    width: 90%; /* Set the width of the chat window */
-    height: 600px; /* Set the height of the chat window */
+    height: 500px; /* Set the height of the chat window */
     border-radius: 8px; /* Rounded corners */
     display: flex;
     flex-direction: column;
@@ -123,4 +126,94 @@
 
 .remove-button i {
     margin-right: 5px; /* Space between icon and text */
+}
+
+/* Prompt Carousel */
+.prompt-carousel {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping of buttons */
+    justify-content: center; /* Center the buttons */
+    margin-bottom: 20px; /* Space below the carousel */
+}
+
+.prompt-button {
+    background-color: #4a4a4a; /* Button background color */
+    color: #ffffff; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for the button */
+    margin: 5px; /* Space between buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.prompt-button:hover {
+    background-color: #6a6a6a;
+    color:  #ffffff;/* Darker shade on hover */
+}
+
+/* Page Intro Section */
+.page-intro {
+    display: flex;
+    flex-direction: column;
+    background-color: #007bff; /* Background color similar to the hero section */
+    color: white; /* Text color */
+    padding: 20px; /* Padding for spacing */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 20px; /* Space below the intro section */
+    text-align: center; /* Center the text */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+}
+
+/* Optional: Adjust the title and paragraph styles */
+.page-intro h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 1.8rem; /* Adjust font size for the title */
+}
+
+.page-intro p {
+    margin: 10px 0 0; /* Space above the paragraph */
+    font-size: 1rem; /* Adjust font size for the paragraph */
+}
+
+/* Hero Section */
+.title-section {
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    height: 200px; /* Set a fixed height for the hero section */
+    display: flex;
+    justify-content: left; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    position: relative; /* Position relative for any absolute children */
+    border-radius: 15px; /* Round the corners */
+    overflow: hidden; /* Ensure content does not overflow the rounded corners */
+}
+
+.overlay {
+    position: absolute; /* Position overlay absolutely */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    z-index: 1; /* Ensure overlay is above the image */
+}
+
+.title-content {
+    margin-left: 7%;
+    position: relative; /* Position relative for z-index */
+    z-index: 2; /* Ensure content is above the overlay */
+    text-align: left; /* Left align the text */
+    padding: 20px; /* Add padding to prevent text from touching edges */
+    max-width: 90%; /* Limit width to prevent overflow */
+}
+
+.title-section h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 2rem; /* Adjust font size as needed */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for better visibility */
+}
+
+.title-section p {
+    font-size: 1rem; /* Base font size for paragraphs */
 }
