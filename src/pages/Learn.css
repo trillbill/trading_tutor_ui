@@ -247,7 +247,7 @@
 /* Media Queries for Mobile Devices */
 @media (max-width: 768px) {
     .hero-section {
-        height: 500px; /* Increase height for mobile view */
+        height: 600px; /* Increase height for mobile view */
     }
 
     .hero-section h2 {
