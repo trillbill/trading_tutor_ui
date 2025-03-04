@@ -185,7 +185,6 @@
 @media (max-width: 768px) {
     .topic-card {
         padding: 30px 10px 10px; /* Adjusted padding for smaller cards */
-        margin: 5px; /* Reduce margin for smaller cards */
     }
 
     .topic-icon {
@@ -247,7 +246,7 @@
 /* Media Queries for Mobile Devices */
 @media (max-width: 768px) {
     .hero-section {
-        height: 500px; /* Increase height for mobile view */
+        height: 600px; /* Increase height for mobile view */
     }
 
     .hero-section h2 {
