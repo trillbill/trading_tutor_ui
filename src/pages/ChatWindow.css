@@ -132,12 +132,9 @@
 .prompt-carousel {
     display: flex;
     flex-wrap: wrap; /* Allow wrapping of buttons */
-    justify-content: center; /* Center the buttons horizontally */
+    justify-content: center; /* Center the buttons */
     margin: 20px 0; /* Space above and below the carousel */
     text-align: center; /* Center text within the buttons */
-    width: 100%; /* Ensure it takes the full width of the chat window */
-    box-sizing: border-box; /* Include padding and border in the element's total width */
-    align-items: center; /* Center items vertically */
 }
 
 .prompt-button {
@@ -156,11 +153,34 @@
     color:  #ffffff;/* Darker shade on hover */
 }
 
+/* Page Intro Section */
+.page-intro {
+    display: flex;
+    flex-direction: column;
+    background-color: #007bff; /* Background color similar to the hero section */
+    color: white; /* Text color */
+    padding: 20px; /* Padding for spacing */
+    border-radius: 8px; /* Rounded corners */
+    text-align: center; /* Center the text */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+}
+
+/* Optional: Adjust the title and paragraph styles */
+.page-intro h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Adjust font size for the title */
+}
+
+.page-intro p {
+    margin: 10px 0 0; /* Space above the paragraph */
+    font-size: 16px; /* Adjust font size for the paragraph */
+}
+
 /* Hero Section */
 .title-section {
     background-size: cover; /* Cover the entire section */
     background-position: center; /* Center the image */
-    height: 25vh; /* Set a fixed height for the hero section */
+    height: 200px; /* Set a fixed height for the hero section */
     display: flex;
     justify-content: left; /* Center content horizontally */
     align-items: center; /* Center content vertically */
@@ -169,14 +189,14 @@
     overflow: hidden; /* Ensure content does not overflow the rounded corners */
 }
 
-.title-content h2 {
-    font-size: 24px; /* Set font size for the heading */
+.title-section h2 {
     margin: 0; /* Remove default margin */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for better visibility */
+    font-size: 24px; /* Adjust font size for the title */
 }
 
-.title-content p {
-    font-size: 16px; /* Set font size for paragraphs */
+.title-section p {
+    margin: 10px 0 0; /* Space above the paragraph */
+    font-size: 16px; /* Adjust font size for the paragraph */
 }
 
 .overlay {
@@ -208,12 +228,23 @@
     font-size: 1rem; /* Base font size for paragraphs */
 }
 
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .title-section h2 {
+        font-size: 1.5rem; /* Reduce font size for mobile */
+    }
+
+    .title-section p {
+        font-size: 0.9rem; /* Reduce font size for paragraphs */
+    }
+}
+
 /* User Message Container */
 .user-message-container {
     background-color: white; /* White background for user messages */
     color: black; /* Black text color */
     border-radius: 20px; /* Pill shape */
-    padding: 0px 12px; /* Reduced padding for a more compact look */
+    padding: 8px 12px; /* Reduced padding for a more compact look */
     margin-bottom: 10px; /* Space between messages */
     max-width: 100%; /* Limit width for better readability */
     align-self: flex-end; /* Align user messages to the right */
