@@ -4,7 +4,7 @@ const terminologyData = [
     name: "Support",
     category: "Charts",
     value:
-      "A price level where a downtrend can be expected to pause due to a concentration of demand.",
+      "Price support is a level where an asset’s price tends to stop falling because buyers step in, creating demand. If the price breaks below this level, it may signal further declines.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/price-support.png",
     chartType: "support",
@@ -12,36 +12,47 @@ const terminologyData = [
     data: [
       { time: '2022-01-01', value: 52 },
       { time: '2022-01-02', value: 53 },
-      { time: '2022-01-03', value: 50 },
+      { time: '2022-01-03', value: 52 },
       { time: '2022-01-04', value: 47 },
       { time: '2022-01-05', value: 51 },
       { time: '2022-01-06', value: 52 },
       { time: '2022-01-07', value: 50 },
       { time: '2022-01-08', value: 49 },
       { time: '2022-01-09', value: 47 },
-      { time: '2022-01-10', value: 48 },
+      { time: '2022-01-10', value: 49 },
+      { time: '2022-01-11', value: 51 },
+      { time: '2022-01-12', value: 50 },
+      { time: '2022-01-13', value: 52 },
+      { time: '2022-01-14', value: 51 },
+      { time: '2022-01-15', value: 49 },
+      { time: '2022-01-16', value: 47 },
+      { time: '2022-01-17', value: 49 },
     ],
   },
   {
     name: "Resistance",
     category: "Charts",
     value:
-      "A price level where an uptrend can be expected to pause due to a concentration of supply.",
+      "Price resistance is a level where an asset’s price tends to stop rising because sellers step in, creating supply. If the price breaks above this level, it may signal further gains.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/price-resistance.png",
     chartType: "resistance",
     lineColor: "red",
     data: [
       { time: '2022-01-01', value: 44 },
-      { time: '2022-01-02', value: 45 },
-      { time: '2022-01-03', value: 46 },
+      { time: '2022-01-02', value: 46 },
+      { time: '2022-01-03', value: 45 },
       { time: '2022-01-04', value: 47 },
       { time: '2022-01-05', value: 48 },
       { time: '2022-01-06', value: 49 },
-      { time: '2022-01-07', value: 45 },
+      { time: '2022-01-07', value: 46 },
       { time: '2022-01-08', value: 44 },
-      { time: '2022-01-09', value: 49 },
-      { time: '2022-01-10', value: 47 },
+      { time: '2022-01-09', value: 45 },
+      { time: '2022-01-10', value: 49 },
+      { time: '2022-01-11', value: 47 },
+      { time: '2022-01-12', value: 45 },
+      { time: '2022-01-13', value: 49 },
+      { time: '2022-01-14', value: 47 },
     ],
   },
 
@@ -50,10 +61,10 @@ const terminologyData = [
     name: "Head and Shoulders Pattern",
     category: "Charts",
     value:
-      "A reversal pattern formed by three peaks, where the middle peak is the highest.",
+      "The Head and Shoulders pattern is a bearish reversal pattern that signals a potential trend change from bullish to bearish. It consists of three peaks: a higher middle peak (the head) and two lower peaks on either side (the shoulders). The neckline, drawn across the lowest points between the peaks, acts as a support level. When the price breaks below the neckline, it confirms the pattern and suggests a potential downtrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/head-and-shoulders.png",
-    chartType: "headAndShoulders",
+    chartType: "hns",
     lineColor: "red",
     data: [
       // Simulated values: left shoulder, head, then right shoulder.
@@ -80,7 +91,7 @@ const terminologyData = [
     name: "Inverse Head and Shoulders",
     category: "Charts",
     value:
-      "A bullish reversal pattern that mirrors the regular Head and Shoulders.",
+      "The Inverse Head and Shoulders pattern is a bullish reversal pattern that signals a potential trend change from bearish to bullish. It consists of three troughs: a lower middle trough (the head) and two higher troughs on either side (the shoulders). The neckline, drawn across the highest points between the troughs, acts as a resistance level. When the price breaks above the neckline, it confirms the pattern and suggests a potential uptrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/inverse-head-and-shoulders.png",
     chartType: "inverseHeadAndShoulders",
@@ -111,85 +122,109 @@ const terminologyData = [
     name: "Double Top",
     category: "Charts",
     value:
-      "A bearish reversal pattern where the price reaches a high level twice and is unable to break above that level.",
+      "A Double Top is a bearish reversal pattern that signals a potential trend change from bullish to bearish. It forms when the price reaches a high, pulls back, then retests the same high but fails to break through. This creates two peaks at roughly the same level, with a neckline acting as support. When the price breaks below the neckline, it confirms the pattern and suggests a potential downtrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/double-top.png",
     chartType: "resistance",
     lineColor: "red",
     data: [
-      // Two similar peaks with a dip in between.
-      { time: '2022-01-01', value: 45 },
-      { time: '2022-01-02', value: 47 }, // first top ~56
-      { time: '2022-01-03', value: 48 }, // dip ~53
-      { time: '2022-01-04', value: 55 }, // second top ~56
-      { time: '2022-01-05', value: 51 },
-      { time: '2022-01-06', value: 45 },
-      { time: '2022-01-07', value: 44 },
-      { time: '2022-01-08', value: 46 },
-      { time: '2022-01-09', value: 50 },
-      { time: '2022-01-10', value: 54 },
-      { time: '2022-01-11', value: 55 },
-      { time: '2022-01-12', value: 52 },
-      { time: '2022-01-13', value: 49 },
-      { time: '2022-01-14', value: 44 },
+      { time: '2022-01-01', value: 44 },
+      { time: '2022-01-02', value: 46 },
+      { time: '2022-01-03', value: 45 },
+      { time: '2022-01-04', value: 47 },
+      { time: '2022-01-05', value: 48 },
+      { time: '2022-01-06', value: 49 },
+      { time: '2022-01-07', value: 46 },
+      { time: '2022-01-08', value: 44 },
+      { time: '2022-01-09', value: 45 },
+      { time: '2022-01-10', value: 44 },
+      { time: '2022-01-11', value: 45 },
+      { time: '2022-01-12', value: 43 },
+      { time: '2022-01-13', value: 44 },
+      { time: '2022-01-14', value: 45 },
+      { time: '2022-01-15', value: 45 },
+      { time: '2022-01-16', value: 44 },
+      { time: '2022-01-17', value: 46 },
+      { time: '2022-01-18', value: 47 },
+      { time: '2022-01-19', value: 49 },
+      { time: '2022-01-20', value: 48 },
+      { time: '2022-01-21', value: 47 },
+      { time: '2022-01-22', value: 46 },
+      { time: '2022-01-23', value: 44 },
+      { time: '2022-01-24', value: 45 }, 
     ],
   },
   {
     name: "Double Bottom",
     category: "Charts",
     value:
-      "A bullish reversal pattern where the price reaches a low level twice with a hump in between.",
+      "A Double Bottom is a bullish reversal pattern that signals a potential trend change from bearish to bullish. It forms when the price drops to a low, bounces up, then retests the same low but fails to break lower. This creates two troughs at roughly the same level, with a neckline acting as resistance. When the price breaks above the neckline, it confirms the pattern and suggests a potential uptrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/double-bottom.png",
     chartType: "support",
     lineColor: "green",
     data: [
       // Two similar troughs with a hump between them.
-      { time: '2022-01-01', value: 60 },
-      { time: '2022-01-02', value: 58 },
-      { time: '2022-01-03', value: 50 }, // first bottom ~50
-      { time: '2022-01-04', value: 58 }, // hump ~64
-      { time: '2022-01-05', value: 57 }, // second bottom ~50
-      { time: '2022-01-06', value: 60 },
-      { time: '2022-01-07', value: 54 },
-      { time: '2022-01-08', value: 50 },
-      { time: '2022-01-09', value: 54 },
-      { time: '2022-01-10', value: 58 },
+      { time: '2022-01-01', value: 49 },
+      { time: '2022-01-02', value: 48 },
+      { time: '2022-01-03', value: 48 },
+      { time: '2022-01-04', value: 47 },
+      { time: '2022-01-05', value: 48 },
+      { time: '2022-01-06', value: 49 },
+      { time: '2022-01-07', value: 48 },
+      { time: '2022-01-08', value: 46 },
+      { time: '2022-01-09', value: 45 },
+      { time: '2022-01-10', value: 47 },
+      { time: '2022-01-11', value: 45 },
+      { time: '2022-01-12', value: 43 },
+      { time: '2022-01-13', value: 44 },
+      { time: '2022-01-14', value: 45 },
+      { time: '2022-01-15', value: 47 },
+      { time: '2022-01-16', value: 45 },
+      { time: '2022-01-17', value: 46 },
+      { time: '2022-01-18', value: 47 },
+      { time: '2022-01-19', value: 48 },
+      { time: '2022-01-20', value: 43 },
+      { time: '2022-01-21', value: 44 },
+      { time: '2022-01-22', value: 46 },
+      { time: '2022-01-23', value: 47 },
+      { time: '2022-01-24', value: 48 },
     ],
   },
   {
     name: "Ascending Triangle",
     category: "Charts",
     value:
-      "A bullish continuation pattern with a rising lower trendline and a horizontal resistance.",
+      "An Ascending Triangle is a bullish continuation pattern that signals a potential breakout to the upside. It forms when the price creates higher lows, while the highs remain around the same level, forming a flat resistance line. This indicates increasing buying pressure. When the price breaks above the resistance line with strong volume, it confirms the pattern and suggests a potential uptrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/ascending-triangle.png",
     chartType: "resistance",
     lineColor: "green",
     data: [
       { time: '2022-01-01', value: 45 },  // starting support
-      { time: '2022-01-02', value: 47 },  // support rising
+      { time: '2022-01-02', value: 50 },  // support rising
       { time: '2022-01-03', value: 48 },
-      { time: '2022-01-04', value: 50 },
-      { time: '2022-01-05', value: 65 },  // test resistance (flat at 65)
-      { time: '2022-01-06', value: 52 },  // bounce off resistance
-      { time: '2022-01-07', value: 54 },  // support continues rising
-      { time: '2022-01-08', value: 65 },  // another test of resistance
-      { time: '2022-01-09', value: 56 },  // bounce, support rising further
-      { time: '2022-01-10', value: 58 },
-      { time: '2022-01-11', value: 60 },
-      { time: '2022-01-12', value: 65 },  // test resistance again
-      { time: '2022-01-13', value: 62 },  // support holds
-      { time: '2022-01-14', value: 64 },
-      { time: '2022-01-15', value: 65 },  // resistance is touched again
-      { time: '2022-01-16', value: 64 }   // support slightly below resistance
+      { time: '2022-01-04', value: 65 },
+      { time: '2022-01-05', value: 50 },  // test resistance (flat at 65)
+      { time: '2022-01-06', value: 60 },  // bounce off resistance
+      { time: '2022-01-07', value: 65 },  // support continues rising
+      { time: '2022-01-08', value: 53 },  // another test of resistance
+      { time: '2022-01-09', value: 57 },  // bounce, support rising further
+      { time: '2022-01-10', value: 64 },
+      { time: '2022-01-11', value: 65 },
+      { time: '2022-01-12', value: 58 },  // test resistance again
+      { time: '2022-01-13', value: 65 },  // support holds
+      { time: '2022-01-14', value: 59 },
+      { time: '2022-01-15', value: 59 },  // resistance is touched again
+      { time: '2022-01-16', value: 65 },  // support slightly below resistance
+      { time: '2022-01-17', value: 65 },
     ],
   },
   {
     name: "Descending Triangle",
     category: "Charts",
     value:
-      "A bearish continuation pattern with a descending upper trendline and horizontal support.",
+      "A Descending Triangle is a bearish continuation pattern that signals a potential breakdown to the downside. It forms when the price creates lower highs, while the lows remain around the same level, forming a flat support line. This indicates increasing selling pressure. When the price breaks below the support line with strong volume, it confirms the pattern and suggests a potential downtrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/descending-triangle.png",
     chartType: "support",
@@ -217,7 +252,7 @@ const terminologyData = [
     name: "Rising Wedge",
     category: "Charts",
     value:
-      "A bearish reversal pattern with converging highs and lows as prices increase.",
+      "A Rising Wedge is a bearish reversal pattern that signals a potential trend change from bullish to bearish. It forms when the price moves within a narrowing upward-sloping channel, creating higher highs and higher lows, but with weakening momentum. When the price breaks below the lower trendline with strong volume, it confirms the pattern and suggests a potential downtrend.",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/rising-wedge.png",
     chartType: "risingWedge",
@@ -240,7 +275,7 @@ const terminologyData = [
     name: "Falling Wedge",
     category: "Charts",
     value:
-      "A bullish reversal pattern with converging highs and lows as prices decrease.",
+      "A Falling Wedge is a bullish reversal pattern that signals a potential trend change from bearish to bullish. It forms when the price moves within a narrowing downward-sloping channel, creating lower highs and lower lows, but with weakening selling pressure. When the price breaks above the upper trendline with strong volume, it confirms the pattern and suggests a potential uptrend. ",
     image:
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/falling-wedge.png",
     chartType: "fallingWedge",
