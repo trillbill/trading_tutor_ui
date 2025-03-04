@@ -35,10 +35,10 @@
     justify-content: space-between; /* Space out the items evenly */
     align-items: center; /* Center the items vertically */
     flex-wrap: wrap; /* Allow items to wrap to the next line */
-    margin-bottom: 20px;
-    padding-top: 10px;
-    width: 100%; /* Ensure it takes full width */
-    margin: 0 auto; /* Center the grid */
+    margin-bottom: 20px; /* Space below the grid */
+    margin-top: 20px;
+    padding: 0; /* Remove padding from the grid */
+    gap: 20px; /* Add space between topic cards */
 }
 
 .topic-card {
@@ -53,7 +53,7 @@
     flex-direction: column; /* Stack icon and text vertically */
     align-items: center; /* Center items horizontally */
     flex: 1; /* Allow cards to grow and fill space */
-    margin: 10px; /* Add margin for spacing */
+    margin: auto; /* Add margin for spacing */
 }
 
 .topic-card:hover,
@@ -204,11 +204,12 @@
     background-position: center; /* Center the image */
     height: 400px; /* Set a fixed height for the hero section */
     display: flex;
-    justify-content: center; /* Center content horizontally */
+    justify-content: flex-start; /* Align content to the left */
     align-items: center; /* Center content vertically */
     position: relative; /* Position relative for any absolute children */
     border-radius: 15px; /* Round the corners */
     overflow: hidden; /* Ensure content does not overflow the rounded corners */
+    padding-left: 7%; /* Add left padding for responsiveness */
 }
 
 .overlay {

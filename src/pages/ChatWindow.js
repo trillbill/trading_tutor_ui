@@ -24,13 +24,65 @@ const ChatWindow = () => {
     "What are the best practices for trading psychology?"
   ];
 
-  const handlePromptClick = (prompt) => {
-    setInputValue(prompt); // Set the input value to the selected prompt
-  };
+  const handlePromptClick = async (prompt) => {
+    // Create a new message object for the selected prompt
+    const newMessage = {
+        text: prompt, // Use the selected prompt as the message text
+        sender: 'user',
+        image: null, // No image for prompt selection
+    };
 
-  // const handleSendMessage = async () => {
-  //     // Existing send message logic...
-  // };
+    // Add the new message to the messages array
+    setMessages((prev) => [...prev, newMessage]);
+
+    // Prepare the messages array for the API call
+    const messagesForApi = [
+        ...messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: [{ type: "text", text: msg.text }]
+        })),
+        {
+            role: 'user',
+            content: [{ type: "text", text: prompt }]
+        }
+    ];
+
+    // Show loading spinner
+    setLoading(true);
+
+    // Setup the payload for the text message
+    const payload = {
+        model: "gpt-4o-mini",
+        messages: messagesForApi, // Include previous messages
+    };
+
+    // Make API call to your backend chat endpoint
+    try {
+        const response = await axios.post(
+            `${API_ENDPOINT}api/chat/completions`,
+            payload,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        // Process the AI's response and format it for better readability
+        const aiResponse = response.data.choices[0].message.content;
+        const formattedResponse = aiResponse
+            .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
+            .replace(/\n/g, '<br />') // Replace new lines with <br />
+            .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
+
+        const aiMessage = {
+            text: formattedResponse,
+            sender: 'ai',
+        };
+        setMessages((prevMessages) => [...prevMessages, aiMessage]);
+    } catch (error) {
+        console.error('Error communicating with AI API:', error);
+    } finally {
+        // Hide loading spinner
+        setLoading(false);
+    }
+};
 
   // When a user selects an image, convert it to a Base64 data URL.
   const handleImageUpload = (event) => {
@@ -57,53 +109,56 @@ const ChatWindow = () => {
     setLoading(true);
     let payload = null;
 
-    if (image) {
-      // Default prompt for AI analysis
-      const defaultPrompt = "Please analyze this price chart and provide insights on bullish or bearish momentum, any indicators present (RSI, MACD, volume, price levels, etc.), and suggestions for trading.";
-
-      // Display the user's message with the image
-      const newMessage = {
-        text: '', // No user text
-        image: image, // for preview purposes
+    // Create a new message object for the user's input
+    const newMessage = {
+        text: inputValue.trim() || '', // User text
         sender: 'user',
-      };
-      setMessages((prev) => [...prev, newMessage]);
+        image: image || null, // Include the uploaded image if it exists
+    };
 
-      // Setup the payload for the image
-      payload = {
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: defaultPrompt },
-              { type: "image_url", image_url: { url: image } },
-            ],
-          },
-        ],
-        store: true,
-      };
+    // Add the new message to the messages array
+    setMessages((prev) => [...prev, newMessage]);
 
-      // Reset input fields
-      setInputValue('');
-      handleRemoveImage(); // Clear the uploaded image after sending
-    } else if (inputValue.trim()) { // Handle text-only messages
-        // Display the user's text message
-        const newMessage = {
-            text: inputValue, // User text
-            sender: 'user',
-        };
-        setMessages((prev) => [...prev, newMessage]);
-        
-        // Setup the payload for the text message
+    // Prepare the messages array for the API call
+    const messagesForApi = [
+        ...messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: [{ type: "text", text: msg.text }]
+        })),
+        {
+            role: 'user',
+            content: [{ type: "text", text: inputValue.trim() }]
+        }
+    ];
+
+    // Check if an image is uploaded
+    if (image) {
+        const defaultPrompt = "Please analyze this price chart and provide insights on bullish or bearish momentum, any indicators present (RSI, MACD, volume, price levels, etc.), and suggestions for trading.";
+
+        // Setup the payload for the image
         payload = {
             model: "gpt-4o-mini",
             messages: [
                 {
                     role: "user",
-                    content: [{ type: "text", text: inputValue }],
+                    content: [
+                        { type: "text", text: defaultPrompt },
+                        { type: "image_url", image_url: { url: image } },
+                    ],
                 },
+                ...messagesForApi // Include previous messages
             ],
+            store: true,
+        };
+
+        // Reset input fields
+        setInputValue('');
+        handleRemoveImage(); // Clear the uploaded image after sending
+    } else if (inputValue.trim()) { // Handle text-only messages
+        // Setup the payload for the text message
+        payload = {
+            model: "gpt-4o-mini",
+            messages: messagesForApi, // Include previous messages
         };
 
         // Reset input fields
@@ -112,30 +167,30 @@ const ChatWindow = () => {
 
     // Make API call to your backend chat endpoint
     try {
-      const response = await axios.post(
-        `${API_ENDPOINT}api/chat/completions`,
-        payload,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+        const response = await axios.post(
+            `${API_ENDPOINT}api/chat/completions`,
+            payload,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
 
-      // Process the AI's response and format it for better readability
-      const aiResponse = response.data.choices[0].message.content;
-      const formattedResponse = aiResponse
-        .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
-        .replace(/\n/g, '<br />') // Replace new lines with <br />
-        .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
+        // Process the AI's response and format it for better readability
+        const aiResponse = response.data.choices[0].message.content;
+        const formattedResponse = aiResponse
+            .replace(/###/g, '<strong>') // Replace ### with <strong> for bold
+            .replace(/\n/g, '<br />') // Replace new lines with <br />
+            .replace(/<\/strong>/g, '</strong><br />'); // Ensure each section ends with a line break
 
-      const aiMessage = {
-        text: formattedResponse,
-        sender: 'ai',
-      };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+        const aiMessage = {
+            text: formattedResponse,
+            sender: 'ai',
+        };
+        setMessages((prevMessages) => [...prevMessages, aiMessage]);
     } catch (error) {
-      console.error('Error communicating with AI API:', error);
+        console.error('Error communicating with AI API:', error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -156,23 +211,15 @@ const ChatWindow = () => {
       </div>
 
       <div className="chat-window">
-        {
-          messages.length < 1 &&
-          <div className="prompt-carousel">
-              {prompts.map((prompt, index) => (
-                  <button key={index} className="prompt-button" onClick={() => handlePromptClick(prompt)}>
-                      {prompt}
-                  </button>
-              ))}
-          </div>
-        }
         <div className="chat-messages">
           {messages.map((msg, index) => (
             <div key={index} className={`chat-message ${msg.sender}`}>
               {msg.sender === 'ai' ? (
-                <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                <div className="ai-message-container" dangerouslySetInnerHTML={{ __html: msg.text }} />
               ) : (
-                <p>{msg.text}</p>
+                <div className="user-message-container">
+                  <p>{msg.text}</p>
+                </div>
               )}
               {msg.image && (
                 <img src={msg.image} alt="Uploaded chart" className="chat-image" />
@@ -181,6 +228,18 @@ const ChatWindow = () => {
           ))}
           {loading && <div className="loading-spinner"></div>}
         </div>
+
+        {/* Centered Prompt Carousel */}
+        {messages.length < 1 && (
+            <div className="prompt-carousel">
+                {prompts.map((prompt, index) => (
+                    <button key={index} className="prompt-button" onClick={() => handlePromptClick(prompt)}>
+                        {prompt}
+                    </button>
+                ))}
+            </div>
+        )}
+
         <div className="chat-input">
           <input
             type="text"
