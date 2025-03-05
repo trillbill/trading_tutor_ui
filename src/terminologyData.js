@@ -483,6 +483,7 @@ const terminologyData = [
     image: "https://example.com/elliot-wave-theory.png", // Replace with actual image URL
     chartType: "elliotWave",
     lineColor: "blue",
+    video: "https://www.youtube.com/embed/MrQS7hiwyAM?si=Akkd00NV-bEFUWsF",
     data: [],
   },
   {
