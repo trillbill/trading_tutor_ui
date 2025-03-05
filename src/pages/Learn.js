@@ -104,7 +104,18 @@ const Learn = () => {
                         {filteredTerms.map((term, index) => (
                             <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
                                 <h3>{term.name}</h3>
-                                <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                {term.video ? (
+                                    <iframe
+                                        width="100%"
+                                        height="300"
+                                        src={term.video}
+                                        title={term.name}
+                                        frameBorder="0"
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                )}
                                 <p>{term.value}</p>
                             </div>
                         ))}
