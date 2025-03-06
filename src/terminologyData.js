@@ -296,72 +296,72 @@ const terminologyData = [
   },
 
   // Moving Averages
-  {
-    name: "Golden Cross",
-    category: "Tools",
-    value:
-      "A bullish signal formed when a short-term moving average crosses above a longer-term moving average.",
-    image:
-      "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/golden-cross.png",
-    chartType: "goldenCross",
-    lineColor: "green",
-    data: [
-      { time: '2022-01-01', value: 44 },
-      { time: '2022-01-02', value: 39 },
-      { time: '2022-01-03', value: 42 },
-      { time: '2022-01-04', value: 45 },
-      { time: '2022-01-05', value: 52 },
-      { time: '2022-01-06', value: 62 },
-      { time: '2022-01-07', value: 61 },
-      { time: '2022-01-08', value: 61 },
-      { time: '2022-01-09', value: 58 },
-      { time: '2022-01-10', value: 59 },
-      { time: '2022-01-11', value: 58 }, // Short-term moving average crosses above long-term moving average
-      { time: '2022-01-12', value: 55 }, // Continuing upward trend
-      { time: '2022-01-13', value: 54 },
-      { time: '2022-01-14', value: 56 },
-      { time: '2022-01-15', value: 56 },
-      { time: '2022-01-16', value: 52 },
-      { time: '2022-01-17', value: 59 },
-      { time: '2022-01-18', value: 60 },
-      { time: '2022-01-19', value: 64 },
-      { time: '2022-01-20', value: 66 },
-      { time: '2022-01-21', value: 50 },
-      { time: '2022-01-22', value: 49 },
-      { time: '2022-01-23', value: 69 },
-      { time: '2022-01-24', value: 59 },
-      { time: '2022-01-25', value: 74 },
-      { time: '2022-01-26', value: 74 },
-      { time: '2022-01-27', value: 75 },
-      { time: '2022-01-28', value: 73 },
-      { time: '2022-01-29', value: 76 },
-      { time: '2022-01-30', value: 77 },
-      { time: '2022-01-31', value: 75 },
-      { time: '2022-02-01', value: 78 },
-    ],
-  },
-  {
-    name: "Death Cross",
-    category: "Tools",
-    value:
-      "A bearish signal formed when a short-term moving average crosses below a longer-term moving average.",
-    image:
-      "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/death-cross.png",
-    chartType: "deathCross",
-    lineColor: "red",
-    data: [
-      { time: '2022-01-01', value: 60 },
-      { time: '2022-01-02', value: 59 },
-      { time: '2022-01-03', value: 58 },
-      { time: '2022-01-04', value: 57 },
-      { time: '2022-01-05', value: 56 },
-      { time: '2022-01-06', value: 55 },
-      { time: '2022-01-07', value: 54 },
-      { time: '2022-01-08', value: 53 },
-      { time: '2022-01-09', value: 52 },
-      { time: '2022-01-10', value: 51 },
-    ],
-  },
+  // {
+  //   name: "Golden Cross",
+  //   category: "Tools",
+  //   value:
+  //     "A bullish signal formed when a short-term moving average crosses above a longer-term moving average.",
+  //   image:
+  //     "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/golden-cross.png",
+  //   chartType: "goldenCross",
+  //   lineColor: "green",
+  //   data: [
+  //     { time: '2022-01-01', value: 44 },
+  //     { time: '2022-01-02', value: 39 },
+  //     { time: '2022-01-03', value: 42 },
+  //     { time: '2022-01-04', value: 45 },
+  //     { time: '2022-01-05', value: 52 },
+  //     { time: '2022-01-06', value: 62 },
+  //     { time: '2022-01-07', value: 61 },
+  //     { time: '2022-01-08', value: 61 },
+  //     { time: '2022-01-09', value: 58 },
+  //     { time: '2022-01-10', value: 59 },
+  //     { time: '2022-01-11', value: 58 }, // Short-term moving average crosses above long-term moving average
+  //     { time: '2022-01-12', value: 55 }, // Continuing upward trend
+  //     { time: '2022-01-13', value: 54 },
+  //     { time: '2022-01-14', value: 56 },
+  //     { time: '2022-01-15', value: 56 },
+  //     { time: '2022-01-16', value: 52 },
+  //     { time: '2022-01-17', value: 59 },
+  //     { time: '2022-01-18', value: 60 },
+  //     { time: '2022-01-19', value: 64 },
+  //     { time: '2022-01-20', value: 66 },
+  //     { time: '2022-01-21', value: 50 },
+  //     { time: '2022-01-22', value: 49 },
+  //     { time: '2022-01-23', value: 69 },
+  //     { time: '2022-01-24', value: 59 },
+  //     { time: '2022-01-25', value: 74 },
+  //     { time: '2022-01-26', value: 74 },
+  //     { time: '2022-01-27', value: 75 },
+  //     { time: '2022-01-28', value: 73 },
+  //     { time: '2022-01-29', value: 76 },
+  //     { time: '2022-01-30', value: 77 },
+  //     { time: '2022-01-31', value: 75 },
+  //     { time: '2022-02-01', value: 78 },
+  //   ],
+  // },
+  // {
+  //   name: "Death Cross",
+  //   category: "Tools",
+  //   value:
+  //     "A bearish signal formed when a short-term moving average crosses below a longer-term moving average.",
+  //   image:
+  //     "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/death-cross.png",
+  //   chartType: "deathCross",
+  //   lineColor: "red",
+  //   data: [
+  //     { time: '2022-01-01', value: 60 },
+  //     { time: '2022-01-02', value: 59 },
+  //     { time: '2022-01-03', value: 58 },
+  //     { time: '2022-01-04', value: 57 },
+  //     { time: '2022-01-05', value: 56 },
+  //     { time: '2022-01-06', value: 55 },
+  //     { time: '2022-01-07', value: 54 },
+  //     { time: '2022-01-08', value: 53 },
+  //     { time: '2022-01-09', value: 52 },
+  //     { time: '2022-01-10', value: 51 },
+  //   ],
+  // },
   {
     name: "EMA (Exponential Moving Average)",
     category: "Tools",
@@ -463,6 +463,7 @@ const terminologyData = [
       "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/fibonacci-retracement.png",
     chartType: "fibonacciRetracement",
     lineColor: "green",
+    video: "https://www.youtube.com/embed/m5PzY2xaPIg?si=yaP43MeCGKiYQqJf",
     data: [
       { time: '2022-01-01', value: 50 },
       { time: '2022-01-02', value: 53 },
@@ -477,7 +478,7 @@ const terminologyData = [
     ],
   },
   {
-    name: "Elliot Wave Theory",
+    name: "Elliott Wave Theory",
     category: "Theory",
     value: "This theory posits that market prices move in predictable cycles, reflecting the emotions and behaviors of market participants. According to this theory, these cycles are influenced by the psychology of traders and investors, leading to patterns that can be identified and used for forecasting future price movements. The theory is based on the idea that market trends follow a specific structure of waves, which can be classified into impulse waves and corrective waves.",
     image: "https://example.com/elliot-wave-theory.png", // Replace with actual image URL
@@ -493,6 +494,7 @@ const terminologyData = [
       image: "https://example.com/momentum-trading.png", // Replace with actual image URL
       chartType: "momentumTrading",
       lineColor: "orange",
+      video: "https://www.youtube.com/embed/2_ZAxSfM6Ss?si=WKC5V_vVwsu2E6Fq",
       data: [],
   },
   {
@@ -500,8 +502,9 @@ const terminologyData = [
       category: "Theory",
       value: "This theory is a framework for understanding market trends and movements. It asserts that the stock market moves in trends, which can be identified and followed. The theory emphasizes the importance of confirming trends through various market indices. This theory also introduces concepts such as primary trends, secondary trends, and minor trends.",
       image: "https://example.com/dow-theory.png", // Replace with actual image URL
-      chartType: "dowTheory",
+      chartType: "dowTheory", 
       lineColor: "purple",
+      video: "https://www.youtube.com/embed/DenOjcBAX0M?si=GljKhiV8mXAp3Z-E",
       data: [],
   },
   {
@@ -511,42 +514,7 @@ const terminologyData = [
       image: "https://example.com/gann-theory.png", // Replace with actual image URL
       chartType: "gannTheory",
       lineColor: "brown",
-      data: [],
-  },
-  {
-      name: "Market Sentiment",
-      category: "Theory",
-      value: "A term which refers to the overall attitude of investors toward a particular security or financial market. It is often driven by news, economic indicators, and other external factors that influence how investors feel about the market's future direction. Understanding this can help traders make informed decisions, as it can lead to price movements that may not be justified by fundamental analysis. It can be measured through various indicators, including surveys, social media sentiment analysis, and market volatility.",
-      image: "https://example.com/market-sentiment.png", // Replace with actual image URL
-      chartType: "marketSentiment",
-      lineColor: "cyan",
-      data: [],
-  },
-  {
-      name: "Behavioral Finance",
-      category: "Theory",
-      value: "A field of study that examines the psychological factors that influence investor behavior and market outcomes. It challenges the traditional assumption that investors are rational and instead suggests that emotions, cognitive biases, and social influences can lead to irrational decision-making. This theory explores concepts such as overconfidence, loss aversion, and herd behavior, which can significantly impact market trends and individual investment choices.",
-      image: "https://example.com/behavioral-finance.png", // Replace with actual image URL
-      chartType: "behavioralFinance",
-      lineColor: "magenta",
-      data: [],
-  },
-  {
-      name: "Efficient Market Hypothesis (EMH)",
-      category: "Theory",
-      value: "The theory posits that asset prices reflect all available information, making it impossible for investors to consistently achieve higher returns than the overall market. According to this theory, any new information is quickly incorporated into stock prices, meaning that it is futile to try to outperform the market through stock selection or market timing. The theory has significant implications for investment strategies and portfolio management, suggesting that passive investing may be more effective than active trading.",
-      image: "https://example.com/efficient-market-hypothesis.png", // Replace with actual image URL
-      chartType: "efficientMarketHypothesis",
-      lineColor: "yellow",
-      data: [],
-  },
-  {
-      name: "Random Walk Theory",
-      category: "Theory",
-      value: "A theory which suggests that stock market prices evolve randomly and thus cannot be predicted. This theory implies that past price movements do not provide any information about future price movements, making it impossible to consistently outperform the market. The theory supports the idea that stock prices are influenced by a multitude of unpredictable factors, leading to a market that behaves in a seemingly random manner.",
-      image: "https://example.com/random-walk-theory.png", // Replace with actual image URL
-      chartType: "randomWalkTheory",
-      lineColor: "gray",
+      video: "https://www.youtube.com/embed/OpL-h9WPPF8?si=HTZAqUVElaobM6bl",
       data: [],
   },
 ];

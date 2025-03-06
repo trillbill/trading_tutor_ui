@@ -128,7 +128,18 @@ const Learn = () => {
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <span className="close" onClick={handleCloseModal}>&times;</span>
                         <h2>{selectedTerm.name}</h2>
-                        <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                        {selectedTerm.video ? (
+                                    <iframe
+                                        width="100%"
+                                        height="300"
+                                        src={selectedTerm.video}
+                                        title={selectedTerm.name}
+                                        frameBorder="0"
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                                )}
                         <p>{selectedTerm.value}</p>
                     </div>
                 </div>
