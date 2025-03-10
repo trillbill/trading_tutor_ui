@@ -28,6 +28,10 @@
     color: #dac6c6; /* Slightly off-white color for user text */
 }
 
+.chat-message.imageMessage {
+    text-align: right; /* Align user messages to the right */
+}
+
 .chat-message.ai {
     color: #ffffff; /* White color for AI responses */
 }

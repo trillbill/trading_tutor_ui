@@ -217,7 +217,7 @@ const ChatWindow = () => {
               {msg.sender === 'ai' ? (
                 <div className="ai-message-container" dangerouslySetInnerHTML={{ __html: msg.text }} />
               ) : (
-                <div className="user-message-container">
+                <div className={!msg.image && "user-message-container"}>
                   <p>{msg.text}</p>
                 </div>
               )}

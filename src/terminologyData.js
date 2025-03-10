@@ -363,7 +363,7 @@ const terminologyData = [
   //   ],
   // },
   {
-    name: "EMA (Exponential Moving Average)",
+    name: "Exponential Moving Average (EMA)",
     category: "Tools",
     value:
       "A type of moving average that places greater weight on recent prices.",
@@ -383,9 +383,11 @@ const terminologyData = [
       { time: '2022-01-09', value: 58 },
       { time: '2022-01-10', value: 59 },
     ],
+    video: "https://www.youtube.com/embed/LJjwXJqorew?si=qIs0CU0_UviZU8qy",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+EMA.png",
   },
   {
-    name: "SMA (Simple Moving Average)",
+    name: "Simple Moving Average (SMA)",
     category: "Tools",
     value:
       "The simplest form of a moving average, calculated by averaging prices over a given period.",
@@ -405,11 +407,13 @@ const terminologyData = [
       { time: '2022-01-09', value: 58 },
       { time: '2022-01-10', value: 59 },
     ],
+    video: "https://www.youtube.com/embed/qpVuCZZXoHY?si=OBTiGrgeIsPE_aKf",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+SMA.png",
   },
 
   // Momentum Indicators
   {
-    name: "RSI (Relative Strength Index)",
+    name: "Relative Strength Index (RSI)",
     category: "Tools",
     value:
       "A momentum oscillator that measures the speed and change of price movements.",
@@ -429,9 +433,12 @@ const terminologyData = [
       { time: '2022-01-09', value: 58 },
       { time: '2022-01-10', value: 59 },
     ],
+    video: "https://www.youtube.com/embed/DtKL5hjjYWo?si=TtrwvUp7Tdms-Vrn",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+RSI.png",
   },
   {
-    name: "MACD (Moving Average Convergence Divergence)",
+    name: "Moving Average Convergence Divergence (MACD)",
+    longName: true,
     category: "Tools",
     value:
       "A trend-following momentum indicator that shows the relationship between two moving averages.",
@@ -451,6 +458,8 @@ const terminologyData = [
       { time: '2022-01-09', value: 58 },
       { time: '2022-01-10', value: 59 },
     ],
+    video: "https://www.youtube.com/embed/1AAJVAqAbHE?si=7wla9zhzzNKFvLOD",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+MACD.png",
   },
 
   // Technical Analysis Tools
@@ -464,6 +473,7 @@ const terminologyData = [
     chartType: "fibonacciRetracement",
     lineColor: "green",
     video: "https://www.youtube.com/embed/m5PzY2xaPIg?si=yaP43MeCGKiYQqJf",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Fibonacci+Retracement.png",
     data: [
       { time: '2022-01-01', value: 50 },
       { time: '2022-01-02', value: 53 },
@@ -485,6 +495,7 @@ const terminologyData = [
     chartType: "elliotWave",
     lineColor: "blue",
     video: "https://www.youtube.com/embed/WGExLtdKdSg?si=Iz92Xo0xbSp2PXgB",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Elliott+Wave+Theory.png",
     data: [],
   },
   {
@@ -495,6 +506,7 @@ const terminologyData = [
       chartType: "momentumTrading",
       lineColor: "orange",
       video: "https://www.youtube.com/embed/2_ZAxSfM6Ss?si=WKC5V_vVwsu2E6Fq",
+      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Momentum+Trading.png",
       data: [],
   },
   {
@@ -505,6 +517,7 @@ const terminologyData = [
       chartType: "dowTheory", 
       lineColor: "purple",
       video: "https://www.youtube.com/embed/DenOjcBAX0M?si=GljKhiV8mXAp3Z-E",
+      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Dow+Theory.png",
       data: [],
   },
   {
@@ -515,6 +528,7 @@ const terminologyData = [
       chartType: "gannTheory",
       lineColor: "brown",
       video: "https://www.youtube.com/embed/OpL-h9WPPF8?si=HTZAqUVElaobM6bl",
+      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+GannTheory.png",
       data: [],
   },
 ];
