@@ -281,3 +281,43 @@
 .sign-up-button:hover {
     background-color: #6a6a6a; /* Darker shade on hover */
 }
+
+.video-thumbnail-container {
+    position: relative; /* Position relative for absolute positioning of the play button */
+    width: 100%; /* Full width */
+    height: 250px; /* Fixed height */
+    overflow: hidden; /* Hide overflow */
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.video-thumbnail {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    object-fit: cover; /* Cover the container */
+    border-radius: 8px; /* Match card corners */
+}
+
+.play-button {
+    position: absolute; /* Position absolute to overlay on the thumbnail */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust position to center */
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent red background */
+    border: none; /* No border */
+    border-radius: 50%; /* Circular button */
+    color: white; /* White icon color */
+    width: 60px; /* Set a fixed width */
+    height: 60px; /* Set a fixed height */
+    display: flex; /* Use flexbox for centering the icon */
+    justify-content: center; /* Center icon horizontally */
+    align-items: center; /* Center icon vertically */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Transition for hover effect */
+    font-size: 1.5rem; /* Adjust font size for the play icon */
+}
+
+.play-button:hover {
+    background: rgb(73, 73, 73); /* Darker red on hover */
+}

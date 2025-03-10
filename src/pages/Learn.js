@@ -22,8 +22,8 @@ const Learn = () => {
     // Define topics and their associated categories
     const topics = {
         Charts: { icon: chartsIcon, terms: ['Charts'] },
-        Tools: { icon: toolsIcon, terms: ['Tools'] },
         Theory: { icon: theoryIcon, terms: ['Theory'] }, // No concepts associated with Theory for now
+        Tools: { icon: toolsIcon, terms: ['Tools'] },
     };
 
     // Set the default selected topic to the first item in the topics array
@@ -103,16 +103,20 @@ const Learn = () => {
                     <div className="learn-list">
                         {filteredTerms.map((term, index) => (
                             <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                                <h3>{term.name}</h3>
+                                {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
                                 {term.video ? (
-                                    <iframe
-                                        width="100%"
-                                        height="300"
-                                        src={term.video}
-                                        title={term.name}
-                                        frameBorder="0"
-                                        allowFullScreen
-                                    ></iframe>
+                                    <div className="video-thumbnail-container">
+                                        <img
+                                            src={term.thumbnail}
+                                            alt={`${term.name} thumbnail`}
+                                            className="video-thumbnail"
+                                        />
+                                        <button
+                                            className="play-button"
+                                        >
+                                            <i className="fas fa-play"></i>
+                                        </button>
+                                    </div>
                                 ) : (
                                     <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
                                 )}
