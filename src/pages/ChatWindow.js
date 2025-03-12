@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import './ChatWindow.css';
-import heroImage from '../assets/man-trading4.png'; // Use the same image
+import heroImage from '../assets/tutor.png'; // Use the same image
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);

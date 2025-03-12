@@ -1,5 +1,4 @@
 .quiz-container {
-    max-width: 800px; /* Set the maximum width to match the card size */
     width: 100%; /* Allow it to be responsive */
     margin: 0 auto; /* Center the container horizontally */
     padding: 20px; /* Add some padding */
@@ -9,6 +8,7 @@
 }
 
 .quiz-question {
+    padding: 20px;
     margin-bottom: 20px;
 }
 
@@ -38,12 +38,16 @@
     word-wrap: break-word; /* Allow text to wrap */
 }
 
+.answer-button:hover {
+    background-color: rgb(185, 185, 185);
+}
+
 .answer-button.correct {
-    background-color: green; /* Green for correct answers */
+    background-color: #4b937b; /* Green for correct answers */
 }
 
 .answer-button.incorrect {
-    background-color: red; /* Red for incorrect answers */
+    background-color: #ca4a4a; /* Red for incorrect answers */
 }
 
 .quiz-result {
@@ -57,8 +61,8 @@
 }
 
 .reset-button {
-    background-color: white; /* White background for reset button */
-    color: black; /* Black text */
+    background-color: #4b937b; /* White background for reset button */
+    color: white; /* Black text */
     border: none; /* No border */
     padding: 10px 20px; /* Padding for the button */
     border-radius: 5px; /* Rounded corners */
@@ -68,8 +72,25 @@
     margin-top: 10px; /* Space above the button */
 }
 
-.reset-text {
-  padding-right: 5px;
+.reset-button:hover {
+    background-color: #3a7461; /* White background for reset button */
+}
+
+.new-topic-button {
+    background-color: #4a4a4a; /* White background for reset button */
+    color: white; /* Black text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer */
+    display: flex; /* Flexbox for icon and text */
+    align-items: center; /* Center items vertically */
+    margin-top: 10px; /* Space above the button */
+    margin-left: 10px;
+}
+
+.new-topic-button:hover {
+    background-color: #6a6a6a; /* White background for reset button */
 }
 
 .question-tracker {
@@ -113,3 +134,203 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.hero-section {
+    background-color: #f0f0f0; /* Light background for the hero section */
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Topic Grid Styles */
+.quiz-topic-grid {
+    display: flex; /* Use flexbox for centering */
+    justify-content: space-between; /* Space out the items evenly */
+    align-items: center; /* Center the items vertically */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    margin-bottom: 20px; /* Space below the grid */
+    margin-top: 20px;
+    padding: 0; /* Remove padding from the grid */
+    gap: 20px; /* Add space between topic cards */
+}
+
+.quiz-topic-card {
+    background-color: #4a4a4a; /* Dark background for contrast */
+    color: white;
+    height: 60vh;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column; /* Stack icon and text vertically */
+    align-items: center; /* Center items horizontally */
+    flex: 1; /* Allow cards to grow and fill space */
+    margin: auto; /* Add margin for spacing */
+    justify-content: center;
+}
+
+.quiz-topic-card:hover,
+.quiz-topic-card.selected { /* Highlight selected category */
+    background-color: #6a6a6a; /* Lighter on hover or when selected */
+}
+
+.quiz-topic-icon {
+    width: 100px; /* Set a fixed width for icons */
+    height: 100px; /* Set a fixed height for icons */
+    margin-bottom: 15px; /* Space between icon and text */
+}
+
+.quiz-topic-name {
+    font-weight: bold; /* Make the category name bold */
+    font-size: 24px; /* Increase font size for better legibility */
+    color: white; /* Ensure text is white */
+}
+
+.quiz-container {
+    padding: 20px;
+}
+
+/* Hero Section */
+.quiz-hero-section {
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    height: 200px; /* Set a fixed height for the hero section */
+    display: flex;
+    justify-content: left; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    position: relative; /* Position relative for any absolute children */
+    border-radius: 15px; /* Round the corners */
+    overflow: hidden; /* Ensure content does not overflow the rounded corners */
+}
+
+.quiz-hero-section h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Adjust font size for the title */
+}
+
+.quiz-hero-section p {
+    margin: 10px 0 0; /* Space above the paragraph */
+    font-size: 16px; /* Adjust font size for the paragraph */
+}
+
+.hero-overlay {
+    position: absolute; /* Position overlay absolutely */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    z-index: 1; /* Ensure overlay is above the image */
+}
+
+.quiz-hero-content {
+    margin-left: 1%;
+    position: relative; /* Position relative for z-index */
+    z-index: 2; /* Ensure content is above the overlay */
+    text-align: left; /* Left align the text */
+    padding: 20px; /* Add padding to prevent text from touching edges */
+    max-width: 90%; /* Limit width to prevent overflow */
+}
+
+.quiz-result-container {
+    background-color: #4a4a4a; /* Light background for the result container */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the container */
+    margin: 20px auto; /* Center the container */
+    max-width: 600px; /* Limit the width of the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.quiz-summary-container {
+    background-color: #6a6a6a; /* Light background for the result container */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the container */
+    margin: 20px auto; /* Center the container */
+    max-width: 600px; /* Limit the width of the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.quiz-result {
+    text-align: center; /* Center text inside the result */
+}
+
+.reset-button-container {
+    margin-top: 20px; /* Space above the reset button */
+}
+
+.new-topic-button {
+    background-color: #4b937b; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.new-topic-button:hover {
+    background-color: #3a7461; /* Darker shade on hover */
+}
+
+.star-rating {
+    font-size: 24px; /* Size of the stars */
+    margin: 10px 0; /* Space above and below the stars */
+}
+
+.star {
+    color: gold; /* Color of the stars */
+}
+
+.review-results-button {
+    padding: 10px;
+    background-color: #4a4a4a; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.review-results-button:hover {
+    background-color: #3b3b3b;
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .quiz-topic-grid {
+        height: 64vh;
+        flex-direction: column; /* Stack items vertically on mobile */
+        align-items: stretch; /* Stretch items to fill the container */
+    }
+
+    .quiz-topic-card {
+        width: 100%; /* Full width for cards on mobile */
+        margin-bottom: 5px; /* Space between cards */
+    }
+
+    .quiz-topic-icon {
+        margin-top: 15px;
+        width: 50px; /* Set a smaller width for icons on mobile */
+        height: 50px; /* Set a smaller height for icons on mobile */
+    }
+
+    .quiz-topic-name {
+        font-size: 14px; /* Reduce font size for better legibility on mobile */
+    }
+
+    h2 {
+        font-size: 19px;
+    }   
+
+    .quiz-hero-section {
+        background-size: cover; /* Cover the entire section */
+        background-position: center; /* Center the image */
+        height: 150px; /* Set a fixed height for the hero section */
+        display: flex;
+        justify-content: left; /* Center content horizontally */
+        align-items: center; /* Center content vertically */
+        position: relative; /* Position relative for any absolute children */
+        border-radius: 15px; /* Round the corners */
+        overflow: hidden; /* Ensure content does not overflow the rounded corners */
+    }
+}
+

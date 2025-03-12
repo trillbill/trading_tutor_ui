@@ -10,7 +10,18 @@ const TermModal = ({ isOpen, onClose, term }) => {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>{term.name}</h2>
-                <ChartDisplay chartType={term.chartType} data={term.data} />
+                {term.video ? (
+                    <iframe
+                        width="100%"
+                        height="300"
+                        src={term.video}
+                        title={term.name}
+                        frameBorder="0"
+                        allowFullScreen
+                    ></iframe>
+                ) : (
+                    <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                )}
                 <p>{term.value}</p>
             </div>
         </div>

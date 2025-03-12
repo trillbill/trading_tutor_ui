@@ -1,0 +1,63 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px; /* Limit the width of the modal */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    max-height: 80vh; /* Limit height of modal */
+}
+
+.incorrect-answers-list {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+.incorrect-answers-list li {
+    margin-bottom: 15px; /* Space between items */
+}
+
+.close-button {
+    background-color: #4b937b; /* Button color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.close-button:hover {
+    background-color: #3a7461; /* Darker shade on hover */
+}
+
+.review-questions-container {
+  background-color: #4a4a4a;
+  color: white;
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the container */
+  margin: 20px auto; /* Center the container */
+}
+
+.your-answer {
+  color: #ca4a4a;
+}
+
+.correct-answer {
+  color: #4b937b;
+}

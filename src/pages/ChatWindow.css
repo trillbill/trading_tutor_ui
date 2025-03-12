@@ -214,33 +214,12 @@
 }
 
 .title-content {
-    margin-left: 7%;
+    margin-left: 1%;
     position: relative; /* Position relative for z-index */
     z-index: 2; /* Ensure content is above the overlay */
     text-align: left; /* Left align the text */
     padding: 20px; /* Add padding to prevent text from touching edges */
     max-width: 90%; /* Limit width to prevent overflow */
-}
-
-.title-section h2 {
-    margin: 0; /* Remove default margin */
-    font-size: 2rem; /* Adjust font size as needed */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for better visibility */
-}
-
-.title-section p {
-    font-size: 1rem; /* Base font size for paragraphs */
-}
-
-/* Media Queries for Mobile Devices */
-@media (max-width: 768px) {
-    .title-section h2 {
-        font-size: 1.5rem; /* Reduce font size for mobile */
-    }
-
-    .title-section p {
-        font-size: 0.9rem; /* Reduce font size for paragraphs */
-    }
 }
 
 /* User Message Container */
@@ -265,4 +244,31 @@
     border-radius: 20px; /* Pill shape */
     padding: 10px 15px; /* Padding for spacing */
     align-self: flex-start; /* Align AI messages to the left */
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .title-section h2 {
+        font-size: 1.5rem; /* Reduce font size for mobile */
+    }
+
+    .title-section p {
+        font-size: 0.9rem; /* Reduce font size for paragraphs */
+    }
+
+    .title-section {
+        background-size: cover; /* Cover the entire section */
+        background-position: center; /* Center the image */
+        height: 150px; /* Set a fixed height for the hero section */
+        display: flex;
+        justify-content: left; /* Center content horizontally */
+        align-items: center; /* Center content vertically */
+        position: relative; /* Position relative for any absolute children */
+        border-radius: 15px; /* Round the corners */
+        overflow: hidden; /* Ensure content does not overflow the rounded corners */
+    }
+
+    .chat-window {
+        height: 64vh;
+    }
 }

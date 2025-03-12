@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaInfoCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ChartDisplay from '../components/ChartDisplay';
@@ -120,7 +121,7 @@ const Learn = () => {
                                 ) : (
                                     <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
                                 )}
-                                <p>{term.value}</p>
+                                <p>{term.shortDescription}</p>
                             </div>
                         ))}
                     </div>
@@ -133,17 +134,17 @@ const Learn = () => {
                         <span className="close" onClick={handleCloseModal}>&times;</span>
                         <h2>{selectedTerm.name}</h2>
                         {selectedTerm.video ? (
-                                    <iframe
-                                        width="100%"
-                                        height="300"
-                                        src={selectedTerm.video}
-                                        title={selectedTerm.name}
-                                        frameBorder="0"
-                                        allowFullScreen
-                                    ></iframe>
-                                ) : (
-                                    <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
-                                )}
+                            <iframe
+                                width="100%"
+                                height="300"
+                                src={selectedTerm.video}
+                                title={selectedTerm.name}
+                                frameBorder="0"
+                                allowFullScreen
+                            ></iframe>
+                        ) : (
+                            <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                        )}
                         <p>{selectedTerm.value}</p>
                     </div>
                 </div>
