@@ -9,17 +9,6 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
   const getLow  = d => (d.hasOwnProperty('low')  ? d.low  : d.value);
   const getClose = d => (d.hasOwnProperty('close') ? d.close : d.value);
 
-  // Helper functions to calculate moving averages
-  const calculateMovingAverage = (data, period) => {
-    const movingAverages = [];
-    for (let i = 0; i <= data.length - period; i++) {
-      const slice = data.slice(i, i + period);
-      const average = slice.reduce((sum, point) => sum + point.value, 0) / period;
-      movingAverages.push({ time: data[i + period - 1].time, value: average });
-    }
-    return movingAverages;
-  };
-
   useEffect(() => {
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
@@ -57,32 +46,6 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
     }));
     lineSeries.setData(lineData);
 
-    // Check if the chartType is for moving averages
-    if (chartType === 'goldenCross' || chartType === 'movingAverage') {
-      // Calculate and add moving averages
-      const shortTermPeriod = 5; // Example: 5-period moving average
-      const longTermPeriod = 20; // Example: 20-period moving average
-
-      const shortTermMA = calculateMovingAverage(lineData, shortTermPeriod);
-      const longTermMA = calculateMovingAverage(lineData, longTermPeriod);
-
-      // Short-term moving average series
-      const shortTermSeries = chart.addLineSeries({
-        color: 'blue', // Color for short-term moving average
-        lineWidth: 1,
-        lineStyle: LineStyle.Solid,
-      });
-      shortTermSeries.setData(shortTermMA);
-
-      // Long-term moving average series
-      const longTermSeries = chart.addLineSeries({
-        color: 'orange', // Color for long-term moving average
-        lineWidth: 1,
-        lineStyle: LineStyle.Solid,
-      });
-      longTermSeries.setData(longTermMA);
-    }
-
     // Fit the time scale.
     chart.timeScale().fitContent();
 
@@ -95,8 +58,11 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
         case 'resistance':
           addResistanceLine(chart, data);
           break;
-        case 'headAndShoulders':
-          addHeadAndShouldersPattern(chart, data);
+        case 'fallingWedge':
+          addFallingWedge(chart, data);
+          break;
+        case 'risingWedge':
+          addRisingWedge(chart, data);
           break;
         // Add more cases as needed.
         default:
@@ -138,67 +104,57 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
       ]);
     };
 
-    const addHeadAndShouldersPattern = (chart, data) => {
-      // Find local maxima using our getHigh() helper.
-      const peaks = [];
-      for (let i = 1; i < data.length - 1; i++) {
-        const prev = getHigh(data[i - 1]);
-        const curr = getHigh(data[i]);
-        const next = getHigh(data[i + 1]);
-        if (curr > prev && curr > next) {
-          peaks.push(data[i]);
-        }
-      }
+    const addFallingWedge = (chart, data) => {
+      const lows = data.map(d => getLow(d));
+      const highs = data.map(d => getHigh(d));
 
-      if (peaks.length < 3) {
-        console.warn('Not enough peaks to form a Head and Shoulders pattern.');
-        return;
-      }
-
-      // Assume first three peaks form the pattern.
-      const leftShoulder = peaks[0];
-      const head = peaks[1];
-      const rightShoulder = peaks[2];
-
-      // Draw a trendline connecting the peaks.
-      const trendlineSeries = chart.addLineSeries({
-        color: 'purple',
-        lineStyle: LineStyle.Solid,
-        lineWidth: 2,
-        crossHairMarkerVisible: false,
-        lastValueVisible: false,
-        priceLineVisible: false,
-      });
-      const trendlineData = [
-        { time: leftShoulder.time, value: getHigh(leftShoulder) },
-        { time: head.time, value: getHigh(head) },
-        { time: rightShoulder.time, value: getHigh(rightShoulder) },
-      ];
-      trendlineSeries.setData(trendlineData);
-
-      // Draw the neckline (using the lows between peaks).
-      const neckLow1 = Math.min(
-        ...data
-          .filter(d => d.time >= leftShoulder.time && d.time <= head.time)
-          .map(d => getLow(d))
-      );
-      const neckLow2 = Math.min(
-        ...data
-          .filter(d => d.time >= head.time && d.time <= rightShoulder.time)
-          .map(d => getLow(d))
-      );
-      const neckline = (neckLow1 + neckLow2) / 2;
-
-      const necklineSeries = chart.addLineSeries({
-        color: 'green',
+      // Create the lower trendline
+      const lowerTrendlineSeries = chart.addLineSeries({
+        color: 'blue',
         lineStyle: LineStyle.Dashed,
         lineWidth: 2,
-        priceLineVisible: false,
       });
-      necklineSeries.setData([
-        { time: leftShoulder.time, value: neckLow1 },
-        { time: head.time, value: neckline },
-        { time: rightShoulder.time, value: neckLow2 },
+      lowerTrendlineSeries.setData([
+        { time: data[2].time, value: data[2].value }, // Start with the lowest low
+        { time: data[data.length - 1].time, value: Math.min(...lows) }, // End with the lowest low
+      ]);
+
+      // Create the upper trendline
+      const upperTrendlineSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dashed,
+        lineWidth: 2,
+      });
+      upperTrendlineSeries.setData([
+        { time: data[1].time, value: Math.max(...highs) }, // Start with the highest high
+        { time: data[data.length - 1].time, value: Math.min(...highs) }, // End with the highest high
+      ]);
+    };
+
+    const addRisingWedge = (chart, data) => {
+      const lows = data.map(d => getLow(d));
+      const highs = data.map(d => getHigh(d));
+
+      // Create the upper trendline
+      const upperTrendlineSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dashed,
+        lineWidth: 2,
+      });
+      upperTrendlineSeries.setData([
+        { time: data[4].time, value: data[4].value }, // Start with the highest high
+        { time: data[data.length - 1].time, value: 60 }, // End with the highest high
+      ]);
+
+      // Create the lower trendline
+      const lowerTrendlineSeries = chart.addLineSeries({
+        color: 'blue',
+        lineStyle: LineStyle.Dashed,
+        lineWidth: 2,
+      });
+      lowerTrendlineSeries.setData([
+        { time: data[3].time, value: Math.min(...lows) }, // Start with the lowest low
+        { time: data[data.length - 1].time, value: 60 }, // End with the lowest low
       ]);
     };
 

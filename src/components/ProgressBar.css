@@ -1,0 +1,28 @@
+.progress-bar-container {
+    position: relative;
+    width: 100%; /* Full width */
+    max-width: 600px; /* Optional: Set a max width for better appearance */
+    margin: 0 auto; /* Center the progress bar */
+    height: 30px; /* Height of the progress bar */
+    background-color: #e0e0e0; /* Background color of the bar */
+    border-radius: 5px; /* Rounded corners */
+    overflow: hidden; /* Hide overflow */
+    margin-top: 30px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #4b917d; /* Color of the progress */
+    transition: width 0.3s ease; /* Smooth transition for width change */
+}
+
+.progress-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #000; /* Text color */
+    font-weight: bold; /* Bold text */
+    line-height: 30px; /* Center text vertically */
+    text-align: center; /* Center text */
+}

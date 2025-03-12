@@ -117,13 +117,18 @@
 }
 
 .term-card {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #4a4a4a;
     border-radius: 10px;
     padding: 15px;
+    cursor: pointer;
     text-align: center;
     color: white;
     width: 100%;
     margin: 10px 0;
+}
+
+.term-card:hover {
+    background-color: #6a6a6a;
 }
 
 .term-card img {
