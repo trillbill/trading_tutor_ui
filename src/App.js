@@ -20,7 +20,7 @@ const App = () => {
     return (
         <Router>
             <div className="app-layout">
-                <header className="header">
+                <header className="App-header">
                     <div className="header-column logo-column">
                         <LogoHeader />
                     </div>
@@ -56,7 +56,7 @@ const App = () => {
                         </nav>
                     </div>
                 )}
-                <div className="content">
+                <div className="content" onClick={() => setIsMenuOpen(false)}>
                     <Routes>
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/learn" element={<Learn />} />

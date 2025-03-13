@@ -18,7 +18,7 @@ const ReviewResultsModal = ({ isOpen, onClose, incorrectAnswers }) => {
                                   <p>{item.question}</p>
                                   {
                                     item.chartData &&
-                                    <div className="chart-container">
+                                    <div className="review-chart-container">
                                         <ChartDisplay 
                                             chartType={item.chartType}
                                             data={item.chartData}

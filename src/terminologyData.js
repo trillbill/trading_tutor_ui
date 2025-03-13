@@ -9,23 +9,23 @@ const terminologyData = [
     chartType: "support",
     lineColor: "green",
     data: [
-      { time: '2022-01-01', value: 52 },
-      { time: '2022-01-02', value: 53 },
-      { time: '2022-01-03', value: 52 },
-      { time: '2022-01-04', value: 47 },
-      { time: '2022-01-05', value: 51 },
-      { time: '2022-01-06', value: 52 },
-      { time: '2022-01-07', value: 50 },
-      { time: '2022-01-08', value: 49 },
-      { time: '2022-01-09', value: 47 },
-      { time: '2022-01-10', value: 49 },
-      { time: '2022-01-11', value: 51 },
-      { time: '2022-01-12', value: 50 },
-      { time: '2022-01-13', value: 52 },
-      { time: '2022-01-14', value: 51 },
-      { time: '2022-01-15', value: 49 },
-      { time: '2022-01-16', value: 47 },
-      { time: '2022-01-17', value: 49 },
+      { time: '2025-01-01', value: 52 },
+      { time: '2025-01-02', value: 53 },
+      { time: '2025-01-03', value: 52 },
+      { time: '2025-01-04', value: 47 },
+      { time: '2025-01-05', value: 51 },
+      { time: '2025-01-06', value: 52 },
+      { time: '2025-01-07', value: 50 },
+      { time: '2025-01-08', value: 49 },
+      { time: '2025-01-09', value: 47 },
+      { time: '2025-01-10', value: 49 },
+      { time: '2025-01-11', value: 51 },
+      { time: '2025-01-12', value: 50 },
+      { time: '2025-01-13', value: 52 },
+      { time: '2025-01-14', value: 51 },
+      { time: '2025-01-15', value: 49 },
+      { time: '2025-01-16', value: 47 },
+      { time: '2025-01-17', value: 49 },
     ],
   },
   {
@@ -37,20 +37,20 @@ const terminologyData = [
     chartType: "resistance",
     lineColor: "red",
     data: [
-      { time: '2022-01-01', value: 44 },
-      { time: '2022-01-02', value: 46 },
-      { time: '2022-01-03', value: 45 },
-      { time: '2022-01-04', value: 47 },
-      { time: '2022-01-05', value: 48 },
-      { time: '2022-01-06', value: 49 },
-      { time: '2022-01-07', value: 46 },
-      { time: '2022-01-08', value: 44 },
-      { time: '2022-01-09', value: 45 },
-      { time: '2022-01-10', value: 49 },
-      { time: '2022-01-11', value: 47 },
-      { time: '2022-01-12', value: 45 },
-      { time: '2022-01-13', value: 49 },
-      { time: '2022-01-14', value: 47 },
+      { time: '2025-01-01', value: 44 },
+      { time: '2025-01-02', value: 46 },
+      { time: '2025-01-03', value: 45 },
+      { time: '2025-01-04', value: 47 },
+      { time: '2025-01-05', value: 48 },
+      { time: '2025-01-06', value: 49 },
+      { time: '2025-01-07', value: 46 },
+      { time: '2025-01-08', value: 44 },
+      { time: '2025-01-09', value: 45 },
+      { time: '2025-01-10', value: 49 },
+      { time: '2025-01-11', value: 47 },
+      { time: '2025-01-12', value: 45 },
+      { time: '2025-01-13', value: 49 },
+      { time: '2025-01-14', value: 47 },
     ],
   },
 
@@ -65,23 +65,23 @@ const terminologyData = [
     lineColor: "red",
     data: [
       // Simulated values: left shoulder, head, then right shoulder.
-      { time: '2022-01-01', value: 40 },
-      { time: '2022-01-02', value: 41 }, // left shoulder peak ~41
-      { time: '2022-01-03', value: 47 },
-      { time: '2022-01-04', value: 44 }, // head peak ~48
-      { time: '2022-01-05', value: 40 },
-      { time: '2022-01-06', value: 42 }, // right shoulder ~42
-      { time: '2022-01-07', value: 46 },
-      { time: '2022-01-08', value: 55 },
-      { time: '2022-01-09', value: 49 },
-      { time: '2022-01-10', value: 47 },
-      { time: '2022-01-11', value: 42 },
-      { time: '2022-01-12', value: 40 },
-      { time: '2022-01-13', value: 42 },
-      { time: '2022-01-14', value: 44 },
-      { time: '2022-01-15', value: 46 },
-      { time: '2022-01-16', value: 43 },
-      { time: '2022-01-17', value: 39 },
+      { time: '2025-01-01', value: 40 },
+      { time: '2025-01-02', value: 41 }, // left shoulder peak ~41
+      { time: '2025-01-03', value: 47 },
+      { time: '2025-01-04', value: 44 }, // head peak ~48
+      { time: '2025-01-05', value: 40 },
+      { time: '2025-01-06', value: 42 }, // right shoulder ~42
+      { time: '2025-01-07', value: 46 },
+      { time: '2025-01-08', value: 55 },
+      { time: '2025-01-09', value: 49 },
+      { time: '2025-01-10', value: 47 },
+      { time: '2025-01-11', value: 42 },
+      { time: '2025-01-12', value: 40 },
+      { time: '2025-01-13', value: 42 },
+      { time: '2025-01-14', value: 44 },
+      { time: '2025-01-15', value: 46 },
+      { time: '2025-01-16', value: 43 },
+      { time: '2025-01-17', value: 39 },
     ],
   },
   {
@@ -94,24 +94,24 @@ const terminologyData = [
     lineColor: "green",
     data: [
       // Simulated values: left shoulder, head, then right shoulder.
-      { time: '2022-01-01', value: 54 },
-      { time: '2022-01-02', value: 49 }, // left shoulder peak ~41
-      { time: '2022-01-03', value: 46 },
-      { time: '2022-01-04', value: 45 }, // head peak ~48
-      { time: '2022-01-05', value: 48 },
-      { time: '2022-01-06', value: 53 }, // right shoulder ~42
-      { time: '2022-01-07', value: 51 },
-      { time: '2022-01-08', value: 46 },
-      { time: '2022-01-09', value: 41 },
-      { time: '2022-01-10', value: 38 },
-      { time: '2022-01-11', value: 42 },
-      { time: '2022-01-12', value: 45 },
-      { time: '2022-01-13', value: 53 },
-      { time: '2022-01-14', value: 51 },
-      { time: '2022-01-15', value: 48 },
-      { time: '2022-01-16', value: 44 },
-      { time: '2022-01-17', value: 49 },
-      { time: '2022-01-18', value: 51 },
+      { time: '2025-01-01', value: 54 },
+      { time: '2025-01-02', value: 49 }, // left shoulder peak ~41
+      { time: '2025-01-03', value: 46 },
+      { time: '2025-01-04', value: 45 }, // head peak ~48
+      { time: '2025-01-05', value: 48 },
+      { time: '2025-01-06', value: 53 }, // right shoulder ~42
+      { time: '2025-01-07', value: 51 },
+      { time: '2025-01-08', value: 46 },
+      { time: '2025-01-09', value: 41 },
+      { time: '2025-01-10', value: 38 },
+      { time: '2025-01-11', value: 42 },
+      { time: '2025-01-12', value: 45 },
+      { time: '2025-01-13', value: 53 },
+      { time: '2025-01-14', value: 51 },
+      { time: '2025-01-15', value: 48 },
+      { time: '2025-01-16', value: 44 },
+      { time: '2025-01-17', value: 49 },
+      { time: '2025-01-18', value: 51 },
     ],
   },
   {
@@ -123,30 +123,30 @@ const terminologyData = [
     chartType: "resistance",
     lineColor: "red",
     data: [
-      { time: '2022-01-01', value: 44 },
-      { time: '2022-01-02', value: 46 },
-      { time: '2022-01-03', value: 45 },
-      { time: '2022-01-04', value: 47 },
-      { time: '2022-01-05', value: 48 },
-      { time: '2022-01-06', value: 49 },
-      { time: '2022-01-07', value: 46 },
-      { time: '2022-01-08', value: 44 },
-      { time: '2022-01-09', value: 45 },
-      { time: '2022-01-10', value: 44 },
-      { time: '2022-01-11', value: 45 },
-      { time: '2022-01-12', value: 43 },
-      { time: '2022-01-13', value: 44 },
-      { time: '2022-01-14', value: 45 },
-      { time: '2022-01-15', value: 45 },
-      { time: '2022-01-16', value: 44 },
-      { time: '2022-01-17', value: 46 },
-      { time: '2022-01-18', value: 47 },
-      { time: '2022-01-19', value: 49 },
-      { time: '2022-01-20', value: 48 },
-      { time: '2022-01-21', value: 47 },
-      { time: '2022-01-22', value: 46 },
-      { time: '2022-01-23', value: 44 },
-      { time: '2022-01-24', value: 45 }, 
+      { time: '2025-01-01', value: 44 },
+      { time: '2025-01-02', value: 46 },
+      { time: '2025-01-03', value: 45 },
+      { time: '2025-01-04', value: 47 },
+      { time: '2025-01-05', value: 48 },
+      { time: '2025-01-06', value: 49 },
+      { time: '2025-01-07', value: 46 },
+      { time: '2025-01-08', value: 44 },
+      { time: '2025-01-09', value: 45 },
+      { time: '2025-01-10', value: 44 },
+      { time: '2025-01-11', value: 45 },
+      { time: '2025-01-12', value: 43 },
+      { time: '2025-01-13', value: 44 },
+      { time: '2025-01-14', value: 45 },
+      { time: '2025-01-15', value: 45 },
+      { time: '2025-01-16', value: 44 },
+      { time: '2025-01-17', value: 46 },
+      { time: '2025-01-18', value: 47 },
+      { time: '2025-01-19', value: 49 },
+      { time: '2025-01-20', value: 48 },
+      { time: '2025-01-21', value: 47 },
+      { time: '2025-01-22', value: 46 },
+      { time: '2025-01-23', value: 44 },
+      { time: '2025-01-24', value: 45 }, 
     ],
   },
   {
@@ -159,30 +159,30 @@ const terminologyData = [
     lineColor: "green",
     data: [
       // Two similar troughs with a hump between them.
-      { time: '2022-01-01', value: 49 },
-      { time: '2022-01-02', value: 48 },
-      { time: '2022-01-03', value: 48 },
-      { time: '2022-01-04', value: 47 },
-      { time: '2022-01-05', value: 48 },
-      { time: '2022-01-06', value: 49 },
-      { time: '2022-01-07', value: 48 },
-      { time: '2022-01-08', value: 46 },
-      { time: '2022-01-09', value: 45 },
-      { time: '2022-01-10', value: 47 },
-      { time: '2022-01-11', value: 45 },
-      { time: '2022-01-12', value: 43 },
-      { time: '2022-01-13', value: 44 },
-      { time: '2022-01-14', value: 45 },
-      { time: '2022-01-15', value: 47 },
-      { time: '2022-01-16', value: 45 },
-      { time: '2022-01-17', value: 46 },
-      { time: '2022-01-18', value: 47 },
-      { time: '2022-01-19', value: 48 },
-      { time: '2022-01-20', value: 43 },
-      { time: '2022-01-21', value: 44 },
-      { time: '2022-01-22', value: 46 },
-      { time: '2022-01-23', value: 47 },
-      { time: '2022-01-24', value: 48 },
+      { time: '2025-01-01', value: 49 },
+      { time: '2025-01-02', value: 48 },
+      { time: '2025-01-03', value: 48 },
+      { time: '2025-01-04', value: 47 },
+      { time: '2025-01-05', value: 48 },
+      { time: '2025-01-06', value: 49 },
+      { time: '2025-01-07', value: 48 },
+      { time: '2025-01-08', value: 46 },
+      { time: '2025-01-09', value: 45 },
+      { time: '2025-01-10', value: 47 },
+      { time: '2025-01-11', value: 45 },
+      { time: '2025-01-12', value: 43 },
+      { time: '2025-01-13', value: 44 },
+      { time: '2025-01-14', value: 45 },
+      { time: '2025-01-15', value: 47 },
+      { time: '2025-01-16', value: 45 },
+      { time: '2025-01-17', value: 46 },
+      { time: '2025-01-18', value: 47 },
+      { time: '2025-01-19', value: 48 },
+      { time: '2025-01-20', value: 43 },
+      { time: '2025-01-21', value: 44 },
+      { time: '2025-01-22', value: 46 },
+      { time: '2025-01-23', value: 47 },
+      { time: '2025-01-24', value: 48 },
     ],
   },
   {
@@ -194,23 +194,23 @@ const terminologyData = [
     chartType: "resistance",
     lineColor: "green",
     data: [
-      { time: '2022-01-01', value: 45 },  // starting support
-      { time: '2022-01-02', value: 50 },  // support rising
-      { time: '2022-01-03', value: 48 },
-      { time: '2022-01-04', value: 65 },
-      { time: '2022-01-05', value: 52 },  // test resistance (flat at 65)
-      { time: '2022-01-06', value: 60 },  // bounce off resistance
-      { time: '2022-01-07', value: 65 },  // support continues rising
-      { time: '2022-01-08', value: 55 },  // another test of resistance
-      { time: '2022-01-09', value: 57 },  // bounce, support rising further
-      { time: '2022-01-10', value: 65 },
-      { time: '2022-01-11', value: 58 },
-      { time: '2022-01-12', value: 59 },  // test resistance again
-      { time: '2022-01-13', value: 65 },  // support holds
-      { time: '2022-01-14', value: 61 },
-      { time: '2022-01-15', value: 63 },  // resistance is touched again
-      { time: '2022-01-16', value: 65 },  // support slightly below resistance
-      { time: '2022-01-17', value: 65 },
+      { time: '2025-01-01', value: 45 },  // starting support
+      { time: '2025-01-02', value: 50 },  // support rising
+      { time: '2025-01-03', value: 48 },
+      { time: '2025-01-04', value: 65 },
+      { time: '2025-01-05', value: 52 },  // test resistance (flat at 65)
+      { time: '2025-01-06', value: 60 },  // bounce off resistance
+      { time: '2025-01-07', value: 65 },  // support continues rising
+      { time: '2025-01-08', value: 55 },  // another test of resistance
+      { time: '2025-01-09', value: 57 },  // bounce, support rising further
+      { time: '2025-01-10', value: 65 },
+      { time: '2025-01-11', value: 58 },
+      { time: '2025-01-12', value: 59 },  // test resistance again
+      { time: '2025-01-13', value: 65 },  // support holds
+      { time: '2025-01-14', value: 61 },
+      { time: '2025-01-15', value: 63 },  // resistance is touched again
+      { time: '2025-01-16', value: 65 },  // support slightly below resistance
+      { time: '2025-01-17', value: 65 },
     ],
   },
   {
@@ -222,22 +222,22 @@ const terminologyData = [
     chartType: "support",
     lineColor: "red",
     data: [
-      { time: '2022-01-01', value: 68 },  // starting support
-      { time: '2022-01-02', value: 58 },  // support rising
-      { time: '2022-01-03', value: 60 },
-      { time: '2022-01-04', value: 50 },
-      { time: '2022-01-05', value: 55 },  // test resistance (flat at 65)
-      { time: '2022-01-06', value: 44 },  // bounce off resistance
-      { time: '2022-01-07', value: 60 },  // support continues rising
-      { time: '2022-01-08', value: 44 },  // another test of resistance
-      { time: '2022-01-09', value: 54 },  // bounce, support rising further
-      { time: '2022-01-10', value: 44 },
-      { time: '2022-01-11', value: 50 },
-      { time: '2022-01-12', value: 44 },  // test resistance again
-      { time: '2022-01-13', value: 48 },  // support holds
-      { time: '2022-01-14', value: 44 },
-      { time: '2022-01-15', value: 46 },  // resistance is touched again
-      { time: '2022-01-16', value: 44 }   // support slightly below resistance
+      { time: '2025-01-01', value: 68 },  // starting support
+      { time: '2025-01-02', value: 58 },  // support rising
+      { time: '2025-01-03', value: 60 },
+      { time: '2025-01-04', value: 50 },
+      { time: '2025-01-05', value: 55 },  // test resistance (flat at 65)
+      { time: '2025-01-06', value: 44 },  // bounce off resistance
+      { time: '2025-01-07', value: 60 },  // support continues rising
+      { time: '2025-01-08', value: 44 },  // another test of resistance
+      { time: '2025-01-09', value: 54 },  // bounce, support rising further
+      { time: '2025-01-10', value: 44 },
+      { time: '2025-01-11', value: 50 },
+      { time: '2025-01-12', value: 44 },  // test resistance again
+      { time: '2025-01-13', value: 48 },  // support holds
+      { time: '2025-01-14', value: 44 },
+      { time: '2025-01-15', value: 46 },  // resistance is touched again
+      { time: '2025-01-16', value: 44 }   // support slightly below resistance
     ],
   },
   {
@@ -250,18 +250,18 @@ const terminologyData = [
     lineColor: "red",
     data: [
       // Increasing values with a narrowing range.
-      { time: '2022-01-01', value: 65 },
-      { time: '2022-01-02', value: 58 },
-      { time: '2022-01-03', value: 62 },
-      { time: '2022-01-04', value: 40 },
-      { time: '2022-01-05', value: 50 },
-      { time: '2022-01-06', value: 45 },
-      { time: '2022-01-07', value: 53 },
-      { time: '2022-01-08', value: 50 },
-      { time: '2022-01-09', value: 56 },
-      { time: '2022-01-10', value: 55 },
-      { time: '2022-01-11', value: 59 },
-      { time: '2022-01-12', value: 45 },
+      { time: '2025-01-01', value: 65 },
+      { time: '2025-01-02', value: 58 },
+      { time: '2025-01-03', value: 62 },
+      { time: '2025-01-04', value: 40 },
+      { time: '2025-01-05', value: 50 },
+      { time: '2025-01-06', value: 45 },
+      { time: '2025-01-07', value: 53 },
+      { time: '2025-01-08', value: 50 },
+      { time: '2025-01-09', value: 56 },
+      { time: '2025-01-10', value: 55 },
+      { time: '2025-01-11', value: 59 },
+      { time: '2025-01-12', value: 45 },
     ],
   },
   {
@@ -274,16 +274,16 @@ const terminologyData = [
     lineColor: "green",
     data: [
       // Decreasing values with a narrowing range.
-      { time: '2022-01-01', value: 45 },
-      { time: '2022-01-02', value: 59 },
-      { time: '2022-01-03', value: 51 },
-      { time: '2022-01-04', value: 55 },
-      { time: '2022-01-05', value: 50 },
-      { time: '2022-01-06', value: 52 },
-      { time: '2022-01-07', value: 47.5 },
-      { time: '2022-01-08', value: 48 },
-      { time: '2022-01-09', value: 46 },
-      { time: '2022-01-10', value: 47 },
+      { time: '2025-01-01', value: 45 },
+      { time: '2025-01-02', value: 59 },
+      { time: '2025-01-03', value: 51 },
+      { time: '2025-01-04', value: 55 },
+      { time: '2025-01-05', value: 50 },
+      { time: '2025-01-06', value: 52 },
+      { time: '2025-01-07', value: 47.5 },
+      { time: '2025-01-08', value: 48 },
+      { time: '2025-01-09', value: 46 },
+      { time: '2025-01-10', value: 47 },
     ],
   },
   {

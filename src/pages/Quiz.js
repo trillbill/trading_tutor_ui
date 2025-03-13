@@ -247,16 +247,18 @@ const Quiz = () => {
                                             />
                                         </div>
                                     }
-                                    <div className="options">
-                                        {questions[currentQuestionIndex].options.map((option, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => handleAnswer(option)}
-                                                className={`answer-button ${userAnswer === option ? (option === questions[currentQuestionIndex].correctAnswer ? 'correct' : 'incorrect') : ''}`}
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
+                                    <div className="options-container">
+                                        <div className="options">
+                                            {questions[currentQuestionIndex].options.map((option, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => handleAnswer(option)}
+                                                    className={`answer-button ${userAnswer === option ? (option === questions[currentQuestionIndex].correctAnswer ? 'correct' : 'incorrect') : ''}`}
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                     <ProgressBar currentQuestionIndex={currentQuestionIndex} totalQuestions={questions.length}/>
                                     {renderResetQuizButtons()}

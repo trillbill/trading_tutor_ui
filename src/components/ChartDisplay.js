@@ -182,7 +182,6 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
   return (
     <div
       ref={chartContainerRef}
-      className="chart-container"
       style={{ width: '100%', height: '300px' }}
     />
   );

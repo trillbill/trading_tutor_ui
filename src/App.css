@@ -34,21 +34,6 @@ html, body {
   }
 }
 
-.App-header {
-    position: fixed; /* Make the header float */
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%; /* Ensure the header takes the full width */
-    background-color: black; /* Solid black background */
-    display: flex;
-    justify-content: space-between; /* Space between items */
-    align-items: center; /* Center items vertically */
-    padding: 10px 20px; /* Padding for the header */
-    z-index: 1000; /* Ensure it stays on top */
-    height: 65px; /* Set a fixed height for the header */
-}
-
 .App-link {
   color: #61dafb;
 }
@@ -72,11 +57,19 @@ html, body {
     flex-direction: column; /* Stack elements vertically */
 }
 
-.header {
+.App-header {
+    position: sticky; /* Make the header sticky */
+    top: 0; /* Stick to the top of the viewport */
+    left: 0;
+    right: 0;
+    width: 100%; /* Ensure the header takes the full width */
+    background-color: #000000; /* Background color for the header */
     display: flex; /* Use flexbox for header layout */
-    width: 100%; /* Full width */
-    background-color: #f8f9fa; /* Optional: Background color for the header */
+    justify-content: space-between; /* Space between items */
     align-items: center; /* Center items vertically */
+    padding: 10px 20px; /* Padding for the header */
+    z-index: 1000; /* Ensure it stays on top */
+    height: 65px; /* Set a fixed height for the header */
 }
 
 .header-column {
@@ -86,7 +79,6 @@ html, body {
 
 .logo-column {
     width: 25%; /* 25% width for the logo column */
-    padding: 10px 0 10px 20px; /* Padding for the logo */
 }
 
 .nav-column {
@@ -167,13 +159,13 @@ html, body {
 }
 
 .hamburger-menu {
-    position: absolute; /* Position it absolutely */
-    top: 60px; /* Adjust based on header height */
+    position: absolute; /* Position it relative to the header */
+    top: 65px; /* Position it directly below the header */
     right: 0; /* Align to the right */
     background-color: #717272; /* Background color for the menu */
     width: 100%; /* Full width */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow */
-    z-index: 1000; /* Ensure it appears above other content */
+    z-index: 999; /* Ensure it appears above other content */
 }
 
 .hamburger-menu .nav-options {

@@ -4,7 +4,7 @@
 }
 
 .chat-window {
-    height: 60vh; /* Set the height of the chat window to 80% of the viewport height */
+    height: 72vh; /* Set the height of the chat window to 80% of the viewport height */
     border-radius: 8px; /* Rounded corners */
     display: flex;
     flex-direction: column;
@@ -184,7 +184,7 @@
 .title-section {
     background-size: cover; /* Cover the entire section */
     background-position: center; /* Center the image */
-    height: 200px; /* Set a fixed height for the hero section */
+    height: 100px; /* Set a fixed height for the hero section */
     display: flex;
     justify-content: left; /* Center content horizontally */
     align-items: center; /* Center content vertically */
@@ -269,6 +269,6 @@
     }
 
     .chat-window {
-        height: 64vh;
+        height: 60vh;
     }
 }
