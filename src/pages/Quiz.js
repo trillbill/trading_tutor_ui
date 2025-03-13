@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import terminologyData from '../terminologyData';
+import ChartDisplay from '../components/ChartDisplay';
 import TermModal from '../components/TermModal'; // Import the modal component
 import ProgressBar from '../components/ProgressBar'; // Import the ProgressBar component
 import Confetti from 'react-confetti'; // Import the confetti library
@@ -42,15 +43,47 @@ const Quiz = () => {
         }
     }, [selectedTopic]);
 
+    const generateChartQuestions = (entries, questionTotal) => {
+        const removeSupportResistance = entries.filter(e => e.name !== 'Support' && e.name !== 'Resistance');
+        const selectedChartEntries = getRandomEntries(removeSupportResistance, questionTotal);
+        const options = selectedChartEntries.map(e => e.name);
+
+        const chartQuestions = selectedChartEntries.reduce((questions, entry) => {
+            const newQuestion = {
+                correctAnswer: entry.name,
+                options,
+                question: "Identify this chart pattern.",
+                chartData: entry.data,
+                lineColor: entry.lineColor,
+                chartType: entry.chartType,
+            };
+
+            questions.push(newQuestion);
+            return questions;
+        }, []);
+        return chartQuestions;
+    };
+
     const fetchQuestions = async () => {
         setLoading(true); // Set loading to true when fetching questions
         // Randomly select 8 entries from terminologyData based on selected topic
         const filteredEntries = terminologyData.filter(term => term.category === selectedTopic);
-        const selectedEntries = getRandomEntries(filteredEntries, 8);
+        const questionTotal = selectedTopic === 'Charts' ? 4 : 8;
+        const selectedEntries = getRandomEntries(filteredEntries, questionTotal);
         
         try {
             const response = await axios.post(`${API_ENDPOINT}api/quiz/generate-quiz`, selectedEntries);
-            setQuestions(response.data.questions); // Set questions from the response
+            let generatedQuestions = response.data.questions;
+            if (selectedTopic === 'Charts') {
+                const chartQuestions = generateChartQuestions(filteredEntries, questionTotal);
+                generatedQuestions = chartQuestions.reduce((questions, curr) => {
+                    const index = chartQuestions.indexOf(curr);
+                    questions.push(curr);
+                    questions.push(generatedQuestions[index]);
+                    return questions;
+                }, []);
+            }
+            setQuestions(generatedQuestions); // Set questions from the response
             setCurrentQuestionIndex(0); // Reset current question index
         } catch (error) {
             console.error('Error fetching questions:', error);
@@ -204,6 +237,16 @@ const Quiz = () => {
                             ) : (
                                 <div className="quiz-question">
                                     <h2>{questions[currentQuestionIndex].question}</h2>
+                                    {
+                                        questions[currentQuestionIndex].chartData &&
+                                        <div className="chart-container">
+                                            <ChartDisplay 
+                                                chartType={questions[currentQuestionIndex].chartType}
+                                                data={questions[currentQuestionIndex].chartData}
+                                                lineColor={questions[currentQuestionIndex].lineColor} 
+                                            />
+                                        </div>
+                                    }
                                     <div className="options">
                                         {questions[currentQuestionIndex].options.map((option, index) => (
                                             <button

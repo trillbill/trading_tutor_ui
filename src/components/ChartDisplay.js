@@ -163,7 +163,9 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
 
     // Handle chart resizing.
     const handleResize = () => {
-      chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+      if (chartContainerRef && chartContainerRef.current && chartContainerRef.current.clientWidth) {
+        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+      }
       chart.timeScale().fitContent();
       addCustomOverlays();
     };

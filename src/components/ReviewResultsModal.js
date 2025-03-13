@@ -1,6 +1,7 @@
 // trading_tutor_ui/src/components/ReviewResultsModal.js
 import React from 'react';
 import './ReviewResultsModal.css'; // Create a CSS file for styling
+import ChartDisplay from './ChartDisplay';
 
 const ReviewResultsModal = ({ isOpen, onClose, incorrectAnswers }) => {
     if (!isOpen) return null;
@@ -15,6 +16,16 @@ const ReviewResultsModal = ({ isOpen, onClose, incorrectAnswers }) => {
                             <li key={index}>
                                 <div className="review-questions-container">
                                   <p>{item.question}</p>
+                                  {
+                                    item.chartData &&
+                                    <div className="chart-container">
+                                        <ChartDisplay 
+                                            chartType={item.chartType}
+                                            data={item.chartData}
+                                            lineColor={item.lineColor} 
+                                        />
+                                    </div>
+                                  }
                                   <p className="your-answer"><strong>Your Answer:</strong> {item.userAnswer}</p>
                                   <p className="correct-answer"><strong>Correct Answer:</strong> {item.correctAnswer}</p>
                                 </div>
