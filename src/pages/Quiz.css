@@ -8,7 +8,8 @@
 }
 
 .quiz-question {
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin-bottom: 20px;
 }
 
@@ -19,9 +20,14 @@
 }
 
 .options {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.chart-options {
+    padding-top: 20px;
 }
 
 .answer-button {
@@ -57,7 +63,7 @@
 .reset-button-container {
   display: flex; /* Use flexbox */
   justify-content: center; /* Center horizontally */
-  margin-top: 20px; /* Optional: Space above the button */
+  margin-top: 10px; /* Optional: Space above the button */
 }
 
 .reset-button {
@@ -195,7 +201,7 @@
 .quiz-hero-section {
     background-size: cover; /* Cover the entire section */
     background-position: center; /* Center the image */
-    height: 200px; /* Set a fixed height for the hero section */
+    height: 100px; /* Set a fixed height for the hero section */
     display: flex;
     justify-content: left; /* Center content horizontally */
     align-items: center; /* Center content vertically */
@@ -253,10 +259,6 @@
 
 .quiz-result {
     text-align: center; /* Center text inside the result */
-}
-
-.reset-button-container {
-    margin-top: 20px; /* Space above the reset button */
 }
 
 .new-topic-button {
@@ -336,7 +338,7 @@
 
 .chart-container {
     margin: 0 auto; /* Center the container horizontally */
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     width: 300px;
 }
 
