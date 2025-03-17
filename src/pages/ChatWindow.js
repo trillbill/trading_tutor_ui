@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './ChatWindow.css';
 import heroImage from '../assets/tutor.png';
-import { FaPlus, FaArrowUp, FaTimes } from 'react-icons/fa'; // Import icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
@@ -261,7 +262,7 @@ const ChatWindow = () => {
           <div className="uploaded-image-preview">
             <img src={uploadedImage.data} alt="Upload preview" />
             <span>{uploadedImage.name}</span>
-            <button onClick={handleRemoveImage}><FaTimes /></button>
+            <button onClick={handleRemoveImage}><FontAwesomeIcon icon={faTimes} /></button>
           </div>
         )}
 
@@ -287,7 +288,7 @@ const ChatWindow = () => {
               className="upload-button" 
               title="Upload image"
             >
-              <FaPlus />
+              <FontAwesomeIcon icon={faPlus} />
             </button>
             <button 
               onClick={handleSendMessage} 
@@ -295,7 +296,7 @@ const ChatWindow = () => {
               disabled={loading || (!inputValue.trim() && !uploadedImage)}
               title="Send message"
             >
-              <FaArrowUp />
+              <FontAwesomeIcon icon={faArrowUp} />
             </button>
           </div>
         </div>
