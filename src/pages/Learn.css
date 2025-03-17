@@ -48,7 +48,7 @@
     border-radius: 8px;
     text-align: center;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.1s;
     display: flex;
     flex-direction: column; /* Stack icon and text vertically */
     align-items: center; /* Center items horizontally */
@@ -62,8 +62,8 @@
 }
 
 .topic-icon {
-    width: 100px; /* Set a fixed width for icons */
-    height: 100px; /* Set a fixed height for icons */
+    width: 60px; /* Set a fixed width for icons */
+    height: 60px; /* Set a fixed height for icons */
     margin-bottom: 15px; /* Space between icon and text */
 }
 
@@ -95,7 +95,7 @@
     border-radius: 5px;
     margin-left: 10px;
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.1s;
 }
 
 .filter-select {
@@ -125,6 +125,7 @@
     color: white;
     width: 100%;
     margin: 10px 0;
+    transition: background-color 0.1s;
 }
 
 .term-card:hover {
@@ -151,11 +152,11 @@
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #302e2e;
     border-radius: 10px;
     padding: 20px;
     text-align: center;
-    color: black;
+    color: white;
     max-width: 600px;
     width: 90%;
 }
@@ -166,16 +167,16 @@
 }
 
 .close {
-    color: #aaa;
+    color: white;
     float: right;
-    font-size: 28px;
+    font-size: 36px;
     font-weight: bold;
     cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    opacity: 50%;
     text-decoration: none;
     cursor: pointer;
 }
@@ -274,14 +275,14 @@
     border: none; /* Remove border */
     border-radius: 5px; /* Rounded corners */
     cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Transition for hover effect */
+    transition: background-color 0.1s; /* Transition for hover effect */
 }
 
 .sign-up-button:hover {
     background-color: #6a6a6a; /* Darker shade on hover */
 }
 
-.video-thumbnail-container {
+.thumbnail-container {
     position: relative; /* Position relative for absolute positioning of the play button */
     width: 100%; /* Full width */
     height: 250px; /* Fixed height */
@@ -291,32 +292,23 @@
     align-items: center; /* Center vertically */
 }
 
-.video-thumbnail {
+.thumbnail {
     width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    height: 250px; /* Full height */
     object-fit: cover; /* Cover the container */
     border-radius: 8px; /* Match card corners */
 }
 
 .play-button {
-    position: absolute; /* Position absolute to overlay on the thumbnail */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust position to center */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent red background */
-    border: none; /* No border */
-    border-radius: 50%; /* Circular button */
-    color: white; /* White icon color */
-    width: 60px; /* Set a fixed width */
-    height: 60px; /* Set a fixed height */
-    display: flex; /* Use flexbox for centering the icon */
-    justify-content: center; /* Center icon horizontally */
-    align-items: center; /* Center icon vertically */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background 0.3s; /* Transition for hover effect */
-    font-size: 1.5rem; /* Adjust font size for the play icon */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 40px;
+    opacity: 0.8;
 }
 
 .play-button:hover {
-    background: rgb(73, 73, 73); /* Darker red on hover */
+    opacity: 0.5;
 }

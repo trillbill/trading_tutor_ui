@@ -9,6 +9,11 @@ import ChatWindow from './pages/ChatWindow';
 import Login from './pages/Login';
 import Account from './pages/Account';
 
+import accountIcon from './assets/account-icon.png';
+import learnIcon from './assets/learn-icon.png';
+import quizIcon from './assets/quiz-icon.png';
+import chatIcon from './assets/chat-icon.png';
+
 const App = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -22,7 +27,11 @@ const App = () => {
             <div className="app-layout">
                 <header className="App-header">
                     <div className="header-column logo-column">
-                        <LogoHeader />
+                        <nav>
+                            <Link to="/">                 
+                                <LogoHeader />
+                            </Link>
+                        </nav>
                     </div>
                     <div className="header-column nav-column">
                         <nav className="nav-options">
@@ -33,7 +42,7 @@ const App = () => {
                     </div>
                     <div className="header-column login-column">
                         {isAuthenticated ? (
-                            <Link to="/account" className="nav-item">Account</Link>
+                            <Link to="/account"><img src={accountIcon} className="account-icon"></img></Link>
                         ) : (
                             <Link to="/login" className="nav-item">Login</Link>
                         )}
@@ -45,13 +54,13 @@ const App = () => {
                 {isMenuOpen && (
                     <div className="hamburger-menu">
                         <nav className="nav-options">
-                            <Link to="/" className="nav-item" onClick={toggleMenu}>Learn</Link>
-                            <Link to="/quiz" className="nav-item" onClick={toggleMenu}>Quiz</Link>
-                            <Link to="/chartanalysis" className="nav-item" onClick={toggleMenu}>Chat</Link>
+                            <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon"></img>Learn</Link>
+                            <Link to="/quiz" className="hamburger-item" onClick={toggleMenu}><img src={quizIcon} className="hamburger-icon"></img>Quiz</Link>
+                            <Link to="/chartanalysis" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon"></img>Chat</Link>
                             {isAuthenticated ? (
-                                <Link to="/account" className="nav-item" onClick={toggleMenu}>Account</Link>
+                                <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon"></img>Account</Link>
                             ) : (
-                                <Link to="/login" className="nav-item" onClick={toggleMenu}>Login</Link>
+                                <Link to="/login" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon"></img>Login</Link>
                             )}
                         </nav>
                     </div>

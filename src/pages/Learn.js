@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { FaInfoCircle } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { FaPlay } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';
@@ -15,7 +14,16 @@ import theoryIcon from '../assets/theory-icon.png'; // Adjust the path as necess
 const Learn = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTerm, setSelectedTerm] = useState(null);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Preload the hero image
+        const img = new Image();
+        img.src = heroImage; // Set the source to the hero image
+        img.onload = () => setImageLoaded(true); // Set imageLoaded to true when the image is loaded
+
+    }, []);
 
     // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('userId') !== null;
@@ -53,7 +61,7 @@ const Learn = () => {
 
     return (
         <div className="learn-container">
-            <div className="hero-section" style={{ backgroundImage: `url(${heroImage})` }}>
+            <div className="hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
                 <div className="overlay"></div>
                 <div className="hero-content"> {/* New div for content */}
                     <h2>Welcome to Trading Tutor</h2>
@@ -106,17 +114,13 @@ const Learn = () => {
                             <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
                                 {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
                                 {term.video ? (
-                                    <div className="video-thumbnail-container">
+                                    <div className="thumbnail-container">
                                         <img
                                             src={term.thumbnail}
                                             alt={`${term.name} thumbnail`}
-                                            className="video-thumbnail"
+                                            className="thumbnail"
                                         />
-                                        <button
-                                            className="play-button"
-                                        >
-                                            <i className="fas fa-play"></i>
-                                        </button>
+                                        <div className="play-button"><FaPlay /></div>
                                     </div>
                                 ) : (
                                     <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
