@@ -134,7 +134,7 @@
 
 .term-card img {
     max-width: 100%;
-    height: 250px;
+    height: auto;
     border-radius: 5px;
 }
 
@@ -159,6 +159,8 @@
     color: white;
     max-width: 600px;
     width: 90%;
+    position: relative; /* Add relative positioning */
+    padding-top: 40px; /* Add padding at top for close button */
 }
 
 .modal-image {
@@ -169,13 +171,21 @@
 .close {
     color: white;
     float: right;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    background: transparent; /* Remove background */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    margin: 10px 10px 10px 10px; /* Add margin to separate from content */
+    line-height: 1; /* Adjust line height */
+    position: absolute; /* Position absolutely */
+    top: 10px; /* Position from top */
+    right: 15px; /* Position from right */
+    z-index: 10; /* Ensure it's above other content */
 }
 
-.close:hover,
-.close:focus {
+.close:hover {
     opacity: 50%;
     text-decoration: none;
     cursor: pointer;
@@ -194,6 +204,17 @@
 
     .topic-name {
         font-size: 12px; /* Reduce font size for better legibility on mobile */
+    }
+
+    .close {
+        font-size: 28px; /* Smaller font size on mobile */
+        top: 8px; /* Adjust position */
+        right: 12px; /* Adjust position */
+    }
+    
+    .modal-content {
+        padding: 15px; /* Smaller padding on mobile */
+        padding-top: 35px; /* Maintain space for close button */
     }
 }
 

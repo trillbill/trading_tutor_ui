@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay, FaTimes } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';
@@ -135,7 +135,9 @@ const Learn = () => {
             {selectedTerm && (
                 <div className="modal" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <span className="close" onClick={handleCloseModal}>&times;</span>
+                        <button className="close" onClick={handleCloseModal}>
+                            <FaTimes />
+                        </button>
                         <h2>{selectedTerm.name}</h2>
                         {selectedTerm.video ? (
                             <iframe

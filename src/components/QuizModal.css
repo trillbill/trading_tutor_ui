@@ -1,4 +1,5 @@
 .quiz-modal-overlay {
+    padding: 10px;
     position: fixed;
     top: 0;
     left: 0;
@@ -14,30 +15,27 @@
 .quiz-modal {
     background-color: #302e2e;
     border-radius: 10px;
-    width: 90%;
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .close-modal-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 10;
+  color: white;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.close-modal-button:hover {
-    opacity: 50%;
+.close-modal-button:hover,
+.close-modal-button:focus {
+  opacity: 50%;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .video-container {
@@ -45,6 +43,7 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+    margin-top: 30px;
 }
 
 .video-player {

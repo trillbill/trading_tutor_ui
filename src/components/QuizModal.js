@@ -140,7 +140,7 @@ const QuizModal = ({
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
-                            height="450"
+                            height="300"
                         ></iframe>
                         <button 
                             className="start-quiz-button"
