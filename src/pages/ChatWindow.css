@@ -4,13 +4,14 @@
 }
 
 .chat-window {
-    height: 72vh; /* Set the height of the chat window to 80% of the viewport height */
-    border-radius: 8px; /* Rounded corners */
+    flex: 1;
+    height: 72vh;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    background-color: rgba(134, 123, 123, 0.495); /* Background color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    margin: 20px auto 0; /* Center the chat window */
+    background-color: rgba(134, 123, 123, 0.495);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
 .chat-messages {
@@ -21,10 +22,11 @@
 
 .chat-message {
     margin-bottom: 10px; /* Space between messages */
+    display: flex; /* Use flexbox for alignment */
 }
 
 .chat-message.user {
-    text-align: right; /* Align user messages to the right */
+    justify-content: flex-end; /* Align user messages to the right */
     color: #dac6c6; /* Slightly off-white color for user text */
 }
 
@@ -33,6 +35,7 @@
 }
 
 .chat-message.ai {
+    justify-content: flex-start; /* Align AI messages to the left */
     color: #ffffff; /* White color for AI responses */
 }
 
@@ -40,53 +43,114 @@
     max-width: 100%; /* Responsive image */
     max-height: 200px; /* Limit height of images */
     border-radius: 5px; /* Rounded corners for images */
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
 
+.chat-image-w-text {
+    max-width: 100%; /* Responsive image */
+    max-height: 200px; /* Limit height of images */
+    border-radius: 5px; /* Rounded corners for images */
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+/* Chat input container */
 .chat-input {
-    display: flex; /* Flexbox for input area */
-    padding: 10px; /* Padding for input area */
-    border-top: 1px solid #ccc; /* Top border for input area */
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    position: relative;
 }
 
+/* Text input field */
 .chat-input input[type="text"] {
-    flex: 1; /* Allow the text input to grow */
-    padding: 10px; /* Padding for text input */
-    border: 1px solid #ccc; /* Border for text input */
-    border-radius: 5px; /* Rounded corners */
+    flex: 1;
+    padding: 12px;
+    padding-right: 100px; /* Space for the buttons */
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
 }
 
+/* Button container */
+.input-buttons {
+    position: absolute;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Upload button */
 .upload-button {
-    margin-left: 10px; /* Space between text input and button */
-    padding: 10px 15px; /* Padding for button */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: white; /* Button color */
-    color: black; /* Button text color */
-    cursor: pointer; /* Pointer cursor on hover */
-    display: flex; /* Flexbox for icon and text */
-    align-items: center; /* Center items vertically */
-}
-
-.upload-button i {
-    margin-right: 5px; /* Space between icon and text */
+    background-color: transparent;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.2s;
 }
 
 .upload-button:hover {
-    background-color: rgba(200, 200, 200, 0.5); /* Change color on hover */
+    background-color: rgba(75, 147, 123, 0.1);
 }
 
+/* Send button */
 .send-button {
-    margin-left: 10px; /* Space between file input and button */
-    padding: 10px 15px; /* Padding for button */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: white; /* Button color */
-    color: black; /* Button text color */
-    cursor: pointer; /* Pointer cursor on hover */
+    background-color: transparent;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.2s;
 }
 
 .send-button:hover {
-    background-color: rgba(200, 200, 200, 0.5); /* Change color on hover */
+    background-color: rgba(75, 147, 123, 0.1);
+}
+
+.send-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Uploaded image preview */
+.uploaded-image-preview {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: rgba(75, 147, 123, 0.1);
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.uploaded-image-preview img {
+    max-height: 40px;
+    max-width: 40px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.uploaded-image-preview button {
+    background-color: transparent;
+    color: #ca4a4a;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 5px;
 }
 
 /* Add styles for the paperclip icon */
@@ -149,7 +213,7 @@
     padding: 10px 15px; /* Padding for the button */
     margin: 5px; /* Space between buttons */
     cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Transition for hover effect */
+    transition: background-color 0.1s; /* Transition for hover effect */
 }
 
 .prompt-button:hover {
@@ -182,15 +246,15 @@
 
 /* Hero Section */
 .title-section {
-    background-size: cover; /* Cover the entire section */
-    background-position: center; /* Center the image */
-    height: 100px; /* Set a fixed height for the hero section */
+    background-size: cover;
+    background-position: center;
     display: flex;
-    justify-content: left; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-    position: relative; /* Position relative for any absolute children */
-    border-radius: 15px; /* Round the corners */
-    overflow: hidden; /* Ensure content does not overflow the rounded corners */
+    justify-content: left;
+    align-items: center;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 0;
 }
 
 .title-section h2 {
@@ -270,5 +334,121 @@
 
     .chat-window {
         height: 60vh;
+    }
+}
+
+/* Two-column layout container */
+.chat-layout {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Main chat window container - 75% width */
+.chat-window {
+    flex: 3; /* Takes 75% of the available space */
+    height: 72vh;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(134, 123, 123, 0.495);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart upload section - 25% width */
+.chart-upload-section {
+    flex: 1; /* Takes 25% of the available space */
+    height: 72vh;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(134, 123, 123, 0.495);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.chart-upload-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.chart-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.chart-upload-button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.chart-upload-button:hover {
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.chart-upload-button i {
+    margin-right: 5px;
+}
+
+.uploaded-chart-container {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.uploaded-chart-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.chart-analysis {
+    background-color: #4a4a4a;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+    color: white;
+}
+
+.remove-chart-button {
+    background-color: #ca4a4a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .chat-layout {
+        flex-direction: column;
+    }
+    
+    .chat-window, .chart-upload-section {
+        flex: none;
+        width: 100%;
+    }
+    
+    .chart-upload-section {
+        height: auto;
+        min-height: 300px;
+        margin-top: 20px;
     }
 }

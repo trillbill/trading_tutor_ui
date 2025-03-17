@@ -93,17 +93,17 @@ html, body {
 
 .nav-item {
     color: white; /* Text color */
-    font-weight: bold; /* Bold text */
     margin: 0 20px; /* Space between nav items */
     text-decoration: none; /* Remove underline from links */
-    padding: 10px 15px; /* Padding for the pill effect */
-    border-radius: 20px; /* Rounded corners for pill effect */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    padding: 5px 15px; /* Padding for the pill effect */
+    border-radius: 5px; /* Rounded corners for pill effect */
+    transition: background-color 0.1s; /* Smooth transition for hover effect */
 }
 
 .nav-item:hover {
-    background-color: lightgrey; /* Light grey background on hover */
-    color: black; /* Change text color on hover for contrast */
+    opacity: 90%;
+    background-color: rgb(67, 67, 67); /* Light grey background on hover */
+    color: white; /* Change text color on hover for contrast */
 }
 
 .login-column {
@@ -120,7 +120,7 @@ html, body {
     padding: 10px 15px; /* Padding for the pill effect */
     border-radius: 20px; /* Rounded corners for pill effect */
     cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    transition: background-color 0.1s; /* Smooth transition for hover effect */
 }
 
 .login-button:hover {
@@ -162,7 +162,7 @@ html, body {
     position: absolute; /* Position it relative to the header */
     top: 65px; /* Position it directly below the header */
     right: 0; /* Align to the right */
-    background-color: #717272; /* Background color for the menu */
+    background-color: #424242; /* Background color for the menu */
     width: 100%; /* Full width */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow */
     z-index: 999; /* Ensure it appears above other content */
@@ -174,10 +174,29 @@ html, body {
     padding: 10px; /* Padding for the menu */
 }
 
-.hamburger-menu .nav-item {
-    margin: 10px 0; /* Space between items */
+.hamburger-item {
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline from links */
+    padding: 12px 20px; /* Consistent padding */
+    margin: 5px 0; /* Space between items */
     width: 100%; /* Full width for each item */
-    text-align: left; /* Align text to the left */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    font-size: 18px; /* Consistent font size */
+    transition: background-color 0.2s; /* Smooth transition for hover effect */
+}
+
+.hamburger-item:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle highlight on hover */
+    opacity: 1; /* Keep full opacity */
+}
+
+.hamburger-icon {
+    height: 20px; /* Consistent icon size */
+    width: 20px; /* Ensure square proportions */
+    margin-right: 10px; /* Space between icon and text */
+    display: inline-block; /* Treat as inline block */
+    vertical-align: middle; /* Align vertically */
 }
 
 /* Overall container styles */
@@ -215,7 +234,7 @@ html, body {
   padding: 10px 15px;
   border: 1px solid #333;
   border-radius: 5px;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.1s;
 }
 
 .nav-link:hover,
@@ -228,4 +247,13 @@ html, body {
 /* Main content area styling */
 .app-content {
   margin: 20px;
+}
+
+.account-icon {
+  margin-top: 8px;
+  height: 25px;
+}
+
+.account-icon:hover {
+  opacity: 60%;
 }
