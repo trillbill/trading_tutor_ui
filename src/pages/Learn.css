@@ -149,6 +149,8 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 15px; /* Add padding to ensure modal doesn't touch screen edges */
+    overflow-y: auto; /* Allow scrolling on the modal overlay */
 }
 
 .modal-content {
@@ -159,13 +161,18 @@
     color: white;
     max-width: 600px;
     width: 90%;
-    position: relative; /* Add relative positioning */
-    padding-top: 40px; /* Add padding at top for close button */
+    position: relative; /* For absolute positioning of close button */
+    max-height: 85vh; /* Limit height to 85% of viewport height */
+    overflow-y: auto; /* Make modal content scrollable */
+    padding-top: 50px; /* Extra space at top for close button */
+    margin: auto; /* Center the modal in the viewport */
 }
 
 .modal-image {
     max-width: 100%;
     height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 .close {
@@ -207,7 +214,7 @@
     }
 
     .close {
-        font-size: 28px; /* Smaller font size on mobile */
+        font-size: 24px; /* Smaller font size on mobile */
         top: 8px; /* Adjust position */
         right: 12px; /* Adjust position */
     }

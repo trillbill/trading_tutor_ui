@@ -72,6 +72,7 @@
 .quiz-question {
     text-align: center;
     padding: 10px;
+    padding-top: 30px;
 }
 
 .quiz-question h2 {
@@ -338,4 +339,19 @@
 
 .quiz-button.primary:hover {
     background-color: #3a7260;
+}
+
+/* Status message styling */
+.saving-status {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.saving-status.success {
+    color: #4CAF50;
+}
+
+.saving-status.error {
+    color: #F44336;
 }

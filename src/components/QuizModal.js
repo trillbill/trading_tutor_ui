@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ChartDisplay from './ChartDisplay';
 import ProgressBar from './ProgressBar';
 import Confetti from 'react-confetti';
 import { FaTimes } from 'react-icons/fa';
 import './QuizModal.css';
+import axios from 'axios';
 
 const QuizModal = ({ 
     isOpen, 
@@ -25,6 +26,26 @@ const QuizModal = ({
     const [showVideo, setShowVideo] = useState(quizMode === 'video');
     const [internalLoading, setInternalLoading] = useState(loading);
     const [showReview, setShowReview] = useState(false);
+    const [resultsSaved, setResultsSaved] = useState(false);
+    const [savingResults, setSavingResults] = useState(false);
+    const [saveError, setSaveError] = useState(null);
+
+    // Add a ref to track if we've attempted to save
+    const saveAttemptedRef = useRef(false);
+
+    // Add a ref to track the current quiz attempt
+    const currentAttemptRef = useRef(0);
+
+    // Add a ref to track if we've saved the current quiz completion
+    const hasSavedCurrentAttemptRef = useRef(false);
+
+    // Move the useEffect outside of any conditional blocks
+    // This should be at the same level as other useEffect hooks
+    useEffect(() => {
+        if (quizCompleted && !resultsSaved && !savingResults) {
+            saveQuizResults();
+        }
+    }, [quizCompleted, resultsSaved, savingResults, questions, quizMode, videoData, score]);
 
     // Reset state when modal opens or questions change
     useEffect(() => {
@@ -39,6 +60,70 @@ const QuizModal = ({
             setShowVideo(quizMode === 'video');
             setInternalLoading(loading);
             setShowReview(false);
+            setResultsSaved(false);
+            setSavingResults(false);
+            setSaveError(null);
+        }
+    }, [isOpen, questions, quizMode, loading]);
+
+    // Reset the ref when the modal opens or closes
+    useEffect(() => {
+        if (isOpen) {
+            saveAttemptedRef.current = false;
+        }
+    }, [isOpen]);
+
+    // Simplified useEffect with minimal dependencies
+    useEffect(() => {
+        if (quizCompleted && !saveAttemptedRef.current) {
+            saveQuizResults();
+        }
+    }, [quizCompleted]); // Only depend on quizCompleted
+
+    // Reset the attempt counter when the modal opens with new content
+    useEffect(() => {
+        if (isOpen) {
+            currentAttemptRef.current = 0;
+            setCurrentQuestionIndex(0);
+            setUserAnswer('');
+            setScore(0);
+            setQuizCompleted(false);
+            setShowConfetti(false);
+            setCorrectAnswers([]);
+            setIncorrectAnswers([]);
+            setShowVideo(quizMode === 'video');
+            setInternalLoading(loading);
+            setShowReview(false);
+            setResultsSaved(false);
+            setSavingResults(false);
+            setSaveError(null);
+        }
+    }, [isOpen, questions, quizMode, loading]);
+
+    // Call saveQuizResults when quiz is completed
+    useEffect(() => {
+        if (quizCompleted && !resultsSaved && !savingResults) {
+            saveQuizResults();
+        }
+    }, [quizCompleted, resultsSaved, savingResults]);
+
+    // Reset the save flag when the modal opens with new content
+    useEffect(() => {
+        if (isOpen) {
+            hasSavedCurrentAttemptRef.current = false;
+            setCurrentQuestionIndex(0);
+            setUserAnswer('');
+            setScore(0);
+            setQuizCompleted(false);
+            setShowConfetti(false);
+            setCorrectAnswers([]);
+            setIncorrectAnswers([]);
+            setShowVideo(quizMode === 'video');
+            setInternalLoading(loading);
+            setShowReview(false);
+            setResultsSaved(false);
+            setSavingResults(false);
+            setSaveError(null);
         }
     }, [isOpen, questions, quizMode, loading]);
 
@@ -90,6 +175,10 @@ const QuizModal = ({
     };
 
     const restartQuiz = () => {
+        // Reset the save flag when restarting
+        hasSavedCurrentAttemptRef.current = false;
+        
+        // Reset all quiz state
         setCurrentQuestionIndex(0);
         setUserAnswer('');
         setScore(0);
@@ -97,10 +186,11 @@ const QuizModal = ({
         setShowConfetti(false);
         setCorrectAnswers([]);
         setIncorrectAnswers([]);
+        setShowVideo(quizMode === 'video');
+        setResultsSaved(false);
+        setSavingResults(false);
+        setSaveError(null);
         setShowReview(false);
-        if (quizMode === 'video') {
-            setShowVideo(true);
-        }
     };
 
     const toggleReview = () => {
@@ -120,6 +210,55 @@ const QuizModal = ({
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
             onClose();
+        }
+    };
+
+    // Simplified function to save quiz results without duplicates
+    const saveQuizResults = async () => {
+        // Only save if the quiz is completed and we haven't saved this attempt yet
+        if (!quizCompleted || hasSavedCurrentAttemptRef.current) return;
+        
+        // Mark that we're saving this attempt
+        hasSavedCurrentAttemptRef.current = true;
+        
+        setSavingResults(true);
+        setSaveError(null);
+        
+        try {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                console.log('User not logged in, skipping result save');
+                setSavingResults(false);
+                return;
+            }
+            
+            const category = videoData ? videoData.category : (
+                // For topic quizzes, determine category from the first question
+                questions && questions.length > 0 && questions[0].termData ? 
+                questions[0].termData.category : 'Theory'
+            );
+            
+            const resultData = {
+                userId,
+                score,
+                totalQuestions: questions.length,
+                quizType: quizMode, // 'video' or 'topic'
+                difficulty: 'intermediate', // Default for now
+                category,
+                videoName: videoData ? videoData.name : null
+            };
+                        
+            await axios.post(
+                `${process.env.REACT_APP_API_ENDPOINT}api/quiz/save-results`, 
+                resultData
+            );
+            
+            setResultsSaved(true);
+        } catch (error) {
+            console.error('Error saving quiz results:', error);
+            setSaveError('Error saving quiz results');
+        } finally {
+            setSavingResults(false);
         }
     };
 
@@ -204,6 +343,19 @@ const QuizModal = ({
                                     ))}
                                 </div>
                             </div>
+                        )}
+                        
+                        {/* Add saving status indicators */}
+                        {savingResults && (
+                            <p className="saving-status">Saving your progress...</p>
+                        )}
+                        
+                        {resultsSaved && !savingResults && (
+                            <p className="saving-status success">Progress saved!</p>
+                        )}
+                        
+                        {saveError && (
+                            <p className="saving-status error">{saveError}</p>
                         )}
                     </div>
                 ) : internalLoading || !questions || questions.length === 0 ? (
