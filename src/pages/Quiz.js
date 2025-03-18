@@ -36,6 +36,17 @@ const Quiz = () => {
     // Filter terminology data for entries with thumbnail property
     const videoEntries = terminologyData.filter(term => term.thumbnail && term.video);
 
+    // Group videos by category
+    const videosByCategory = videoEntries.reduce((acc, entry) => {
+        if (!acc[entry.category]) {
+            acc[entry.category] = [];
+        }
+        acc[entry.category].push(entry);
+        return acc;
+    }, {});
+
+    const [activeVideoCategory, setActiveVideoCategory] = useState(Object.keys(videosByCategory)[0] || 'Theory');
+
     useEffect(() => {
         // Preload the hero image
         const img = new Image();
@@ -207,27 +218,43 @@ const Quiz = () => {
             <div className="quiz-section">
                 <h3 className="section-title">Video Lessons</h3>
                 <p className="section-description">
-                    Watch a video and test your understanding with a quiz.
+                    Watch a video lesson and test your understanding.
                 </p>
                 
-                <div className="video-carousel">
-                    {videoEntries.map((entry, index) => (
-                        <div 
-                            key={index} 
-                            className="video-thumbnail"
-                            onClick={() => handleSelectVideo(entry)}
+                {/* Category tabs */}
+                <div className="video-category-tabs">
+                    {Object.keys(videosByCategory).map(category => (
+                        <button 
+                            key={category}
+                            className={`category-tab ${activeVideoCategory === category ? 'active' : ''}`}
+                            onClick={() => setActiveVideoCategory(category)}
                         >
-                            <img src={entry.thumbnail} alt={entry.name} />
-                            <div className="play-icon"><FaPlay /></div>
-                            <div className="video-title">{entry.name}</div>
-                        </div>
+                            {category}
+                        </button>
                     ))}
+                </div>
+                
+                {/* Horizontal scrolling carousel for selected category */}
+                <div className="video-carousel-container">
+                    <div className="video-carousel">
+                        {videosByCategory[activeVideoCategory]?.map((entry, index) => (
+                            <div 
+                                key={index} 
+                                className="video-thumbnail"
+                                onClick={() => handleSelectVideo(entry)}
+                            >
+                                <img src={entry.thumbnail} alt={entry.name} />
+                                <div className="play-icon"><FaPlay /></div>
+                                <div className="video-title">{entry.name}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
             
             {/* Topic Quiz Section */}
             <div className="quiz-section topic-section">
-                <h3 className="section-title">Topic Quizzes</h3>
+                <h3 className="section-title">General Quizzes</h3>
                 <p className="section-description">
                     Select a topic to test your general knowledge.
                 </p>
