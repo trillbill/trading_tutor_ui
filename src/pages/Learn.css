@@ -1,5 +1,7 @@
 .learn-container {
-    padding: 20px;
+    padding: 0 20px;
+    color: white;
+    margin: 0 auto;
 }
 
 .trading-tutor-intro {
@@ -29,302 +31,328 @@
     margin-bottom: 5px; /* Space between list items */
 }
 
-/* Topic Grid Styles */
-.topic-grid {
-    display: flex; /* Use flexbox for centering */
-    justify-content: space-between; /* Space out the items evenly */
-    align-items: center; /* Center the items vertically */
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
-    margin-bottom: 20px; /* Space below the grid */
-    margin-top: 20px;
-    padding: 0; /* Remove padding from the grid */
-    gap: 20px; /* Add space between topic cards */
-}
-
-.topic-card {
-    background-color: #4a4a4a; /* Dark background for contrast */
-    color: white;
-    padding: 50px 20px 20px; /* Increased top padding for larger cards */
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.1s;
-    display: flex;
-    flex-direction: column; /* Stack icon and text vertically */
-    align-items: center; /* Center items horizontally */
-    flex: 1; /* Allow cards to grow and fill space */
-    margin: auto; /* Add margin for spacing */
-}
-
-.topic-card:hover,
-.topic-card.selected { /* Highlight selected category */
-    background-color: #6a6a6a; /* Lighter on hover or when selected */
-}
-
-.topic-icon {
-    width: 60px; /* Set a fixed width for icons */
-    height: 60px; /* Set a fixed height for icons */
-    margin-bottom: 15px; /* Space between icon and text */
-}
-
-.topic-name {
-    font-weight: bold; /* Make the category name bold */
-    font-size: 24px; /* Increase font size for better legibility */
-    color: white; /* Ensure text is white */
-}
-
-.search-filter {
-    display: flex;
-    justify-content: center; /* Center the search bar */
-    margin: 10px auto; /* Center the search bar with margin */
-    width: 100%; /* Full width */
-    max-width: 100%; /* Allow it to take full width of the container */
-}
-
-.search-filter input {
-    padding: 10px;
-    width: 100%; /* Full width to match the container */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-}
-
-.search-filter select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-left: 10px;
-    outline: none;
-    transition: border-color 0.1s;
-}
-
-.filter-select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.learn-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
-
-@media (min-width: 1024px) {
-    .learn-list {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-.term-card {
-    background-color: #4a4a4a;
-    border-radius: 10px;
-    padding: 15px;
-    cursor: pointer;
-    text-align: center;
-    color: white;
-    width: 100%;
-    margin: 10px 0;
-    transition: background-color 0.1s;
-}
-
-.term-card:hover {
-    background-color: #6a6a6a;
-}
-
-.term-card img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 15px; /* Add padding to ensure modal doesn't touch screen edges */
-    overflow-y: auto; /* Allow scrolling on the modal overlay */
-}
-
-.modal-content {
-    background-color: #302e2e;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    max-width: 600px;
-    width: 90%;
-    position: relative; /* For absolute positioning of close button */
-    max-height: 85vh; /* Limit height to 85% of viewport height */
-    overflow-y: auto; /* Make modal content scrollable */
-    padding-top: 50px; /* Extra space at top for close button */
-    margin: auto; /* Center the modal in the viewport */
-}
-
-.modal-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.close {
-    color: white;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    background: transparent; /* Remove background */
-    border: none; /* Remove border */
-    padding: 0; /* Remove padding */
-    margin: 10px 10px 10px 10px; /* Add margin to separate from content */
-    line-height: 1; /* Adjust line height */
-    position: absolute; /* Position absolutely */
-    top: 10px; /* Position from top */
-    right: 15px; /* Position from right */
-    z-index: 10; /* Ensure it's above other content */
-}
-
-.close:hover {
-    opacity: 50%;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .topic-card {
-        padding: 30px 10px 10px; /* Adjusted padding for smaller cards */
-    }
-
-    .topic-icon {
-        width: 50px; /* Set a smaller width for icons on mobile */
-        height: 50px; /* Set a smaller height for icons on mobile */
-    }
-
-    .topic-name {
-        font-size: 12px; /* Reduce font size for better legibility on mobile */
-    }
-
-    .close {
-        font-size: 24px; /* Smaller font size on mobile */
-        top: 8px; /* Adjust position */
-        right: 12px; /* Adjust position */
-    }
-    
-    .modal-content {
-        padding: 15px; /* Smaller padding on mobile */
-        padding-top: 35px; /* Maintain space for close button */
-    }
-}
-
 /* Hero Section */
 .hero-section {
-    background-size: cover; /* Cover the entire section */
-    background-position: center; /* Center the image */
-    height: 400px; /* Set a fixed height for the hero section */
+    background-size: cover;
+    background-position: center;
+    height: 500px;
     display: flex;
-    justify-content: flex-start; /* Align content to the left */
-    align-items: center; /* Center content vertically */
-    position: relative; /* Position relative for any absolute children */
-    border-radius: 15px; /* Round the corners */
-    overflow: hidden; /* Ensure content does not overflow the rounded corners */
-    padding-left: 7%; /* Add left padding for responsiveness */
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 100%; /* Fill the container width */
 }
 
 .overlay {
-    position: absolute; /* Position overlay absolutely */
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
-    z-index: 1; /* Ensure overlay is above the image */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 1;
 }
 
 .hero-content {
-    position: relative; /* Position relative for z-index */
-    z-index: 2; /* Ensure content is above the overlay */
-    text-align: left; /* Left align the text */
-    padding: 20px; /* Add padding to prevent text from touching edges */
-    max-width: 90%; /* Limit width to prevent overflow */
+    position: relative;
+    z-index: 2;
+    text-align: left;
+    padding: 40px;
+    max-width: 600px;
+    animation: fadeInUp 0.8s ease;
 }
 
-.hero-section h2 {
-    margin: 0; /* Remove default margin */
-    font-size: 2rem; /* Adjust font size as needed */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for better visibility */
+.hero-content h2 {
+    margin: 0 0 15px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    color: white;
 }
 
-.hero-section p {
-    font-size: 1rem; /* Base font size for paragraphs */
+.hero-content p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-.hero-section ul {
-    padding-left: 20px; /* Indent list items */
+.hero-features {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-/* Media Queries for Mobile Devices */
-@media (max-width: 768px) {
-    .hero-section {
-        height: 600px; /* Increase height for mobile view */
-    }
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
 
-    .hero-section h2 {
-        font-size: 1.5rem; /* Reduce font size for mobile */
-    }
+.feature-item:hover {
+    transform: translateX(5px);
+    background: rgba(0, 0, 0, 0.5);
+}
 
-    .hero-section p {
-        font-size: 0.9rem; /* Reduce font size for paragraphs */
-    }
+.feature-icon {
+    font-size: 24px;
+    color: #4b937b;
+}
 
-    .hero-section ul {
-        padding-left: 10px; /* Reduce padding for list items */
-    }
+.feature-text h3 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
 
-    .hero-content {
-        padding: 10px; /* Reduce padding for mobile */
-    }
+.feature-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .sign-up-button {
-    margin-top: 15px; /* Space above the button */
-    padding: 10px 20px; /* Padding for the button */
-    font-size: 1rem; /* Font size for the button */
-    color: rgb(0, 0, 0); /* Text color */
-    background-color: #fff; /* Button background color */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.1s; /* Transition for hover effect */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .sign-up-button:hover {
-    background-color: #6a6a6a; /* Darker shade on hover */
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.button-icon {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.sign-up-button:hover .button-icon {
+    transform: translateX(3px);
+}
+
+/* Learning Categories Section */
+.learning-categories-section {
+    width: 100%; /* Fill the container width */
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+    color: white;
+}
+
+.section-description {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Topic Grid */
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.topic-card {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-radius: 12px;
+    padding: 30px 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    height: 100%;
+}
+
+.topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #404040 0%, #303030 100%);
+}
+
+.topic-card.selected {
+    background: linear-gradient(135deg, #4b937b 0%, #3a7261 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topic-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.topic-card:hover .topic-icon {
+    transform: scale(1.1);
+}
+
+.topic-name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.topic-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Content Section */
+.content-section {
+    width: 100%; /* Fill the container width */
+    margin-bottom: 40px;
+    padding: 0; /* Remove padding from section */
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.search-container {
+    position: relative;
+    width: 300px;
+    transition: all 0.3s ease;
+}
+
+.search-container.focused {
+    width: 350px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 16px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(75, 147, 123, 0.3);
+}
+
+/* Learn List */
+.learn-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.term-card {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.term-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.term-header {
+    padding: 20px 20px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.term-header h3, .term-header h4 {
+    margin: 0 0 5px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.term-category {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(75, 147, 123, 0.2);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #4b937b;
+    margin-top: 5px;
 }
 
 .thumbnail-container {
-    position: relative; /* Position relative for absolute positioning of the play button */
-    width: 100%; /* Full width */
-    height: 250px; /* Fixed height */
-    overflow: hidden; /* Hide overflow */
-    display: flex; /* Use flexbox for alignment */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
 }
 
 .thumbnail {
-    width: 100%; /* Full width */
-    height: 250px; /* Full height */
-    object-fit: cover; /* Cover the container */
-    border-radius: 8px; /* Match card corners */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.term-card:hover .thumbnail {
+    transform: scale(1.05);
 }
 
 .play-button {
@@ -335,8 +363,253 @@
     color: white;
     font-size: 40px;
     opacity: 0.8;
+    background: rgba(0, 0, 0, 0.5);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
-.play-button:hover {
-    opacity: 0.5;
+.term-card:hover .play-button {
+    opacity: 1;
+    background: rgba(75, 147, 123, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.chart-container {
+    height: 180px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.term-description {
+    padding: 15px 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.learn-more-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 20px 20px;
+    padding: 10px 0;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.learn-more-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.learn-more-button:hover .button-icon {
+    transform: translateX(3px);
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.clear-search {
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-radius: 15px;
+    padding: 0;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: scaleIn 0.3s ease;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: white;
+    font-size: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.close:hover {
+    opacity: 1;
+}
+
+.modal-header {
+    padding: 25px 30px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.modal-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(75, 147, 123, 0.2);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #4b937b;
+}
+
+.video-container {
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    position: relative;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-chart {
+    padding: 20px;
+    height: 300px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.modal-description {
+    padding: 30px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.modal-actions {
+    padding: 0 30px 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.action-button {
+    padding: 12px 25px;
+    background: #4b937b;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    background: #3a7261;
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .hero-section {
+        height: auto;
+        padding: 60px 0;
+    }
+    
+    .hero-content {
+        padding: 20px;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-container, .search-container.focused {
+        width: 100%;
+    }
+    
+    .topic-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .learn-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
 }
