@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPlay, FaTimes } from 'react-icons/fa';
+import { FaPlay, FaTimes, FaSearch, FaChartLine, FaBook, FaTools, FaChevronRight } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';
-import heroImage from '../assets/btc-price-phone1.png'; // Import the hero image
+import heroImage from '../assets/btc-price-phone1.png';
 
 // Import your icons
-import toolsIcon from '../assets/tools-icon.png'; // Adjust the path as necessary
-import chartsIcon from '../assets/charts-icon.png'; // Adjust the path as necessary
-import theoryIcon from '../assets/theory-icon.png'; // Adjust the path as necessary
+import toolsIcon from '../assets/tools-icon.png';
+import chartsIcon from '../assets/charts-icon.png';
+import theoryIcon from '../assets/theory-icon.png';
 
 const Learn = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         // Preload the hero image
         const img = new Image();
-        img.src = heroImage; // Set the source to the hero image
-        img.onload = () => setImageLoaded(true); // Set imageLoaded to true when the image is loaded
-
+        img.src = heroImage;
+        img.onload = () => setImageLoaded(true);
     }, []);
 
     // Check if the user is logged in
@@ -30,9 +30,21 @@ const Learn = () => {
 
     // Define topics and their associated categories
     const topics = {
-        Charts: { icon: chartsIcon, terms: ['Charts'] },
-        Theory: { icon: theoryIcon, terms: ['Theory'] }, // No concepts associated with Theory for now
-        Tools: { icon: toolsIcon, terms: ['Tools'] },
+        Charts: { 
+            icon: chartsIcon, 
+            terms: ['Charts'],
+            description: 'Learn to read and interpret different chart patterns and indicators'
+        },
+        Theory: { 
+            icon: theoryIcon, 
+            terms: ['Theory'],
+            description: 'Understand the fundamental concepts behind trading strategies'
+        },
+        Tools: { 
+            icon: toolsIcon, 
+            terms: ['Tools'],
+            description: 'Master the essential tools used by successful traders'
+        },
     };
 
     // Set the default selected topic to the first item in the topics array
@@ -42,10 +54,10 @@ const Learn = () => {
     // Filtered terms based on the selected topic
     const filteredTerms = terminologyData
         .filter(term => {
-            if (!selectedTopic) return true; // Show all if no topic is selected
+            if (!selectedTopic) return true;
             return topics[selectedTopic].terms.includes(term.category);
         })
-        .filter(term => term.name.toLowerCase().includes(searchTerm.toLowerCase())); // Search filter
+        .filter(term => term.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleCardClick = (term) => {
         setSelectedTerm(term);
@@ -61,97 +73,167 @@ const Learn = () => {
 
     return (
         <div className="learn-container">
-            <div className="hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+            {/* Hero Section */}
+            <div 
+                className="hero-section" 
+                style={{ 
+                    backgroundImage: `url(${heroImage})`, 
+                    opacity: imageLoaded ? 1 : 0, 
+                    transition: 'opacity 0.5s ease' 
+                }}
+            >
                 <div className="overlay"></div>
-                <div className="hero-content"> {/* New div for content */}
+                <div className="hero-content">
                     <h2>Welcome to Trading Tutor</h2>
                     <p>
-                        Trading Tutor is your go-to platform for mastering trading concepts and strategies. 
-                        Our website offers a variety of features designed to enhance your trading skills, including:
+                        Your personal guide to mastering trading concepts and strategies.
                     </p>
-                    <ul>
-                        <li><strong>AI Analysis:</strong> Get insights on your trades and charts with our advanced AI analysis tools.</li>
-                        <li><strong>Learning:</strong> Learn the fundamentals of trading and technical analysis with our extensive library of content.</li>
-                        <li><strong>Quizzes:</strong> Test your knowledge and reinforce your learning with interactive quizzes.</li>
-                    </ul>
-                    <p>
-                        Whether you're a beginner or an experienced trader, Trading Tutor provides the resources you need to succeed in the trading world.
-                    </p>
-                    {/* Conditionally render the sign-up button */}
+                    <div className="hero-features">
+                        <div className="feature-item">
+                            <FaChartLine className="feature-icon" />
+                            <div className="feature-text">
+                                <h3>AI Analysis</h3>
+                                <p>Get insights on your trades with advanced AI tools</p>
+                            </div>
+                        </div>
+                        <div className="feature-item">
+                            <FaBook className="feature-icon" />
+                            <div className="feature-text">
+                                <h3>Learning Library</h3>
+                                <p>Extensive resources for all skill levels</p>
+                            </div>
+                        </div>
+                        <div className="feature-item">
+                            <FaTools className="feature-icon" />
+                            <div className="feature-text">
+                                <h3>Interactive Quizzes</h3>
+                                <p>Test your knowledge and track progress</p>
+                            </div>
+                        </div>
+                    </div>
                     {!isLoggedIn && (
-                        <button className="sign-up-button" onClick={handleSignUp}>Sign Up</button>
+                        <button className="sign-up-button" onClick={handleSignUp}>
+                            Get Started <FaChevronRight className="button-icon" />
+                        </button>
                     )}
                 </div>
             </div>
 
-            {/* Grid of Topics */}
-            <div className="topic-grid">
-                {Object.keys(topics).map(topic => (
-                    <div
-                        key={topic}
-                        className={`topic-card ${selectedTopic === topic ? 'selected' : ''}`}
-                        onClick={() => setSelectedTopic(topic)}
-                    >
-                        <img src={topics[topic].icon} alt={`${topic} icon`} className="topic-icon" />
-                        <h3 className="topic-name">{topic}</h3>
-                    </div>
-                ))}
+            {/* Learning Categories Section */}
+            <div className="learning-categories-section">
+                
+                {/* Topic Grid */}
+                <div className="topic-grid">
+                    {Object.keys(topics).map(topic => (
+                        <div
+                            key={topic}
+                            className={`topic-card ${selectedTopic === topic ? 'selected' : ''}`}
+                            onClick={() => setSelectedTopic(topic)}
+                        >
+                            <img src={topics[topic].icon} alt={`${topic} icon`} className="topic-icon" />
+                            <h3 className="topic-name">{topic}</h3>
+                            <p className="topic-description">{topics[topic].description}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            {/* Search Bar and Filtered Terminology List */}
+            {/* Content Section */}
             {selectedTopic && (
-                <div>
-                    <div className="search-filter">
-                        <input
-                            type="text"
-                            placeholder="Search terms..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                <div className="content-section">
+                    <div className="section-header">
+                        <h2 className="section-title">{selectedTopic} Resources</h2>
+                        <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
+                            <FaSearch className="search-icon" />
+                            <input
+                                type="text"
+                                placeholder={`Search ${selectedTopic.toLowerCase()}...`}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onFocus={() => setIsSearchFocused(true)}
+                                onBlur={() => setIsSearchFocused(false)}
+                                className="search-input"
+                            />
+                        </div>
                     </div>
-                    <div className="learn-list">
-                        {filteredTerms.map((term, index) => (
-                            <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                                {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
-                                {term.video ? (
-                                    <div className="thumbnail-container">
-                                        <img
-                                            src={term.thumbnail}
-                                            alt={`${term.name} thumbnail`}
-                                            className="thumbnail"
-                                        />
-                                        <div className="play-button"><FaPlay /></div>
+                    
+                    {filteredTerms.length > 0 ? (
+                        <div className="learn-list">
+                            {filteredTerms.map((term, index) => (
+                                <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
+                                    <div className="term-header">
+                                        {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
+                                        <span className="term-category">{term.category}</span>
                                     </div>
-                                ) : (
-                                    <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
-                                )}
-                                <p>{term.shortDescription}</p>
-                            </div>
-                        ))}
-                    </div>
+                                    {term.video ? (
+                                        <div className="thumbnail-container">
+                                            <img
+                                                src={term.thumbnail}
+                                                alt={`${term.name} thumbnail`}
+                                                className="thumbnail"
+                                            />
+                                            <div className="play-button"><FaPlay /></div>
+                                        </div>
+                                    ) : (
+                                        <div className="chart-container">
+                                            <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                        </div>
+                                    )}
+                                    <p className="term-description">{term.shortDescription}</p>
+                                    <button className="learn-more-button">
+                                        Learn More <FaChevronRight className="button-icon" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="no-results">
+                            <p>No resources found for "{searchTerm}" in {selectedTopic}.</p>
+                            <button className="clear-search" onClick={() => setSearchTerm('')}>
+                                Clear Search
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 
+            {/* Modal */}
             {selectedTerm && (
                 <div className="modal" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="close" onClick={handleCloseModal}>
                             <FaTimes />
                         </button>
-                        <h2>{selectedTerm.name}</h2>
+                        <div className="modal-header">
+                            <h2>{selectedTerm.name}</h2>
+                            <span className="modal-category">{selectedTerm.category}</span>
+                        </div>
                         {selectedTerm.video ? (
-                            <iframe
-                                width="100%"
-                                height="300"
-                                src={selectedTerm.video}
-                                title={selectedTerm.name}
-                                frameBorder="0"
-                                allowFullScreen
-                            ></iframe>
+                            <div className="video-container">
+                                <iframe
+                                    width="100%"
+                                    height="400"
+                                    src={selectedTerm.video}
+                                    title={selectedTerm.name}
+                                    frameBorder="0"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
                         ) : (
-                            <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                            <div className="modal-chart">
+                                <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                            </div>
                         )}
-                        <p>{selectedTerm.value}</p>
+                        <div className="modal-description">
+                            <p>{selectedTerm.value}</p>
+                        </div>
+                        {isLoggedIn && (
+                            <div className="modal-actions">
+                                <button className="action-button" onClick={() => navigate('/quiz')}>
+                                    Take a Quiz on This Topic
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

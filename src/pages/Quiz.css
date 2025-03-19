@@ -233,12 +233,13 @@
 }
 
 .quiz-hero-content {
-    margin-left: 1%;
-    position: relative; /* Position relative for z-index */
-    z-index: 2; /* Ensure content is above the overlay */
-    text-align: left; /* Left align the text */
-    padding: 20px; /* Add padding to prevent text from touching edges */
-    max-width: 90%; /* Limit width to prevent overflow */
+    margin: 1%;
+    position: relative;
+    z-index: 2;
+    text-align: left;
+    padding: 20px;
+    max-width: 90%;
+    animation: fadeInUp 0.8s ease;
 }
 
 .quiz-result-container {
@@ -882,5 +883,11 @@
     .video-thumbnail {
         width: 160px; /* Even smaller on phones */
     }
+}
+
+/* Hero content animation */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
