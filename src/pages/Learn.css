@@ -145,10 +145,6 @@
     transition: transform 0.2s ease;
 }
 
-.sign-up-button:hover .button-icon {
-    transform: translateX(3px);
-}
-
 /* Learning Categories Section */
 .learning-categories-section {
     width: 100%; /* Fill the container width */

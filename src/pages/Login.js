@@ -15,11 +15,22 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
   
   const { login, register } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Check for stored error message on component mount
   useEffect(() => {
+    const storedMessage = localStorage.getItem('auth_error_message');
+    if (storedMessage) {
+      setMessage(storedMessage);
+      // Clear the stored message after displaying it
+      localStorage.removeItem('auth_error_message');
+    }
+    
     // Preload the hero image
     const img = new Image();
     img.src = heroImage;
@@ -33,32 +44,36 @@ function Login() {
     
     try {
       if (isLogin) {
-        // Handle login using the AuthContext login function
+        // Handle login
         const result = await login(email, password);
+        console.log(result)
         
         if (result.success) {
-          // Successful login, redirect to account page
+          // Successful login
           setMessage('Login successful!');
           navigate('/account');
         } else if (result.needsVerification) {
           // Email needs verification
-          setNeedsVerification(true);
           setMessage('Please verify your email before logging in. Check your inbox for a verification link.');
+          setNeedsVerification(true);
         } else {
-          // Login failed for other reasons
-          setMessage(result.error || 'Login failed. Please check your credentials.');
+          // Login failed
+          setMessage(result.error || 'Invalid email or password');
         }
       } else {
-        // Handle registration using the AuthContext register function
+        // Handle registration
         const result = await register(email, password, username);
         
         if (result.success) {
-          // Registration successful, show verification notice
           setMessage(result.message || 'Registration successful! Please check your email to verify your account.');
+          // Store email for verification resend functionality
+          localStorage.setItem('tempUserEmail', email);
+          
+          // Always show verification notice after registration
           setNeedsVerification(true);
         } else {
           // Registration failed
-          setMessage(result.error || 'Registration failed. Please try again.');
+          setMessage(result.error || 'Registration failed, please try again.');
         }
       }
     } catch (error) {
@@ -96,20 +111,91 @@ function Login() {
     setMessage('');
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setForgotPasswordMessage('');
+    
+    try {
+      if (!forgotPasswordEmail) {
+        setForgotPasswordMessage('Please enter your email address.');
+        setLoading(false);
+        return;
+      }
+      
+      const response = await api.post('api/auth/forgot-password', { 
+        email: forgotPasswordEmail 
+      });
+      
+      setForgotPasswordMessage('Password reset link sent! Please check your email.');
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      setForgotPasswordMessage(error.response?.data?.error || 'Failed to send reset link. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-form-container">
         <div className="auth-form-card">
-          <h2 className="auth-title">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
-          <p className="auth-subtitle">
-            {isLogin 
-              ? 'Sign in to continue your learning journey' 
-              : 'Join our community of traders and start learning'}
-          </p>
-          
-          {message && <div className={`auth-message ${message.includes('successful') ? 'success' : 'error'}`}>{message}</div>}
-          
-          {needsVerification ? (
+          {showForgotPassword ? (
+            <>
+              <h2 className="auth-title">Reset Password</h2>
+              <p className="auth-subtitle">
+                Enter your email address and we'll send you a link to reset your password.
+              </p>
+              
+              {forgotPasswordMessage && (
+                <div className={`auth-message ${forgotPasswordMessage.includes('sent') ? 'success' : 'error'}`}>
+                  {forgotPasswordMessage}
+                </div>
+              )}
+              
+              <form onSubmit={handleForgotPassword} className="auth-form">
+                <div className="form-group">
+                  <label htmlFor="forgotPasswordEmail">
+                    <FaEnvelope className="input-icon" />
+                    <span>Email</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    id="forgotPasswordEmail"
+                    value={forgotPasswordEmail} 
+                    onChange={e => setForgotPasswordEmail(e.target.value)}
+                    required 
+                    placeholder="Your email address"
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="auth-submit-button"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div className="button-spinner"></div>
+                  ) : (
+                    <>
+                      Send Reset Link
+                      <FaArrowRight className="button-icon" />
+                    </>
+                  )}
+                </button>
+              </form>
+              
+              <div className="auth-toggle">
+                <button 
+                  onClick={() => setShowForgotPassword(false)} 
+                  className="toggle-button"
+                >
+                  <FaArrowLeft className="toggle-icon" />
+                  Back to Login
+                </button>
+              </div>
+            </>
+          ) : needsVerification ? (
             <div className="verification-notice">
               <h3>Email Verification Required</h3>
               <p>Please check your email and click the verification link to activate your account.</p>
@@ -133,78 +219,99 @@ function Login() {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="auth-form">
-              {!isLogin && (
+            <>
+              <h2 className="auth-title">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+              <p className="auth-subtitle">
+                {isLogin 
+                  ? 'Sign in to continue your learning journey' 
+                  : 'Join our community of traders and start learning'}
+              </p>
+              
+              {message && <div className={`auth-message ${message.includes('successful') ? 'success' : 'error'}`}>{message}</div>}
+              
+              <form onSubmit={handleSubmit} className="auth-form">
+                {!isLogin && (
+                  <div className="form-group">
+                    <label htmlFor="username">
+                      <FaUser className="input-icon" />
+                      <span>Username</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="username"
+                      value={username} 
+                      onChange={e => setUsername(e.target.value)}
+                      required 
+                      placeholder="Choose a username"
+                    />
+                  </div>
+                )}
+                
                 <div className="form-group">
-                  <label htmlFor="username">
-                    <FaUser className="input-icon" />
-                    <span>Username</span>
+                  <label htmlFor="email">
+                    <FaEnvelope className="input-icon" />
+                    <span>Email</span>
                   </label>
                   <input 
-                    type="text" 
-                    id="username"
-                    value={username} 
-                    onChange={e => setUsername(e.target.value)}
+                    type="email" 
+                    id="email"
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)}
                     required 
-                    placeholder="Choose a username"
+                    placeholder="Your email address"
                   />
                 </div>
-              )}
+                
+                <div className="form-group">
+                  <label htmlFor="password">
+                    <FaLock className="input-icon" />
+                    <span>Password</span>
+                  </label>
+                  <input 
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required 
+                    placeholder="Your password"
+                  />
+                  
+                  {isLogin && (
+                    <div className="forgot-password">
+                      <button 
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="forgot-password-button"
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="auth-submit-button"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div className="button-spinner"></div>
+                  ) : (
+                    <>
+                      {isLogin ? 'Sign In' : 'Create Account'} 
+                      <FaArrowRight className="button-icon" />
+                    </>
+                  )}
+                </button>
+              </form>
               
-              <div className="form-group">
-                <label htmlFor="email">
-                  <FaEnvelope className="input-icon" />
-                  <span>Email</span>
-                </label>
-                <input 
-                  type="email" 
-                  id="email"
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)}
-                  required 
-                  placeholder="Your email address"
-                />
+              <div className="auth-toggle">
+                <button onClick={() => setIsLogin(prev => !prev)} className="toggle-button">
+                  <FaExchangeAlt className="toggle-icon" />
+                  {isLogin ? 'Need to create an account?' : 'Already have an account?'}
+                </button>
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="password">
-                  <FaLock className="input-icon" />
-                  <span>Password</span>
-                </label>
-                <input 
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required 
-                  placeholder="Your password"
-                />
-              </div>
-              
-              <button 
-                type="submit" 
-                className="auth-submit-button"
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="button-spinner"></div>
-                ) : (
-                  <>
-                    {isLogin ? 'Sign In' : 'Create Account'} 
-                    <FaArrowRight className="button-icon" />
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-          
-          {!needsVerification && (
-            <div className="auth-toggle">
-              <button onClick={() => setIsLogin(prev => !prev)} className="toggle-button">
-                <FaExchangeAlt className="toggle-icon" />
-                {isLogin ? 'Need to create an account?' : 'Already have an account?'}
-              </button>
-            </div>
+            </>
           )}
         </div>
       </div>
