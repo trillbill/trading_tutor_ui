@@ -1,10 +1,12 @@
 // trading_tutor_ui/src/components/ChatWindow.js
-import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import api from '../api/api';
 import './ChatWindow.css';
 import heroImage from '../assets/tutor.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { AuthContext } from '../context/AuthContext';
+import AuthPrompt from '../components/AuthPrompt';
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
@@ -14,6 +16,8 @@ const ChatWindow = () => {
   const fileInputRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const messagesEndRef = useRef(null); // Reference for auto-scrolling
+  const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
+  const showAuthPrompt = !isAuthenticated || !isEmailVerified;
 
   // API Endpoint
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
@@ -134,8 +138,8 @@ const ChatWindow = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${API_ENDPOINT}api/chat/completions`,
+      const response = await api.post(
+        'api/chat/completions',
         payload,
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -180,8 +184,8 @@ const ChatWindow = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${API_ENDPOINT}api/chat/completions`,
+      const response = await api.post(
+        'api/chat/completions',
         payload,
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -301,6 +305,9 @@ const ChatWindow = () => {
           </div>
         </div>
       </div>
+
+      {/* Show auth prompt if needed */}
+      {showAuthPrompt && <AuthPrompt />}
     </div>
   );
 };

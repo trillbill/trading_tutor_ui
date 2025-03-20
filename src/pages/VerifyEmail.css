@@ -1,0 +1,166 @@
+.verify-email-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.verify-email-card {
+  background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+  border-radius: 15px;
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  color: white;
+  animation: fadeInUp 0.8s ease;
+}
+
+.verify-email-card h2 {
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+.verifying, .success, .error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #4b937b;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.success-icon, .error-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.success-icon {
+  background-color: #4b937b;
+  color: white;
+}
+
+.error-icon {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.redirect-button {
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.redirect-button:hover {
+  background-color: #3a7261;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.verification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.resend-button, .login-button, .redirect-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  width: 100%;
+}
+
+.resend-button {
+  background-color: #4b937b;
+  color: white;
+}
+
+.resend-button:hover:not(:disabled) {
+  background-color: #3a7261;
+}
+
+.resend-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.login-button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.resend-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(75, 147, 123, 0.1);
+  text-align: center;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3rem;
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .verification-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .resend-button, .login-button {
+    width: auto;
+  }
+}

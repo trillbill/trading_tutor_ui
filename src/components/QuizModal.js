@@ -4,7 +4,7 @@ import ProgressBar from './ProgressBar';
 import Confetti from 'react-confetti';
 import { FaTimes } from 'react-icons/fa';
 import './QuizModal.css';
-import axios from 'axios';
+import api from '../api/api';
 
 const QuizModal = ({ 
     isOpen, 
@@ -248,8 +248,8 @@ const QuizModal = ({
                 videoName: videoData ? videoData.name : null
             };
                         
-            await axios.post(
-                `${process.env.REACT_APP_API_ENDPOINT}api/quiz/save-results`, 
+            await api.post(
+                'api/quiz/save-results', 
                 resultData
             );
             
@@ -270,7 +270,7 @@ const QuizModal = ({
                 </button>
                                 
                 {showVideo && videoData ? (
-                    <div className="video-container">
+                    <div className="quiz-video-container">
                         <h2>{videoData.name}</h2>
                         <iframe 
                             className="video-player"

@@ -163,7 +163,6 @@ const Learn = () => {
                                 <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
                                     <div className="term-header">
                                         {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
-                                        <span className="term-category">{term.category}</span>
                                     </div>
                                     {term.video ? (
                                         <div className="thumbnail-container">

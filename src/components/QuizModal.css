@@ -15,7 +15,7 @@
 .quiz-modal {
     background-color: #302e2e;
     border-radius: 10px;
-    max-width: 800px;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -38,7 +38,7 @@
   cursor: pointer;
 }
 
-.video-container {
+.quiz-video-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -354,4 +354,22 @@
 
 .saving-status.error {
     color: #F44336;
+}
+
+/* Chart container in quiz questions */
+.quiz-question .chart-container {
+  height: 300px; /* Appropriate height for quiz questions */
+  margin-bottom: 20px; /* Add space below the chart */
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Chart container in review section */
+.review-chart-container {
+  height: 200px; /* Smaller height for review section */
+  margin: 10px 0 15px; /* Add space above and below */
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
 }
