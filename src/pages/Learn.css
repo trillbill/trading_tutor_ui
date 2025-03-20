@@ -99,11 +99,6 @@
     transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.feature-item:hover {
-    transform: translateX(5px);
-    background: rgba(0, 0, 0, 0.5);
-}
-
 .feature-icon {
     font-size: 24px;
     color: #4b937b;
@@ -218,10 +213,6 @@
     transition: transform 0.3s ease;
 }
 
-.topic-card:hover .topic-icon {
-    transform: scale(1.1);
-}
-
 .topic-name {
     font-weight: 600;
     font-size: 1.4rem;
@@ -316,6 +307,7 @@
 }
 
 .term-header {
+    height: 80px;
     padding: 20px 20px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -379,10 +371,13 @@
     transform: translate(-50%, -50%) scale(1.1);
 }
 
-.chart-container {
-    height: 180px;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.1);
+/* Chart container in term cards */
+.term-card .chart-container {
+    height: 300px; /* Smaller height for cards */
+    margin-bottom: 15px; /* Add space below the chart */
+    overflow: hidden; /* Prevent any overflow */
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .term-description {
@@ -521,14 +516,16 @@
     height: 100%;
 }
 
+/* Chart container in modal */
 .modal-chart {
-    padding: 20px;
-    height: 300px;
-    background: rgba(0, 0, 0, 0.1);
+    height: 300px; /* Taller height for modal view */
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
 }
 
 .modal-description {
-    padding: 30px;
+    padding: 20px;
     font-size: 1rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);

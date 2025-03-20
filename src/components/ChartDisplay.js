@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createChart, LineStyle } from 'lightweight-charts';
 
-const ChartDisplay = ({ data, chartType, lineColor }) => {
+const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
   const chartContainerRef = useRef();
 
   // Helper functions to support both full OHLC and singular-value data.
@@ -12,7 +12,7 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
   useEffect(() => {
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: 300,
+      height: height,
       layout: {
         backgroundColor: '#ffffff',
         textColor: '#000000',
@@ -164,7 +164,10 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
     // Handle chart resizing.
     const handleResize = () => {
       if (chartContainerRef && chartContainerRef.current && chartContainerRef.current.clientWidth) {
-        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+        chart.applyOptions({ 
+          width: chartContainerRef.current.clientWidth,
+          height: height
+        });
       }
       chart.timeScale().fitContent();
       addCustomOverlays();
@@ -177,12 +180,13 @@ const ChartDisplay = ({ data, chartType, lineColor }) => {
       resizeObserver.disconnect();
       chart.remove();
     };
-  }, [data, chartType]);
+  }, [data, chartType, height]);
 
   return (
     <div
       ref={chartContainerRef}
-      style={{ width: '100%', height: '300px' }}
+      style={{ width: '100%', height: `${height}px` }}
+      className="chart-display-container"
     />
   );
 };

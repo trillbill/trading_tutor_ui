@@ -1,0 +1,122 @@
+.verification-required-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.verification-required-card {
+  background: linear-gradient(135deg, #2a2a2a 0%, #333333 100%);
+  border-radius: 15px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  color: white;
+  animation: fadeIn 0.8s ease;
+}
+
+.verification-required-card h1 {
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #4b937b;
+}
+
+.verification-icon {
+  font-size: 4rem;
+  color: #4b937b;
+  margin-bottom: 30px;
+}
+
+.verification-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.verification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.resend-button, .logout-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.resend-button {
+  background-color: #4b937b;
+  color: white;
+}
+
+.resend-button:hover:not(:disabled) {
+  background-color: #3a7261;
+  transform: translateY(-2px);
+}
+
+.resend-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.logout-button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.verification-status-message {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: rgba(75, 147, 123, 0.1);
+  margin-bottom: 20px;
+}
+
+.verification-help {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.verification-help a {
+  color: #4b937b;
+  text-decoration: none;
+}
+
+.verification-help a:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .verification-required-card {
+    padding: 30px 20px;
+  }
+  
+  .verification-required-card h1 {
+    font-size: 1.6rem;
+  }
+  
+  .verification-icon {
+    font-size: 3rem;
+  }
+}

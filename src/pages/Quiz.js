@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import terminologyData from '../terminologyData';
 import quizQuestions from '../quizQuestions';
-import axios from 'axios';
+import api from '../api/api';
 import { FaPlay } from 'react-icons/fa';
 import './Quiz.css';
 import heroImage from '../assets/quiz.png';
@@ -9,6 +9,8 @@ import toolsIcon from '../assets/tools-icon.png';
 import chartsIcon from '../assets/charts-icon.png';
 import theoryIcon from '../assets/theory-icon.png';
 import QuizModal from '../components/QuizModal';
+import { AuthContext } from '../context/AuthContext';
+import AuthPrompt from '../components/AuthPrompt';
 
 const Quiz = () => {
     const [questions, setQuestions] = useState([]);
@@ -46,6 +48,9 @@ const Quiz = () => {
     }, {});
 
     const [activeVideoCategory, setActiveVideoCategory] = useState(Object.keys(videosByCategory)[0] || 'Theory');
+
+    const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
+    const showAuthPrompt = !isAuthenticated || !isEmailVerified;
 
     useEffect(() => {
         // Preload the hero image
@@ -110,7 +115,7 @@ const Quiz = () => {
         const selectedEntries = getRandomEntries(filteredEntries, questionTotal);
         
         try {
-            const response = await axios.post(`${API_ENDPOINT}api/quiz/generate-quiz`, selectedEntries);
+            const response = await api.post('api/quiz/generate-quiz', selectedEntries);
             let generatedQuestions = response.data.questions;
             
             // Add termData to each question for reference
@@ -217,7 +222,7 @@ const Quiz = () => {
             {/* Video Tutorial Section */}
             <div className="quiz-section">
                 <h3 className="section-title">Video Lessons</h3>
-                <p className="section-description">
+                <p className="quiz-section-description">
                     Watch a video lesson and test your understanding.
                 </p>
                 
@@ -255,7 +260,7 @@ const Quiz = () => {
             {/* Topic Quiz Section */}
             <div className="quiz-section topic-section">
                 <h3 className="section-title">General Quizzes</h3>
-                <p className="section-description">
+                <p className="quiz-section-description">
                     Select a topic to test your general knowledge.
                 </p>
                 
@@ -291,6 +296,9 @@ const Quiz = () => {
                     <div className="spinner"></div>
                 </div>
             )}
+
+            {/* Show auth prompt if needed */}
+            {showAuthPrompt && <AuthPrompt />}
         </div>
     );
 };
