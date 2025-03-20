@@ -13,6 +13,7 @@ import VerificationRequired from './pages/VerificationRequired';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
+import ResetPassword from './pages/ResetPassword';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -24,10 +25,6 @@ const AuthRoute = ({ children }) => {
   
   if (loading) {
     return <div>Loading...</div>;
-  }
-  
-  if (isAuthenticated) {
-    return <Navigate to="/" />;
   }
   
   return children;
@@ -65,6 +62,7 @@ function AppRoutes() {
           <ChatWindow />
         </ProtectedRoute>
       } />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
