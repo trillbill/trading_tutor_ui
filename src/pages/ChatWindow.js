@@ -18,9 +18,7 @@ const ChatWindow = () => {
   const messagesEndRef = useRef(null); // Reference for auto-scrolling
   const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
   const showAuthPrompt = !isAuthenticated || !isEmailVerified;
-
-  // API Endpoint
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+  const [lastImageAnalysis, setLastImageAnalysis] = useState(null);
 
   // Prompt options
   const prompts = [
@@ -120,20 +118,35 @@ const ChatWindow = () => {
     setLoading(true);
 
     // Prepare the messages array for the API call
-    const messagesForApi = [
-      ...messages.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: [{ type: "text", text: msg.text }]
-      })),
+    let messagesForApi = [
+      ...messages
+        .filter(msg => !msg.hidden) // Filter out hidden messages
+        .map(msg => ({
+          role: msg.sender === 'user' ? 'user' : 'assistant',
+          content: msg.text
+        })),
       {
         role: 'user',
-        content: [{ type: "text", text: text }]
+        content: text
       }
     ];
 
-    // Setup the payload for the text message
+    // If we have image analysis and this appears to be a follow-up about an image
+    if (lastImageAnalysis && 
+        (text.toLowerCase().includes('chart') || 
+         text.toLowerCase().includes('image') || 
+         text.toLowerCase().includes('price') ||
+         text.toLowerCase().includes('indicator'))) {
+      
+      // Insert the image analysis as context before the user's latest message
+      messagesForApi.splice(messagesForApi.length - 1, 0, {
+        role: 'assistant',
+        content: `Here's the chart analysis for reference:\n\n${lastImageAnalysis}`
+      });
+    }
+
+    // Simplified payload - just send the messages
     const payload = {
-      model: "gpt-4o-mini",
       messages: messagesForApi,
     };
 
@@ -168,40 +181,51 @@ const ChatWindow = () => {
 
     const defaultPrompt = text || "Please analyze this price chart and provide insights on bullish or bearish momentum, any indicators present (RSI, MACD, volume, price levels, etc.), and suggestions for trading.";
 
-    // Setup the payload for the image analysis
+    // Include conversation history for context
+    const conversationHistory = messages
+      .slice(-4) // Get last few messages for context
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text
+      }));
+
     const payload = {
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: defaultPrompt },
-            { type: "image_url", image_url: { url: imageData } },
-          ],
-        }
-      ],
-      store: true,
+      text: defaultPrompt,
+      imageUrl: imageData,
+      conversationHistory
     };
 
     try {
       const response = await api.post(
-        'api/chat/completions',
+        'api/chat/image-analysis',
         payload,
         { headers: { 'Content-Type': 'application/json' } }
       );
 
+      // Store the image analysis for future reference
+      setLastImageAnalysis(response.data.analysis);
+
       // Process the AI's response
-      const aiResponse = response.data.choices[0].message.content;
+      const aiResponse = response.data.response.choices[0].message.content;
       const formattedResponse = aiResponse
         .replace(/###/g, '<strong>')
         .replace(/\n/g, '<br />')
         .replace(/<\/strong>/g, '</strong><br />');
 
+      // Add a hidden message with the image analysis (optional)
+      const hiddenAnalysisMessage = {
+        text: response.data.analysis,
+        sender: 'ai',
+        hidden: true, // You can use this flag to not display this message
+      };
+
+      // Add the visible response
       const aiMessage = {
         text: formattedResponse,
         sender: 'ai',
       };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+
+      setMessages((prevMessages) => [...prevMessages, hiddenAnalysisMessage, aiMessage]);
     } catch (error) {
       console.error('Error analyzing image:', error);
     } finally {
