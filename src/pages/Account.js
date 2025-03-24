@@ -13,7 +13,8 @@ function Account() {
 
   const navigate = useNavigate();
   const { logout, user } = useContext(AuthContext);
-  const userEmail = user?.email || localStorage.getItem('userEmail');
+  const userEmail = user?.email || 'No email available';
+  const username = user?.username || 'Guest';
   const userId = user?.id || localStorage.getItem('userId');
 
   // Fetch user data on component mount
@@ -185,7 +186,7 @@ function Account() {
               <div className="profile-card">
                 <img src={accountIcon} alt="Profile" className="profile-avatar" />
                 <div className="profile-info">
-                  <h2>My Profile</h2>
+                  <h2>{username}'s Profile</h2>
                   {userEmail ? (
                     <p className="user-email"><FaEnvelope /> {userEmail}</p>
                   ) : (

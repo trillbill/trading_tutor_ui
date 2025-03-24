@@ -38,11 +38,6 @@ const quizQuestions = [
         correctAnswer: "By averaging prices over a specified period"
       },
       {
-        question: "What are common periods used for SMAs?",
-        options: ["10, 50, or 200 days", "3, 5, or 7 days only", "1000 days or more", "1 minute or less"],
-        correctAnswer: "10, 50, or 200 days"
-      },
-      {
         question: "How does the SMA treat all prices within its calculation period?",
         options: ["Equally", "With decreasing importance", "With increasing importance", "It ignores outliers"],
         correctAnswer: "Equally"
@@ -133,11 +128,6 @@ const quizQuestions = [
         correctAnswer: "Potential support and resistance levels"
       },
       {
-        question: "The 50% retracement level is technically not a Fibonacci number, but is included because:",
-        options: ["It's often a significant level where price reacts", "It's required by trading regulations", "It makes calculations easier", "It represents the golden ratio"],
-        correctAnswer: "It's often a significant level where price reacts"
-      },
-      {
         question: "How are Fibonacci retracement levels typically drawn?",
         options: ["From a significant low to a significant high (or vice versa)", "Only on daily charts", "Only during market hours", "From left to right on the chart"],
         correctAnswer: "From a significant low to a significant high (or vice versa)"
@@ -153,9 +143,14 @@ const quizQuestions = [
     name: "Elliott Wave Theory",
     questions: [
       {
+        question: "Who invented Elliott Wave Theory?",
+        options: ["Ralph Nelson Elliot", "Elliot Smith", "Frank Elliott", "Thomas DeMark Elliot"],
+        correctAnswer: "Ralph Nelson Elliot"
+      },
+      {
         question: "According to Elliott Wave Theory, how many waves make up a complete market cycle?",
-        options: ["8 waves (5 impulse waves and 3 corrective waves)", "3 waves", "10 waves", "12 waves"],
-        correctAnswer: "8 waves (5 impulse waves and 3 corrective waves)"
+        options: ["8 waves", "3 waves", "10 waves", "12 waves"],
+        correctAnswer: "8 waves"
       },
       {
         question: "What drives the patterns in Elliott Wave Theory?",
@@ -173,9 +168,9 @@ const quizQuestions = [
         correctAnswer: "A, B, and C"
       },
       {
-        question: "What principle is Elliott Wave Theory based on?",
-        options: ["Markets move in predictable patterns", "Markets are completely random", "Markets only respond to news events", "Markets only follow economic indicators"],
-        correctAnswer: "Markets move in predictable patterns"
+        question: "What is NOT one of the rules of Elliott Wave Theory?",
+        options: ["Wave 1 is always the longest wave", "Wave 2 cannot retrace more than 100% of wave 1", "Wave 3 is never the shortest wave", "Wave 4 does not overlap with wave 1"],
+        correctAnswer: "Wave 1 is always the longest wave"
       }
     ]
   },
@@ -193,14 +188,14 @@ const quizQuestions = [
         correctAnswer: "Stocks moving significantly in one direction on high volume"
       },
       {
-        question: "Which of these indicators is commonly used in momentum trading?",
-        options: ["Relative Strength Index (RSI)", "Book value", "P/E ratio", "Dividend yield"],
-        correctAnswer: "Relative Strength Index (RSI)"
+        question: "Which of these indicators is NOT commonly used in momentum trading?",
+        options: ["Relative Strength Index (RSI)", "Moving Average Convergence Divergence (MACD)", "Average Directional Index (ADX)", "Average True Range (ATR)"],
+        correctAnswer: "Average True Range (ATR)"
       },
       {
-        question: "What timeframe do momentum traders typically focus on?",
-        options: ["Short to medium term", "Very long term only", "Multi-year trends only", "Decade-long cycles"],
-        correctAnswer: "Short to medium term"
+        question: "What is decreasing volume a potential indicator of?",
+        options: ["A trend reversal", "A continuation of the trend", "A buying opportunity", "It doesn't matter"],
+        correctAnswer: "A trend reversal"
       },
       {
         question: "What is a potential risk of momentum trading?",
@@ -212,6 +207,11 @@ const quizQuestions = [
   {
     name: "Dow Theory",
     questions: [
+      {
+        question: "Who developed Dow Theory?",
+        options: ["Charles H. Dow", "John Davison Rockefeller", "Edward Jones Dow", "Charles Dow"],
+        correctAnswer: "Charles H. Dow"
+      },
       {
         question: "What does Dow Theory assert about the stock market?",
         options: ["It moves in trends that can be identified and followed", "It is completely random", "It only responds to interest rates", "It only follows economic indicators"],
@@ -233,9 +233,14 @@ const quizQuestions = [
         correctAnswer: "One year or more"
       },
       {
+        question: "Which is not one of the three phases of the market according to Dow Theory?",
+        options: ["Accumulation Phase", "Public Participation Phase", "Distribution Phase", "Recovery Phase"],
+        correctAnswer: "Recovery Phase"
+      },
+      {
         question: "Which of these is NOT one of the six basic tenets of Dow Theory?",
-        options: ["The market always predicts exact price targets", "The market discounts everything", "Market indices must confirm each other", "Volume must confirm the trend"],
-        correctAnswer: "The market always predicts exact price targets"
+        options: ["Smart money buys during the distribution phase", "The market discounts everything", "Market indices must confirm each other", "Volume must confirm the trend"],
+        correctAnswer: "Smart money buys during the distribution phase"
       }
     ]
   },
@@ -243,23 +248,28 @@ const quizQuestions = [
     name: "Gann Theory",
     questions: [
       {
+        question: "Who developed Gann Theory?",
+        options: ["W.D. Gann", "Gann Roberts", "Michael C. Gann", "Lawrence H. Gann"],
+        correctAnswer: "W.D. Gann"
+      },
+      {
         question: "What does Gann Theory primarily use to predict price movements?",
         options: ["Geometric angles and time cycles", "Fundamental analysis only", "Company earnings reports", "Market sentiment surveys"],
         correctAnswer: "Geometric angles and time cycles"
       },
       {
-        question: "What is the most famous angle in Gann Theory?",
+        question: "What is the most common angle in Gann Theory?",
         options: ["The 1×1 angle (45 degrees)", "The 90-degree angle", "The 30-degree angle", "The 180-degree angle"],
         correctAnswer: "The 1×1 angle (45 degrees)"
       },
       {
-        question: "According to Gann Theory, what is the relationship between price and time?",
-        options: ["They are equally important", "Price is more important than time", "Time is more important than price", "They are unrelated"],
-        correctAnswer: "They are equally important"
+        question: "Which of these is not a key time cycle identified by Gann Theory?",
+        options: ["90 Year Cycle", "60 Year Cycle", "45 Year Cycle", "160 Year Cycle"],
+        correctAnswer: "160 Year Cycle"
       },
       {
         question: "What tool is NOT typically associated with Gann Theory?",
-        options: ["Bollinger Bands", "Gann Fan", "Gann Square", "Gann Angles"],
+        options: ["Bollinger Bands", "Gann Fan", "The Square of 9", "Gann Angles"],
         correctAnswer: "Bollinger Bands"
       },
       {
