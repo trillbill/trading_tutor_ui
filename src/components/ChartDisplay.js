@@ -64,9 +64,17 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
         case 'risingWedge':
           addRisingWedge(chart, data);
           break;
+        case 'cupAndHandle':
+          addCupAndHandle(chart, data);
+          break;
+        case 'bullFlag':
+          addBullFlag(chart, data);
+          break;
+        case 'bullPennant':
+          addBullPennant(chart, data);
+          break;
         // Add more cases as needed.
         default:
-          break;
       }
     };
 
@@ -155,6 +163,75 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
       lowerTrendlineSeries.setData([
         { time: data[3].time, value: Math.min(...lows) }, // Start with the lowest low
         { time: data[data.length - 1].time, value: 60 }, // End with the lowest low
+      ]);
+    };
+
+    const addCupAndHandle = (chart, data) => {
+      const resistanceSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      resistanceSeries.setData([
+        { time: data[13].time, value: data[13].value },
+        { time: data[17].time, value: data[17].value },
+      ]);
+      const supportSeries = chart.addLineSeries({
+        color: 'blue',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      supportSeries.setData([
+        { time: data[14].time, value: data[14].value },
+        { time: data[18].time, value: data[18].value },
+      ]);
+    };
+
+    const addBullFlag = (chart, data) => {
+      const resistanceSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      resistanceSeries.setData([
+        { time: data[4].time, value: data[4].value },
+        { time: data[10].time, value: data[10].value },
+      ]);
+      const supportSeries = chart.addLineSeries({
+        color: 'blue',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      supportSeries.setData([
+        { time: data[5].time, value: data[5].value },
+        { time: data[11].time, value: data[11].value },
+      ]);
+    };
+
+    const addBullPennant = (chart, data) => {
+      const resistanceSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      resistanceSeries.setData([
+        { time: data[4].time, value: data[4].value },
+        { time: data[10].time, value: data[10].value },
+      ]);
+      const supportSeries = chart.addLineSeries({
+        color: 'blue',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      supportSeries.setData([
+        { time: data[5].time, value: data[5].value },
+        { time: data[11].time, value: data[11].value },
       ]);
     };
 

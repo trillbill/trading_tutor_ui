@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }) => {
       }
       
       const { token, user } = response.data;
-      console.log(user)
       
       // Check if email is verified
       if (!user.emailVerified) {

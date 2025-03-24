@@ -287,6 +287,86 @@ const terminologyData = [
     ],
   },
   {
+    name: "Cup and Handle",
+    category: "Charts",
+    value:
+      "The Cup and Handle is a bullish continuation pattern that forms during an uptrend. It resembles a tea cup on a price chart, with a rounded bottom (the cup) followed by a slight downward drift (the handle). The pattern is complete when the price breaks above the resistance level formed by the cup's rim. This pattern indicates a period of consolidation before continuing the previous uptrend and is often seen in longer timeframes, suggesting a strong and sustainable bullish movement.",
+    shortDescription: "A bullish continuation pattern resembling a cup with a handle, signaling a pause in an uptrend before continuation.",
+    chartType: "cupAndHandle",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', value: 60 },  // Start of cup
+      { time: '2025-01-02', value: 58 },
+      { time: '2025-01-03', value: 55 },
+      { time: '2025-01-04', value: 56 },
+      { time: '2025-01-05', value: 53 },  // Bottom of cup
+      { time: '2025-01-06', value: 52 },
+      { time: '2025-01-07', value: 53 },
+      { time: '2025-01-08', value: 52 },
+      { time: '2025-01-09', value: 53 },  // Rim of cup (resistance)
+      { time: '2025-01-10', value: 52 },  // Start of handle
+      { time: '2025-01-11', value: 53 },
+      { time: '2025-01-12', value: 57 },  // Bottom of handle
+      { time: '2025-01-13', value: 59 },
+      { time: '2025-01-14', value: 60 },  // Break above resistance
+      { time: '2025-01-15', value: 58 },
+      { time: '2025-01-16', value: 59 },
+      { time: '2025-01-17', value: 57 },
+      { time: '2025-01-18', value: 58 },
+      { time: '2025-01-19', value: 56 },
+      { time: '2025-01-20', value: 65 },
+    ],
+  },
+  {
+    name: "Bull Flag Pattern",
+    category: "Charts",
+    value:
+      "A Bull Flag Pattern is a continuation pattern that forms after a strong price movement (the flagpole), followed by a period of consolidation in a channel that slopes against the previous trend (the flag). The pattern completes when the price breaks out of the channel in the direction of the original trend. Flags that slope opposite to the trend are considered more reliable. This pattern suggests a brief pause in the prevailing trend before it continues, with the length of the flagpole often indicating the potential extent of the move after the breakout.",
+    shortDescription: "A continuation pattern showing a temporary pause in the trend, resembling a flag on a pole.",
+    chartType: "bullFlag",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', value: 40 },  // Start of flagpole
+      { time: '2025-01-02', value: 45 },
+      { time: '2025-01-03', value: 50 },
+      { time: '2025-01-04', value: 55 },
+      { time: '2025-01-05', value: 60 },  // End of flagpole, start of flag
+      { time: '2025-01-06', value: 55 },
+      { time: '2025-01-07', value: 58 },
+      { time: '2025-01-08', value: 53 },
+      { time: '2025-01-09', value: 56 },
+      { time: '2025-01-10', value: 51 },  // End of flag
+      { time: '2025-01-11', value: 54 },  // Breakout
+      { time: '2025-01-12', value: 49 },
+      { time: '2025-01-13', value: 65 },
+    ],
+  },
+  {
+    name: "Bull Pennant Pattern",
+    category: "Charts",
+    value:
+      "A Bull Pennant Pattern is a continuation pattern similar to a Flag but forms a small symmetrical triangle or pennant shape during the consolidation phase after a strong price movement. The pattern consists of a flagpole (the initial sharp move) followed by converging trendlines that form the pennant. The breakout typically occurs in the direction of the previous trend and often happens about halfway through the pennant formation. Trading volume usually decreases during the pennant formation and increases significantly upon breakout.",
+    shortDescription: "A continuation pattern with converging trendlines forming a small symmetrical triangle after a strong move.",
+    chartType: "bullPennant",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', value: 40 },  // Start of flagpole
+      { time: '2025-01-02', value: 45 },
+      { time: '2025-01-03', value: 50 },
+      { time: '2025-01-04', value: 55 },
+      { time: '2025-01-05', value: 60 },  // End of flagpole, start of pennant
+      { time: '2025-01-06', value: 52 },
+      { time: '2025-01-07', value: 59 },
+      { time: '2025-01-08', value: 53 },
+      { time: '2025-01-09', value: 58 },
+      { time: '2025-01-10', value: 54 },  // End of pennant
+      { time: '2025-01-11', value: 57 },  // Breakout
+      { time: '2025-01-12', value: 55 },
+      { time: '2025-01-13', value: 56 },
+      { time: '2025-01-14', value: 69 },
+    ],
+  },
+  {
     name: "Exponential Moving Average (EMA)",
     category: "Tools",
     value:
@@ -301,7 +381,7 @@ const terminologyData = [
     value:
       "The Simple Moving Average (SMA) is a widely used technical indicator that calculates the average price of an asset over a specific period of time, typically 10, 50, or 200 days. It smooths out price fluctuations to help traders identify trends and market direction. Unlike the Exponential Moving Average (EMA), the SMA treats all prices within the selected period equally, making it less responsive to recent price changes. The SMA is commonly used to confirm trends and can also be used in crossover strategies to signal potential buy or sell opportunities.",
     shortDescription: "The SMA is a basic moving average that averages prices over a specified period.",
-    video: "https://www.youtube.com/embed/qpVuCZZXoHY?si=OBTiGrgeIsPE_aKf",
+    video: "https://www.youtube.com/embed/k7riuAueMXI?si=1ccvK-dN-aQOjcud",
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+SMA.png",
   },
 

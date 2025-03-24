@@ -46,7 +46,6 @@ function Login() {
       if (isLogin) {
         // Handle login
         const result = await login(email, password);
-        console.log(result)
         
         if (result.success) {
           // Successful login
