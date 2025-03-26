@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
             email: localStorage.getItem('userEmail'),
             username: localStorage.getItem('username'),
             solanaAddress: localStorage.getItem('solanaAddress') || '',
+            riskAppetite: localStorage.getItem('riskAppetite') || 5,
           });
         } catch (error) {
           console.error('Auth check error:', error);
@@ -75,6 +76,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('username', user.username);
       localStorage.setItem('solanaAddress', user.solana_address || '');
       localStorage.setItem('emailVerified', 'true');
+      localStorage.setItem('riskAppetite', user.risk_appetite || 5);
       
       // Set auth header for future requests
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -130,6 +132,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('username');
     localStorage.removeItem('solanaAddress');
     localStorage.removeItem('emailVerified');
+    localStorage.removeItem('riskAppetite');
     
     // Update state
     setIsAuthenticated(false);

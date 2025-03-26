@@ -1,0 +1,80 @@
+.risk-quiz-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.risk-quiz-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-progress {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4b937b 0%, #3a7261 100%);
+  transition: width 0.3s ease;
+}
+
+.quiz-content {
+  padding: 40px;
+  text-align: center;
+}
+
+.question-icon {
+  font-size: 40px;
+  color: #4b937b;
+  margin-bottom: 20px;
+}
+
+.question-text {
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.answer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.answer-option {
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.answer-option:hover {
+  background: rgba(75, 147, 123, 0.2);
+  transform: translateY(-2px);
+}
+
+.question-counter {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+  .quiz-content {
+    padding: 30px 20px;
+  }
+  
+  .question-text {
+    font-size: 20px;
+  }
+}

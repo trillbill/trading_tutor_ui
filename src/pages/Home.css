@@ -1,0 +1,290 @@
+.home-container {
+    padding: 0;
+    color: white;
+    margin: 0 auto;
+    background-color: black;
+}
+
+/* Hero Section Styles - Adjusted positioning */
+.hero-section {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+    margin-top: 10vh;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.hero-tagline {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    color: #e0e0e0;
+    font-weight: 300;
+}
+
+.home-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.sign-up-button, .explore-button, .primary-button {
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.sign-up-button, .primary-button {
+    background-color: #4b937b;
+    color: white;
+    border: none;
+}
+
+.explore-button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #4b937b;
+}
+
+.sign-up-button:hover, .primary-button:hover {
+    background-color: #3a7261;
+    transform: translateY(-2px);
+}
+
+.explore-button:hover {
+    background-color: rgba(75, 147, 123, 0.1);
+    transform: translateY(-2px);
+}
+
+.button-icon {
+    margin-left: 8px;
+}
+
+/* Features Section */
+.home-features-section {
+    padding: 100px 20px;
+    background-color: #1a1a1a;
+    text-align: center;
+}
+
+.home-features-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #222222 100%);
+    border-radius: 15px;
+    padding: 40px 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.feature-icon-container {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4b937b 0%, #3a7261 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+.feature-card-icon {
+    font-size: 2.2rem;
+    color: white;
+}
+
+.feature-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.feature-card p {
+    color: #cccccc;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* Learning Path Section */
+.learning-path-section {
+    padding: 100px 20px;
+    background-color: #222;
+    text-align: center;
+}
+
+.learning-path-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.path-steps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.path-step {
+    background: linear-gradient(135deg, #2a2a2a 0%, #222222 100%);
+    border-radius: 15px;
+    padding: 40px 30px;
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.path-step:hover {
+    transform: translateY(-10px);
+}
+
+.step-number {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: #4b937b;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.step-icon {
+    font-size: 2.5rem;
+    color: #4b937b;
+    margin-bottom: 20px;
+}
+
+.path-step h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.path-step p {
+    color: #cccccc;
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+    text-align: center;
+}
+
+.cta-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #e0e0e0;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.8rem;
+    }
+    
+    .hero-tagline {
+        font-size: 1.2rem;
+    }
+    
+    .home-features-section h2,
+    .learning-path-section h2,
+    .cta-section h2 {
+        font-size: 2rem;
+    }
+    
+    .path-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .path-step {
+        width: 100%;
+    }
+}
