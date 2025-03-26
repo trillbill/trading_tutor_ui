@@ -32,10 +32,10 @@
 }
 
 /* Hero Section */
-.hero-section {
+.learn-hero-section {
     background-size: cover;
     background-position: center;
-    height: 500px;
+    height: 100px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -43,9 +43,19 @@
     border-radius: 15px;
     overflow: hidden;
     margin-top: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     width: 100%; /* Fill the container width */
+}
+
+.learn-hero-overlay {
+    position: absolute; /* Position overlay absolutely */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    z-index: 1; /* Ensure overlay is above the image */
 }
 
 .overlay {
@@ -58,97 +68,30 @@
     z-index: 1;
 }
 
-.hero-content {
+.learn-hero-content {
+    margin: 1%;
     position: relative;
     z-index: 2;
     text-align: left;
-    padding: 40px;
-    max-width: 600px;
+    padding: 20px;
+    max-width: 90%;
     animation: fadeInUp 0.8s ease;
 }
 
-.hero-content h2 {
-    margin: 0 0 15px;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    color: white;
+.learn-hero-content h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Adjust font size for the title */
 }
 
-.hero-content p {
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.hero-features {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 12px 15px;
-    border-radius: 8px;
-    transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.feature-icon {
-    font-size: 24px;
-    color: #4b937b;
-}
-
-.feature-text h3 {
-    margin: 0 0 5px;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.feature-text p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.sign-up-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-    padding: 12px 25px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #000;
-    background-color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.sign-up-button:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
-.button-icon {
-    font-size: 14px;
-    transition: transform 0.2s ease;
+.learn-hero-content p {
+    margin: 10px 0 0; /* Space above the paragraph */
+    font-size: 16px; /* Adjust font size for the paragraph */
 }
 
 /* Learning Categories Section */
 .learning-categories-section {
     width: 100%; /* Fill the container width */
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .section-title {
@@ -569,7 +512,7 @@
 /* Responsive Styles */
 @media (max-width: 768px) {
     .hero-section {
-        height: auto;
+        height: 150px;
         padding: 60px 0;
     }
     

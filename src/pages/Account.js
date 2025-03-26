@@ -1,49 +1,47 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../api/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Account.css';
-import { FaSignOutAlt, FaEnvelope, FaHistory, FaStar, FaGraduationCap, FaTrophy } from 'react-icons/fa';
+import { FaSignOutAlt, FaEnvelope, FaIdCard, FaHistory, FaStar, FaGraduationCap, FaTrophy, FaShieldAlt, FaBalanceScale, FaChartLine, FaChartBar, FaExclamationTriangle } from 'react-icons/fa';
 import accountIcon from '../assets/account-icon-large.png';
 import { AuthContext } from '../context/AuthContext';
 
 function Account() {
-  const [quizResults, setQuizResults] = useState([]);
+  const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const { logout, user } = useContext(AuthContext);
-  const userEmail = user?.email || 'No email available';
-  const username = user?.username || 'Guest';
-  const userId = user?.id || localStorage.getItem('userId');
+  const location = useLocation();
+  const { logout } = useContext(AuthContext);
 
-  // Fetch user data on component mount
+  // Fetch user profile data on component mount
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchProfileData = async () => {
       setIsLoading(true);
+      setError(null);
       
-      // Fetch quiz results
       try {
-        if (!userId) {
-            console.log('User not logged in, skipping retrieve results');
-            setIsLoading(false);
-            return;
-        }
-
-        // Pass userId as a query parameter
-        const response = await api.get(
-          `api/quiz/results?userId=${userId}`
-        );
-        setQuizResults(response.data);
+        const response = await api.get('/api/account/profile');
+        setProfileData(response.data.profile);
       } catch (error) {
-        console.error('Error fetching quiz results:', error);
+        console.error('Error fetching profile data:', error);
+        setError('Failed to load profile data. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
-    fetchUserData();
-  }, [userId]);
+    fetchProfileData();
+  }, []);
+
+  // Handle state when returning from risk quiz
+  useEffect(() => {
+    if (location.state?.showRiskResult) {
+      setActiveTab('risk-profile');
+    }
+  }, [location]);
 
   const handleSignOut = () => {
     logout();
@@ -62,71 +60,90 @@ function Account() {
     });
   };
 
-  // Calculate performance metrics
-  const calculatePerformance = () => {
-    if (quizResults.length === 0) return { average: 0, improvement: 0, total: 0 };
-    
-    const total = quizResults.length;
-    const scores = quizResults.map(result => (result.score / result.total_questions) * 100);
-    const average = scores.reduce((sum, score) => sum + score, 0) / total;
-    
-    // Calculate improvement (comparing first and most recent quiz)
-    let improvement = 0;
-    if (total >= 4) {
-      const firstThreeAvg = (scores[total-1] + scores[total-2] + scores[total-3]) / 3;
-      const latestScore = scores[0];
-      improvement = latestScore - firstThreeAvg;
+  // Group quiz results by category
+  const getResultsByCategory = () => {
+    if (!profileData?.quizResults || profileData.quizResults.length === 0) {
+      return {};
     }
     
-    return { average: average.toFixed(1), improvement: improvement.toFixed(1), total };
-  };
-
-  // Calculate user's skill level based on quiz results
-  const calculateSkillLevel = () => {
-    if (quizResults.length === 0) return { 
-      level: 'beginner', 
-      icon: <FaStar />, 
-      description: 'Just starting out' 
-    };
+    const categories = {};
     
-    // Point system:
-    // - Each beginner quiz: 1 point per correct answer
-    // - Each intermediate quiz: 2 points per correct answer
-    // - Each advanced quiz: 3 points per correct answer
-    
-    let totalPoints = 0;
-    let maxPossiblePoints = 0;
-    
-    quizResults.forEach(result => {
-      const difficultyMultiplier = 
-        result.difficulty === 'beginner' ? 1 :
-        result.difficulty === 'intermediate' ? 2 :
-        result.difficulty === 'advanced' ? 3 : 1;
-      
-      totalPoints += result.score * difficultyMultiplier;
-      maxPossiblePoints += result.total_questions * difficultyMultiplier;
+    profileData.quizResults.forEach(result => {
+      const category = result.category || 'Uncategorized';
+      if (!categories[category]) {
+        categories[category] = [];
+      }
+      categories[category].push(result);
     });
     
-    // Calculate percentage of possible points earned
-    const percentageScore = maxPossiblePoints > 0 ? (totalPoints / maxPossiblePoints) * 100 : 0;
+    return categories;
+  };
+
+  const resultsByCategory = getResultsByCategory();
+
+  const RiskAppetiteBadge = ({ riskAppetite }) => {
+    // Determine risk level category
+    let riskLevel, riskColor;
     
-    // Determine skill level based on percentage and number of quizzes taken
-    if (quizResults.length < 3) {
-      // Not enough quizzes to determine accurate skill level
+    if (riskAppetite <= 3) {
+      riskLevel = "Conservative";
+      riskColor = "#4CAF50"; // Green
+    } else if (riskAppetite <= 6) {
+      riskLevel = "Moderate";
+      riskColor = "#2196F3"; // Blue
+    } else {
+      riskLevel = "Aggressive";
+      riskColor = "#F44336"; // Red
+    }
+    
+    return (
+      <div className={`risk-level-badge ${riskLevel.toLowerCase()}`}>
+        <div className="risk-icon">
+          {riskLevel === "Conservative" && <FaShieldAlt />}
+          {riskLevel === "Moderate" && <FaBalanceScale />}
+          {riskLevel === "Aggressive" && <FaChartLine />}
+        </div>
+        <div className="risk-details">
+          <div className="risk-level-text">{riskLevel} Investor</div>
+          <div className="risk-description">
+            Risk Appetite: {riskAppetite}/10
+          </div>
+          <div className="risk-meter">
+            <div 
+              className="risk-meter-fill" 
+              style={{ width: `${riskAppetite * 10}%`, backgroundColor: riskColor }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Calculate user's skill level based on performance data
+  const getSkillLevelInfo = () => {
+    if (!profileData) {
       return { 
         level: 'beginner', 
         icon: <FaStar />, 
         description: 'Just starting out' 
       };
-    } else if (percentageScore >= 80 && quizResults.some(r => r.difficulty === 'advanced')) {
-      // High score with some advanced quizzes
+    }
+    
+    const { performance } = profileData;
+    
+    if (performance.total < 3) {
+      return { 
+        level: 'beginner', 
+        icon: <FaStar />, 
+        description: 'Just starting out' 
+      };
+    } else if (performance.skillLevel === 'advanced') {
       return { 
         level: 'advanced', 
         icon: <FaTrophy />, 
         description: 'Market master' 
       };
-    } else if (percentageScore >= 70) {
-      // Good score or has taken advanced quizzes
+    } else if (performance.skillLevel === 'intermediate') {
       return { 
         level: 'intermediate', 
         icon: <FaGraduationCap />, 
@@ -141,24 +158,25 @@ function Account() {
     }
   };
 
-  const skillLevel = calculateSkillLevel();
-  const performance = calculatePerformance();
+  const skillLevel = getSkillLevelInfo();
 
-  // Group quiz results by category
-  const getResultsByCategory = () => {
-    const categories = {};
-    
-    quizResults.forEach(result => {
-      if (!categories[result.category]) {
-        categories[result.category] = [];
-      }
-      categories[result.category].push(result);
-    });
-    
-    return categories;
-  };
+  if (isLoading) {
+    return <div className='loading-spinner' />;
+  }
 
-  const resultsByCategory = getResultsByCategory();
+  if (error) {
+    return (
+      <div className="error-container">
+        <p className="error-message">{error}</p>
+      </div>
+    );
+  }
+
+  // Extract user data for easier access
+  const user = profileData?.user || {};
+  const username = user.username || 'Guest';
+  const userEmail = user.email || 'No email available';
+  const performance = profileData?.performance || { total: 0, average: 0 };
 
   return (
     <div className="account-page">
@@ -167,7 +185,7 @@ function Account() {
           className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
-          <FaEnvelope /> Profile
+          <FaIdCard /> Profile
         </button>
         <button 
           className={`tab-button ${activeTab === 'quiz-results' ? 'active' : ''}`}
@@ -175,115 +193,179 @@ function Account() {
         >
           <FaHistory /> Quiz Results
         </button>
+        <button 
+          className={`tab-button ${activeTab === 'risk-profile' ? 'active' : ''}`}
+          onClick={() => setActiveTab('risk-profile')}
+        >
+          <FaChartBar /> Risk Profile
+        </button>
       </div>
 
-      {isLoading ? (
-        <div className='loading-spinner' />
-      ) : (
-        <div className="account-content">
-          {activeTab === 'profile' && (
-            <div className="profile-section">
-              <div className="profile-card">
-                <img src={accountIcon} alt="Profile" className="profile-avatar" />
-                <div className="profile-info">
-                  <h2>{username}'s Profile</h2>
-                  {userEmail ? (
-                    <p className="user-email"><FaEnvelope /> {userEmail}</p>
-                  ) : (
-                    <p className="user-email">No user info available.</p>
-                  )}
-                  
-                  <div className={`skill-level-badge ${skillLevel.level}`}>
-                    <span className="skill-icon">{skillLevel.icon}</span>
-                    <div className="skill-details">
-                      <span className="skill-level-text">{skillLevel.level.charAt(0).toUpperCase() + skillLevel.level.slice(1)} Trader</span>
-                      <span className="skill-description">{skillLevel.description}</span>
-                    </div>
+      <div className="account-content">
+        {activeTab === 'profile' && (
+          <div className="profile-section">
+            <div className="profile-card">
+              <img src={accountIcon} alt="Profile" className="profile-avatar" />
+              <div className="profile-info">
+                <h2>{username}'s Profile</h2>
+                {userEmail ? (
+                  <p className="user-email"><FaEnvelope /> {userEmail}</p>
+                ) : (
+                  <p className="user-email">No user info available.</p>
+                )}
+                
+                <div className={`skill-level-badge ${skillLevel.level}`}>
+                  <span className="skill-icon">{skillLevel.icon}</span>
+                  <div className="skill-details">
+                    <span className="skill-level-text">{skillLevel.level.charAt(0).toUpperCase() + skillLevel.level.slice(1)} Trader</span>
+                    <span className="skill-description">{skillLevel.description}</span>
                   </div>
-                  
-                  <div className="profile-stats">
-                    <div className="stat-card">
-                      <span className="stat-value">{performance.total}</span>
-                      <span className="stat-label">Quizzes Taken</span>
-                    </div>
-                    <div className="stat-card">
-                      <span className="stat-value">{performance.average}%</span>
-                      <span className="stat-label">Avg. Score</span>
-                    </div>
+                </div>
+                
+                <div className="profile-stats">
+                  <div className="stat-card">
+                    <span className="stat-value">{performance.total}</span>
+                    <span className="stat-label">Quizzes Taken</span>
                   </div>
-                  
-                  <div className="profile-actions">
-                    <button className="action-button primary">
-                      <FaEnvelope /> Update Email
-                    </button>
-                    <button className="action-button secondary" onClick={handleSignOut}>
-                      <FaSignOutAlt /> Sign Out
-                    </button>
+                  <div className="stat-card">
+                    <span className="stat-value">{performance.average}%</span>
+                    <span className="stat-label">Avg. Score</span>
                   </div>
+                </div>
+                
+                <div className="profile-actions">
+                  <button className="action-button primary">
+                    <FaEnvelope /> Update Email
+                  </button>
+                  <button className="action-button secondary" onClick={handleSignOut}>
+                    <FaSignOutAlt /> Sign Out
+                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {activeTab === 'quiz-results' && (
-            <div className="quiz-results-section">
-              <h2>Quiz Results</h2>
-              
-              {quizResults.length === 0 ? (
-                <div className="no-results">
-                  <p>You haven't taken any quizzes yet.</p>
-                  <button className="action-button primary" onClick={() => navigate('/quiz')}>
-                    Take a Quiz
+        {activeTab === 'quiz-results' && (
+          <div className="quiz-results-section">            
+            {!profileData?.quizResults || profileData.quizResults.length === 0 ? (
+              <div className="no-results">
+                <p>You haven't taken any quizzes yet.</p>
+                <button className="action-button primary" onClick={() => navigate('/quiz')}>
+                  Take a Quiz
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="results-summary">
+                  <p>You've completed <strong>{performance.total}</strong> quizzes with an average score of <strong>{performance.average}%</strong>.</p>
+                </div>
+                
+                {Object.keys(resultsByCategory).map(category => (
+                  <div key={category} className="category-results">
+                    <h3>{category}</h3>
+                    <div className="results-table-container">
+                      <table className="results-table">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Quiz Title</th>
+                            <th>Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {resultsByCategory[category].map((result, index) => (
+                            <tr key={index}>
+                              <td>{formatDate(result.completed_at)}</td>
+                              <td>{result.quiz_title || 'Unnamed Quiz'}</td>
+                              <td>
+                                <span className={`score-badge ${(result.score / result.total_questions) >= 0.7 ? 'good' : 'needs-work'}`}>
+                                  {result.score}/{result.total_questions} ({Math.round((result.score / result.total_questions) * 100)}%)
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'risk-profile' && (
+          <div className="risk-profile-section">            
+            {profileData?.user?.risk_appetite ? (
+              <div className="risk-profile-content">
+                <RiskAppetiteBadge riskAppetite={user.risk_appetite} />
+                
+                <div className="risk-explanation">
+                  <h3>What Your Risk Profile Means</h3>
+                  {user.risk_appetite <= 3 ? (
+                    <div className="risk-description-card conservative">
+                      <h4>Conservative Investor</h4>
+                      <p>You prefer stability and security over high returns. Your trading strategies should focus on:</p>
+                      <ul>
+                        <li>Blue-chip stocks with stable dividends</li>
+                        <li>Government and high-grade corporate bonds</li>
+                        <li>ETFs that track major indices</li>
+                        <li>Longer-term positions with less frequent trading</li>
+                      </ul>
+                    </div>
+                  ) : user.risk_appetite <= 6 ? (
+                    <div className="risk-description-card moderate">
+                      <h4>Moderate Investor</h4>
+                      <p>You seek a balance between growth and security. Your trading strategies may include:</p>
+                      <ul>
+                        <li>A mix of growth and value stocks</li>
+                        <li>Some exposure to international markets</li>
+                        <li>Moderate position sizing</li>
+                        <li>A combination of short and long-term positions</li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="risk-description-card aggressive">
+                      <h4>Aggressive Investor</h4>
+                      <p>You prioritize growth potential and are comfortable with volatility. Your trading strategies might include:</p>
+                      <ul>
+                        <li>Growth stocks and emerging markets</li>
+                        <li>Options trading and leveraged positions</li>
+                        <li>Sector rotation and momentum strategies</li>
+                        <li>More active trading with shorter holding periods</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="risk-actions">
+                  <button 
+                    className="action-button primary" 
+                    onClick={() => navigate('/risk-quiz')}
+                  >
+                    Retake Risk Quiz
                   </button>
                 </div>
-              ) : (
-                <>
-                  <div className="results-summary">
-                    <p>You've completed <strong>{performance.total}</strong> quizzes with an average score of <strong>{performance.average}%</strong>.</p>
-                  </div>
-                  
-                  {Object.keys(resultsByCategory).map(category => (
-                    <div key={category} className="category-results">
-                      <h3>{category}</h3>
-                      <div className="results-table-container">
-                        <table className="results-table">
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Quiz Type</th>
-                              <th>Score</th>
-                              <th>Difficulty</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {resultsByCategory[category].map((result, index) => (
-                              <tr key={index}>
-                                <td>{formatDate(result.date)}</td>
-                                <td>
-                                  {result.quiz_type === 'video' 
-                                    ? `Video: ${result.video_name || 'Unnamed'}` 
-                                    : `Topic Quiz: ${result.category || 'Unnamed'}`
-                                  }
-                                </td>
-                                <td>
-                                  <span className={`score-badge ${(result.score / result.total_questions) >= 0.7 ? 'good' : 'needs-work'}`}>
-                                    {result.score}/{result.total_questions} ({((result.score / result.total_questions) * 100).toFixed(0)}%)
-                                  </span>
-                                </td>
-                                <td>{result.difficulty.charAt(0).toUpperCase() + result.difficulty.slice(1)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+              </div>
+            ) : (
+              <div className="no-risk-profile-large">
+                <div className="no-risk-icon">
+                  <FaChartBar />
+                </div>
+                <h3>You haven't set your risk profile yet</h3>
+                <p>Take our quick risk assessment quiz to receive personalized trading recommendations that match your risk tolerance.</p>
+                <button 
+                  className="action-button primary" 
+                  onClick={() => navigate('/risk-quiz')}
+                >
+                  Take Risk Quiz
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

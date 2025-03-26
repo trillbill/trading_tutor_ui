@@ -4,7 +4,7 @@ import { FaPlay, FaTimes, FaSearch, FaChartLine, FaBook, FaTools, FaChevronRight
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';
-import heroImage from '../assets/btc-price-phone1.png';
+import heroImage from '../assets/man-trading3.png';
 
 // Import your icons
 import toolsIcon from '../assets/tools-icon.png';
@@ -14,8 +14,9 @@ import theoryIcon from '../assets/theory-icon.png';
 const Learn = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTerm, setSelectedTerm] = useState(null);
-    const [imageLoaded, setImageLoaded] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -67,61 +68,19 @@ const Learn = () => {
         setSelectedTerm(null);
     };
 
-    const handleSignUp = () => {
-        navigate('/login');
-    };
-
     return (
         <div className="learn-container">
-            {/* Hero Section */}
-            <div 
-                className="hero-section" 
-                style={{ 
-                    backgroundImage: `url(${heroImage})`, 
-                    opacity: imageLoaded ? 1 : 0, 
-                    transition: 'opacity 0.5s ease' 
-                }}
-            >
-                <div className="overlay"></div>
-                <div className="hero-content">
-                    <h2>Welcome to Trading Tutor</h2>
+            <div className="learn-hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+                <div className="learn-hero-overlay"></div>
+                <div className="learn-hero-content">
+                    <h2>Learn the Fundamentals</h2>
                     <p>
-                        Your personal guide to mastering trading concepts and strategies.
+                        Explore a range of topics to build your trading knowledge.
                     </p>
-                    <div className="hero-features">
-                        <div className="feature-item">
-                            <FaChartLine className="feature-icon" />
-                            <div className="feature-text">
-                                <h3>AI Analysis</h3>
-                                <p>Get insights on your trades with advanced AI tools</p>
-                            </div>
-                        </div>
-                        <div className="feature-item">
-                            <FaBook className="feature-icon" />
-                            <div className="feature-text">
-                                <h3>Learning Library</h3>
-                                <p>Extensive resources for all skill levels</p>
-                            </div>
-                        </div>
-                        <div className="feature-item">
-                            <FaTools className="feature-icon" />
-                            <div className="feature-text">
-                                <h3>Interactive Quizzes</h3>
-                                <p>Test your knowledge and track progress</p>
-                            </div>
-                        </div>
-                    </div>
-                    {!isLoggedIn && (
-                        <button className="sign-up-button" onClick={handleSignUp}>
-                            Get Started <FaChevronRight className="button-icon" />
-                        </button>
-                    )}
                 </div>
             </div>
-
             {/* Learning Categories Section */}
-            <div className="learning-categories-section">
-                
+            <div className="learning-categories-section">                
                 {/* Topic Grid */}
                 <div className="topic-grid">
                     {Object.keys(topics).map(topic => (
@@ -142,7 +101,7 @@ const Learn = () => {
             {selectedTopic && (
                 <div className="content-section">
                     <div className="section-header">
-                        <h2 className="section-title">{selectedTopic} Resources</h2>
+                        <h2 className="section-title">{selectedTopic}</h2>
                         <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
                             <FaSearch className="search-icon" />
                             <input

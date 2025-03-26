@@ -14,11 +14,14 @@ import { AuthContext, AuthProvider } from './context/AuthContext';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/ResetPassword';
+import Home from './pages/Home';
+import RiskAppetiteQuiz from './components/RiskAppetiteQuiz';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
 import quizIcon from './assets/quiz-icon.png';
 import chatIcon from './assets/chat-icon.png';
+import homeIcon from './assets/home-icon.png';
 
 const AuthRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -31,38 +34,23 @@ const AuthRoute = ({ children }) => {
 };
 
 function AppRoutes() {
-  const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
   
   return (
     <Routes>
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/login" element={
+      <Route path="/login" element={<Login />} />
+      <Route path="/verification-required" element={
         <AuthRoute>
-          <Login />
+          <VerificationRequired />
         </AuthRoute>
       } />
-      <Route path="/verification-required" element={
-        isAuthenticated && !isEmailVerified ? 
-        <VerificationRequired /> : 
-        <Navigate to={isAuthenticated ? "/" : "/login"} />
-      } />
-      <Route path="/" element={<Learn />} />
-      <Route path="/account" element={
-        <ProtectedRoute>
-          <Account />
-        </ProtectedRoute>
-      } />
-      <Route path="/quiz" element={
-        <ProtectedRoute>
-          <Quiz />
-        </ProtectedRoute>
-      } />
-      <Route path="/chartanalysis" element={
-        <ProtectedRoute>
-          <ChatWindow />
-        </ProtectedRoute>
-      } />
+      <Route path="/" element={<Home />} />
+      <Route path="/learn" element={<Learn />} />
+      <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+      <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
+      <Route path="/chartanalysis" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -88,7 +76,7 @@ const App = () => {
                 </div>
                 <div className="header-column nav-column">
                     <nav className="nav-options">
-                        <Link to="/" className="nav-item">Learn</Link>
+                        <Link to="/learn" className="nav-item">Learn</Link>
                         <Link to="/quiz" className="nav-item">Quiz</Link>
                         <Link to="/chartanalysis" className="nav-item">Chat</Link>
                     </nav>
@@ -107,7 +95,8 @@ const App = () => {
             {isMenuOpen && (
                 <div className="hamburger-menu">
                     <nav className="nav-options">
-                        <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
+                        <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={homeIcon} className="hamburger-icon" alt="Home" />Home</Link>
+                        <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
                         <Link to="/quiz" className="hamburger-item" onClick={toggleMenu}><img src={quizIcon} className="hamburger-icon" alt="Quiz" />Quiz</Link>
                         <Link to="/chartanalysis" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon" alt="Chat" />Chat</Link>
                         {isAuthenticated ? (

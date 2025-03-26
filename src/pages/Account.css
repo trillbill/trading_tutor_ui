@@ -26,6 +26,17 @@
   color: #fff;
 }
 
+.update-email-button, .signout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .update-email-button {
   margin: 10px;
   padding: 10px 20px;
@@ -87,6 +98,7 @@
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -203,6 +215,7 @@
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   border: none;
 }
@@ -327,199 +340,6 @@
   color: #FF9800;
 }
 
-/* Wallet Section */
-.wallet-section {
-  animation: fadeIn 0.3s ease;
-}
-
-.wallet-section h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
-}
-
-.wallet-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 25px;
-}
-
-.wallet-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.wallet-header h3 {
-  font-size: 20px;
-  color: #4b937b;
-}
-
-.refresh-button {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.refresh-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.wallet-form {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.wallet-input {
-  flex: 1;
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 16px;
-}
-
-.wallet-address {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.wallet-address p {
-  font-family: monospace;
-  font-size: 16px;
-  word-break: break-all;
-}
-
-.edit-button {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-left: 10px;
-}
-
-.edit-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.holdings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.holding-card {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 15px;
-  transition: transform 0.2s ease;
-}
-
-.holding-card:hover {
-  transform: translateY(-5px);
-}
-
-.holding-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 10px;
-}
-
-.holding-header h4 {
-  font-size: 18px;
-  margin: 0;
-}
-
-.holding-price {
-  font-weight: 600;
-  color: #4b937b;
-}
-
-.holding-details {
-  margin-bottom: 15px;
-}
-
-.holding-details p {
-  margin: 5px 0;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.analyze-button {
-  width: 100%;
-  padding: 10px;
-  background: #4b937b;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.analyze-button:hover {
-  background: #3a7260;
-}
-
-.analyze-button:disabled {
-  background: #666;
-  cursor: not-allowed;
-}
-
-.analysis-result {
-  margin-top: 15px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-}
-
-.analysis-result h5 {
-  margin-bottom: 8px;
-  color: #4b937b;
-}
-
-.no-holdings {
-  text-align: center;
-  padding: 30px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.load-more-button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.load-more-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
 /* Loading Spinner */
 .loading-spinner {
   border: 4px solid rgba(255, 255, 255, 0.3); /* Light border */
@@ -573,6 +393,20 @@
   
   .holdings-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .update-email-button, .signout-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .update-email-button svg, 
+  .signout-button svg,
+  .update-email-button i,
+  .signout-button i,
+  .update-email-button img,
+  .signout-button img {
+    margin: 0;
   }
 }
 
@@ -683,5 +517,288 @@
 
 [data-level="advanced"] .skill-icon {
   color: #D9AC22;
+}
+
+/* Add to your Account.css */
+.risk-level-badge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 auto 30px;
+  max-width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.risk-level-badge.conservative {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(76, 175, 80, 0.2) 100%);
+  border-left: 3px solid #4CAF50;
+}
+
+.risk-level-badge.moderate {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(33, 150, 243, 0.2) 100%);
+  border-left: 3px solid #2196F3;
+}
+
+.risk-level-badge.aggressive {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(244, 67, 54, 0.2) 100%);
+  border-left: 3px solid #F44336;
+}
+
+.risk-icon {
+  font-size: 36px;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.conservative .risk-icon {
+  color: #4CAF50;
+}
+
+.moderate .risk-icon {
+  color: #2196F3;
+}
+
+.aggressive .risk-icon {
+  color: #F44336;
+}
+
+.risk-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  flex: 1;
+}
+
+.risk-level-text {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.risk-description {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+}
+
+.risk-meter {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.risk-meter-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.no-risk-profile {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.no-risk-profile p {
+  margin-bottom: 15px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Risk Profile Section - Updated for consistency */
+.risk-profile-section {
+  animation: fadeIn 0.3s ease;
+  margin: 0 auto;
+}
+
+.risk-profile-section h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.risk-profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.risk-explanation {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px 0 30px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.risk-explanation h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.risk-description-card {
+  padding: 20px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.risk-description-card.conservative {
+  border-left: 3px solid #4CAF50;
+}
+
+.risk-description-card.moderate {
+  border-left: 3px solid #2196F3;
+}
+
+.risk-description-card.aggressive {
+  border-left: 3px solid #F44336;
+}
+
+.risk-description-card h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.risk-description-card p {
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.risk-description-card ul {
+  padding-left: 20px;
+}
+
+.risk-description-card li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.risk-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.no-risk-profile-large {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.no-risk-icon {
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 20px;
+}
+
+.no-risk-profile-large h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.no-risk-profile-large p {
+  margin-bottom: 25px;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 450px;
+}
+
+/* Make the risk level badge larger in the risk profile tab */
+.risk-profile-section .risk-level-badge {
+  max-width: 500px;
+  padding: 25px;
+}
+
+.risk-profile-section .risk-icon {
+  font-size: 40px;
+  width: 80px;
+  height: 80px;
+}
+
+.risk-profile-section .risk-level-text {
+  font-size: 24px;
+}
+
+.risk-profile-section .risk-description {
+  font-size: 16px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .risk-explanation {
+    padding: 20px 15px;
+  }
+  
+  .no-risk-profile-large {
+    padding: 30px 20px;
+  }
+  
+  .risk-profile-section .risk-level-badge {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .risk-profile-section .risk-icon {
+    margin: 0 auto 15px;
+  }
+  
+  .risk-profile-section .risk-details {
+    text-align: center;
+  }
+}
+
+/* Error message styling */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 12px;
+  padding: 40px 20px;
+  margin: 40px auto;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.error-container .action-button {
+  margin-top: 10px;
 }
 
