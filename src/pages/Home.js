@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaQuestion, FaBook, FaBrain, FaChevronRight } from 'react-icons/fa';
 import './Home.css';
 import heroImage from '../assets/candlestick-chart1.png';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const navigate = useNavigate();
-    const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         // Preload the hero image

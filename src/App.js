@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/ResetPassword';
 import Home from './pages/Home';
 import RiskAppetiteQuiz from './components/RiskAppetiteQuiz';
+import UpdateEmail from './pages/UpdateEmail';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -51,6 +52,7 @@ function AppRoutes() {
       <Route path="/chartanalysis" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
+      <Route path="/update-email" element={<UpdateEmail />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

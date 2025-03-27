@@ -1,171 +1,136 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import api from '../api/api';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
+  // Check if user is logged in on initial load
   useEffect(() => {
-    // Check if user is logged in on component mount
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      
-      if (token) {
-        try {
-          // Set default auth header for all requests
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          
-          // Get user data if needed
-          // const response = await api.get('api/auth/me');
-          
-          setIsAuthenticated(true);
-          setIsEmailVerified(localStorage.getItem('emailVerified') === 'true');
-          
-          setUser({
-            id: localStorage.getItem('userId'),
-            email: localStorage.getItem('userEmail'),
-            username: localStorage.getItem('username'),
-            solanaAddress: localStorage.getItem('solanaAddress') || '',
-            riskAppetite: localStorage.getItem('riskAppetite') || 5,
-          });
-        } catch (error) {
-          console.error('Auth check error:', error);
-          // If token is invalid, clear everything
-          logout();
+    const checkAuthStatus = async () => {
+      try {
+        // Call the endpoint that uses the cookie to authenticate
+        const response = await api.get('/api/auth/me');
+        if (response.data.success) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
         }
+      } catch (error) {
+        // If error, user is not authenticated
+        console.error('Auth check error:', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+        setInitialized(true);
       }
-      
-      setLoading(false);
     };
-    
-    checkAuth();
+
+    checkAuthStatus();
   }, []);
 
-  const login = async (email, password) => {
+  // Check if user is authenticated
+  const isAuthenticated = !!user;
+  
+  // Check if email is verified
+  const isEmailVerified = user?.email_verified || false;
+
+  // Check email verification status
+  const checkEmailVerification = async () => {
     try {
-      const response = await api.post('api/auth/login', { email, password });
-      
-      if (!response.data || !response.data.token) {
-        return { 
-          success: false, 
-          error: 'Invalid response from server' 
-        };
+      const response = await api.get('/api/auth/me');
+      if (response.data.success && response.data.user.email_verified) {
+        setUser(response.data.user);
+        return true;
       }
-      
-      const { token, user } = response.data;
-      
-      // Check if email is verified
-      if (!user.emailVerified) {
-        localStorage.setItem('tempUserId', user.id);
-        localStorage.setItem('tempUserEmail', email);
-        return { 
-          success: false, 
-          needsVerification: true,
-          message: 'Please verify your email before logging in.'
-        };
-      }
-      
-      // Email is verified, proceed with login
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', user.id);
-      localStorage.setItem('userEmail', user.email);
-      localStorage.setItem('username', user.username);
-      localStorage.setItem('solanaAddress', user.solana_address || '');
-      localStorage.setItem('emailVerified', 'true');
-      localStorage.setItem('riskAppetite', user.risk_appetite || 5);
-      
-      // Set auth header for future requests
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      setIsAuthenticated(true);
-      setIsEmailVerified(true);
-      setUser(user);
-      
-      return { success: true };
+      return false;
     } catch (error) {
-      console.error('Login error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Login failed' 
-      };
-    }
-  };
-
-  const register = async (email, password, username) => {
-    try {
-      const response = await api.post('api/auth/register', { 
-        email, 
-        password, 
-        username 
-      });
-      
-      // Store temporary user info for verification
-      localStorage.setItem('tempUserId', response.data.user.id);
-      localStorage.setItem('tempUserEmail', email);
-      
-      return { 
-        success: true, 
-        needsVerification: true,
-        message: response.data.message || 'Registration successful! Please check your email to verify your account.'
-      };
-    } catch (error) {
-      console.error('Registration error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Registration failed' 
-      };
-    }
-  };
-
-  const logout = () => {
-    // Clear auth header
-    delete api.defaults.headers.common['Authorization'];
-    
-    // Clear localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('username');
-    localStorage.removeItem('solanaAddress');
-    localStorage.removeItem('emailVerified');
-    localStorage.removeItem('riskAppetite');
-    
-    // Update state
-    setIsAuthenticated(false);
-    setIsEmailVerified(false);
-    setUser(null);
-  };
-
-  const checkEmailVerification = async (email) => {
-    try {
-      const response = await api.post('api/auth/check-email-verification', { 
-        email: email || localStorage.getItem('tempUserEmail') 
-      });
-      return response.data.verified;
-    } catch (error) {
-      console.error('Error checking verification:', error);
+      console.error('Verification check error:', error);
       return false;
     }
   };
 
+  // Login function
+  const login = async (email, password) => {
+    try {
+      const response = await api.post('/api/auth/login', { email, password });
+      
+      if (response.data.success) {
+        setUser(response.data.user);
+        return { success: true };
+      } else if (response.data.needsVerification) {
+        return { success: false, needsVerification: true };
+      } else {
+        return { success: false, error: response.data.error || 'Login failed' };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      if (error.response && error.response.data) {
+        return { success: false, error: error.response.data.error || 'Invalid credentials' };
+      }
+      return { success: false, error: 'An error occurred during login' };
+    }
+  };
+
+  // Logout function
+  const logout = async () => {
+    try {
+      await api.post('/api/auth/logout');
+      setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  // Register function
+  const register = async (email, password, username) => {
+    try {
+      const response = await api.post('/api/auth/register', {
+        email,
+        password,
+        username
+      });
+      
+      // Ensure we have a consistent response format
+      return { 
+        success: response.data.success === true,
+        message: response.data.message || '',
+        error: response.data.error || ''
+      };
+    } catch (error) {
+      console.error('Registration error:', error);
+      if (error.response && error.response.data) {
+        return { 
+          success: false, 
+          error: error.response.data.error || 'Registration failed'
+        };
+      }
+      return { 
+        success: false, 
+        error: 'An error occurred during registration'
+      };
+    }
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        isEmailVerified,
-        user,
-        loading,
-        login,
-        register,
-        logout,
-        checkEmailVerification
-      }}
-    >
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      initialized,
+      isAuthenticated,
+      isEmailVerified,
+      checkEmailVerification,
+      login, 
+      logout, 
+      register 
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+// Custom hook for using auth context
+export const useAuth = () => useContext(AuthContext);

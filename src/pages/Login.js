@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaArrowRight, FaExchangeAlt, FaArrowLeft } from 'react-icons/fa';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import './Login.css';
+import { validateEmail } from '../utils/utils';
 import heroImage from '../assets/btc-price-phone1.png'; // Use the same hero image as your Learn page
 
 function Login() {
@@ -19,7 +20,7 @@ function Login() {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
   
-  const { login, register } = useContext(AuthContext);
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   // Check for stored error message on component mount
@@ -60,6 +61,12 @@ function Login() {
           setMessage(result.error || 'Invalid email or password');
         }
       } else {
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid) {
+          setMessage(emailValidation.message);
+          setLoading(false);
+          return;
+        }
         // Handle registration
         const result = await register(email, password, username);
         

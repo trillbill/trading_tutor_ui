@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import terminologyData from '../terminologyData';
 import quizQuestions from '../quizQuestions';
 import api from '../api/api';
@@ -9,7 +9,7 @@ import toolsIcon from '../assets/tools-icon.png';
 import chartsIcon from '../assets/charts-icon.png';
 import theoryIcon from '../assets/theory-icon.png';
 import QuizModal from '../components/QuizModal';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import AuthPrompt from '../components/AuthPrompt';
 
 const Quiz = () => {
@@ -49,7 +49,7 @@ const Quiz = () => {
 
     const [activeVideoCategory, setActiveVideoCategory] = useState(Object.keys(videosByCategory)[0] || 'Theory');
 
-    const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
+    const { isAuthenticated, isEmailVerified } = useAuth();
     const showAuthPrompt = !isAuthenticated || !isEmailVerified;
 
     useEffect(() => {
