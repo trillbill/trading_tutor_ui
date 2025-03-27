@@ -9,6 +9,7 @@ const VerifyEmail = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [userAuthenticated, setUserAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -35,18 +36,21 @@ const VerifyEmail = () => {
         setMessage(response.data.message);
         
         // If verification was successful, we can try to log the user in automatically
-        if (email) {
+        if (email && response.data.success) {
           try {
-            // Store that the email is verified
+            // Store that the email is verified (this is still fine in localStorage as it's not sensitive)
             localStorage.setItem('emailVerified', 'true');
             
-            // If we have a token in the response, use it to log in
-            if (response.data.token) {
-              localStorage.setItem('token', response.data.token);
-              localStorage.setItem('userId', response.data.user.id);
-              localStorage.setItem('userEmail', response.data.user.email);
-              localStorage.setItem('username', response.data.user.username);
-              localStorage.setItem('solanaAddress', response.data.user.solana_address || '');
+            // The backend should have set the HttpOnly cookie for us
+            // Check if we're authenticated now
+            const authCheckResponse = await api.get('api/auth/me');
+            if (authCheckResponse.data.success) {
+              setUserAuthenticated(true);
+              
+              // We can still store non-sensitive user info in localStorage if needed
+              // for UI purposes, but the authentication is now handled by cookies
+              localStorage.setItem('userEmail', authCheckResponse.data.user.email);
+              localStorage.setItem('username', authCheckResponse.data.user.username);
             }
           } catch (loginError) {
             console.error('Auto-login error:', loginError);
@@ -64,8 +68,8 @@ const VerifyEmail = () => {
   }, [location]);
 
   const handleRedirect = () => {
-    // If verification was successful and we have a token, go to account page
-    if (verificationStatus === 'success' && localStorage.getItem('token')) {
+    // If verification was successful and we're authenticated, go to account page
+    if (verificationStatus === 'success' && userAuthenticated) {
       navigate('/account');
     } else {
       // Otherwise go to login
@@ -129,7 +133,7 @@ const VerifyEmail = () => {
             <div className="success-icon">✓</div>
             <p>{message}</p>
             <button onClick={handleRedirect} className="redirect-button">
-              {localStorage.getItem('token') ? 'Go to Account' : 'Go to Login'}
+              {userAuthenticated ? 'Go to Account' : 'Go to Login'}
             </button>
           </div>
         )}

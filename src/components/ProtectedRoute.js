@@ -1,23 +1,27 @@
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import AuthPrompt from './AuthPrompt';
 
 // This component protects routes that require both authentication and email verification
-const ProtectedRoute = ({ children, requireVerification = true }) => {
-  const { isAuthenticated, isEmailVerified, loading } = useContext(AuthContext);
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isEmailVerified, loading, initialized } = useAuth();
   
-  if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
+  // Show loading state while checking authentication
+  if (loading || !initialized) {
+    return <div className="loading-spinner" />;
   }
   
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+  // If not authenticated or email not verified, show the page with AuthPrompt overlay
+  if (!isAuthenticated || !isEmailVerified) {
+    return (
+      <>
+        {children}
+        <AuthPrompt />
+      </>
+    );
   }
   
-  if (requireVerification && !isEmailVerified) {
-    return <Navigate to="/login" />;
-  }
-  
+  // Render children if authenticated and verified
   return children;
 };
 

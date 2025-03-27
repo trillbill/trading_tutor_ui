@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './VerificationRequired.css';
 
 const VerificationRequired = () => {
-  const { user, isEmailVerified, checkEmailVerification, logout } = useContext(AuthContext);
+  const { user, isEmailVerified, checkEmailVerification, logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [countdown, setCountdown] = useState(0);
@@ -35,7 +35,14 @@ const VerificationRequired = () => {
     setMessage('');
     
     try {
-      await api.post('api/auth/resend-verification');
+      // Use the user email from context instead of localStorage
+      if (!user?.email) {
+        setMessage('User information not found. Please try logging in again.');
+        setLoading(false);
+        return;
+      }
+      
+      await api.post('api/auth/resend-verification', { email: user.email });
       setMessage('Verification email has been sent! Please check your inbox.');
       
       // Set a 60-second countdown before allowing another resend

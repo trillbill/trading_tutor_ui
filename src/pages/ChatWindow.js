@@ -5,10 +5,11 @@ import './ChatWindow.css';
 import heroImage from '../assets/tutor.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, useAuth } from '../context/AuthContext';
 import AuthPrompt from '../components/AuthPrompt';
 
 const ChatWindow = () => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -42,6 +43,25 @@ const ChatWindow = () => {
     img.src = heroImage;
     img.onload = () => setImageLoaded(true);
   }, []);
+
+  useEffect(() => {
+    // Load chat history when component mounts
+    const loadChatHistory = async () => {
+      try {
+        // The API call will include the HttpOnly cookie automatically
+        const response = await api.get('/api/chat/history');
+        if (response.data.success) {
+          setMessages(response.data.messages);
+        }
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      }
+    };
+    
+    if (user) {
+      loadChatHistory();
+    }
+  }, [user]);
 
   const handlePromptClick = async (prompt) => {
     // Create a new message object for the selected prompt
