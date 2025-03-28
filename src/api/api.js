@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
+  baseURL: process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8080',
   withCredentials: true, // Important: This allows cookies to be sent with requests
   headers: {
     'Content-Type': 'application/json'

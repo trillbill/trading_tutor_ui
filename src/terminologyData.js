@@ -318,10 +318,10 @@ const terminologyData = [
     ],
   },
   {
-    name: "Bull Flag Pattern",
+    name: "Flag Pattern",
     category: "Charts",
     value:
-      "A Bull Flag Pattern is a continuation pattern that forms after a strong price movement (the flagpole), followed by a period of consolidation in a channel that slopes against the previous trend (the flag). The pattern completes when the price breaks out of the channel in the direction of the original trend. Flags that slope opposite to the trend are considered more reliable. This pattern suggests a brief pause in the prevailing trend before it continues, with the length of the flagpole often indicating the potential extent of the move after the breakout.",
+      "A Flag Pattern is a continuation pattern that forms after a strong price movement (the flagpole), followed by a period of consolidation in a channel that slopes against the previous trend (the flag). The pattern completes when the price breaks out of the channel in the direction of the original trend. Flags that slope opposite to the trend are considered more reliable. This pattern suggests a brief pause in the prevailing trend before it continues, with the length of the flagpole often indicating the potential extent of the move after the breakout.",
     shortDescription: "A continuation pattern showing a temporary pause in the trend, resembling a flag on a pole.",
     chartType: "bullFlag",
     lineColor: "green",
@@ -342,10 +342,10 @@ const terminologyData = [
     ],
   },
   {
-    name: "Bull Pennant Pattern",
+    name: "Pennant Pattern",
     category: "Charts",
     value:
-      "A Bull Pennant Pattern is a continuation pattern similar to a Flag but forms a small symmetrical triangle or pennant shape during the consolidation phase after a strong price movement. The pattern consists of a flagpole (the initial sharp move) followed by converging trendlines that form the pennant. The breakout typically occurs in the direction of the previous trend and often happens about halfway through the pennant formation. Trading volume usually decreases during the pennant formation and increases significantly upon breakout.",
+      "A Pennant Pattern is a continuation pattern similar to a Flag but forms a small symmetrical triangle or pennant shape during the consolidation phase after a strong price movement. The pattern consists of a flagpole (the initial sharp move) followed by converging trendlines that form the pennant. The breakout typically occurs in the direction of the previous trend and often happens about halfway through the pennant formation. Trading volume usually decreases during the pennant formation and increases significantly upon breakout.",
     shortDescription: "A continuation pattern with converging trendlines forming a small symmetrical triangle after a strong move.",
     chartType: "bullPennant",
     lineColor: "green",
