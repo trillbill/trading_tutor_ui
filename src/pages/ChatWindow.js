@@ -23,11 +23,11 @@ const ChatWindow = () => {
 
   // Prompt options
   const prompts = [
-    "Can you explain the concept of support and resistance?",
+    "Can you explain how perpetual swaps work?",
     "What indicators should I use for technical analysis?",
-    "What steps should I take before entering a trade?",
+    "Help me develop a checklist for entering a trade",
     "How can I manage risk in my trading?",
-    "Can you explain perpetual futures contracts?",
+    "What are some good strategies for trading in a bear market?",
   ];
 
   // Auto-scroll to bottom when messages change
