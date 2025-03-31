@@ -164,7 +164,6 @@ const Learn = () => {
                         </button>
                         <div className="modal-header">
                             <h2>{selectedTerm.name}</h2>
-                            <span className="modal-category">{selectedTerm.category}</span>
                         </div>
                         {selectedTerm.video ? (
                             <div className="video-container">
