@@ -15,7 +15,7 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/ResetPassword';
 import Home from './pages/Home';
-import RiskAppetiteQuiz from './components/RiskAppetiteQuiz';
+import RiskAppetiteQuiz from './pages/RiskAppetiteQuiz';
 import UpdateEmail from './pages/UpdateEmail';
 
 import accountIcon from './assets/account-icon.png';

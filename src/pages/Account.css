@@ -77,13 +77,14 @@
   color: #fff;
 }
 
-/* Tabs Navigation */
+/* Tabs Navigation - Improved for mobile with horizontal scrolling */
 .account-tabs {
   display: flex;
   justify-content: center;
   margin-bottom: 30px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 10px;
+  gap: 10px;
 }
 
 .tab-button {
@@ -91,8 +92,7 @@
   border: none;
   color: rgba(255, 255, 255, 0.7);
   font-size: 16px;
-  padding: 10px 20px;
-  margin: 0 5px;
+  padding: 10px 15px;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -100,10 +100,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
-
-.tab-button svg {
-  font-size: 18px;
+  white-space: nowrap;
 }
 
 .tab-button:hover {
@@ -114,6 +111,56 @@
 .tab-button.active {
   background: #4b937b;
   color: white;
+  font-weight: 500;
+}
+
+.tab-button svg {
+  font-size: 18px;
+}
+
+/* Mobile-specific styles for horizontal scrolling tabs */
+@media (max-width: 768px) {
+  .account-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 10px 10px;
+    margin: 0 -10px 30px;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+  }
+  
+  /* Hide scrollbar for Chrome/Safari */
+  .account-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab-button {
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .tab-button svg {
+    font-size: 16px;
+  }
+  
+  /* Add some padding to the last button to ensure scrolling works properly */
+  .tab-button:last-child {
+    margin-right: 10px;
+  }
+}
+
+/* For very small screens, make buttons even smaller */
+@media (max-width: 380px) {
+  .tab-button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .tab-button svg {
+    font-size: 14px;
+  }
 }
 
 /* Profile Section */
@@ -359,16 +406,6 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .account-tabs {
-    flex-wrap: wrap;
-  }
-  
-  .tab-button {
-    flex: 1 0 auto;
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-  
   .profile-stats {
     flex-direction: column;
     gap: 10px;

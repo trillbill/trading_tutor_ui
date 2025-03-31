@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import './Account.css';
-import { FaSignOutAlt, FaEnvelope, FaIdCard, FaHistory, FaStar, FaGraduationCap, FaTrophy, FaShieldAlt, FaBalanceScale, FaChartLine, FaChartBar, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSignOutAlt, FaEnvelope, FaIdCard, FaHistory, FaStar, FaGraduationCap, FaTrophy, FaShieldAlt, FaBalanceScale, FaChartLine, FaChartBar, FaBook } from 'react-icons/fa';
 import accountIcon from '../assets/account-icon-large.png';
 import { useAuth } from '../context/AuthContext';
 import { validateEmail } from '../utils/utils';
+import TradingJournal from '../components/TradingJournal';
 
 function Account() {
   const [profileData, setProfileData] = useState(null);
@@ -230,19 +231,25 @@ function Account() {
           className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
-          <FaIdCard /> Profile
+          <FaIdCard /> <span className="tab-text">Profile</span>
         </button>
         <button 
           className={`tab-button ${activeTab === 'quiz-results' ? 'active' : ''}`}
           onClick={() => setActiveTab('quiz-results')}
         >
-          <FaHistory /> Quiz Results
+          <FaHistory /> <span className="tab-text">Quiz Results</span>
         </button>
         <button 
           className={`tab-button ${activeTab === 'risk-profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('risk-profile')}
         >
-          <FaChartBar /> Risk Profile
+          <FaChartBar /> <span className="tab-text">Risk Profile</span>
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'journal' ? 'active' : ''}`}
+          onClick={() => setActiveTab('journal')}
+        >
+          <FaBook /> <span className="tab-text">Trading Journal</span>
         </button>
       </div>
 
@@ -321,8 +328,8 @@ function Account() {
                         <tbody>
                           {resultsByCategory[category].map((result, index) => (
                             <tr key={index}>
-                              <td>{formatDate(result.completed_at)}</td>
-                              <td>{result.quiz_title || 'Unnamed Quiz'}</td>
+                              <td>{formatDate(result.date)}</td>
+                              <td>{result.video_name ?  result.video_name : result.category}</td>
                               <td>
                                 <span className={`score-badge ${(result.score / result.total_questions) >= 0.7 ? 'good' : 'needs-work'}`}>
                                   {result.score}/{result.total_questions} ({Math.round((result.score / result.total_questions) * 100)}%)
@@ -346,43 +353,40 @@ function Account() {
               <div className="risk-profile-content">
                 <RiskAppetiteBadge riskAppetite={user.risk_appetite} />
                 
-                <div className="risk-explanation">
-                  <h3>What Your Risk Profile Means</h3>
-                  {user.risk_appetite <= 3 ? (
-                    <div className="risk-description-card conservative">
-                      <h4>Conservative Investor</h4>
-                      <p>You prefer stability and security over high returns. Your trading strategies should focus on:</p>
-                      <ul>
-                        <li>Blue-chip stocks with stable dividends</li>
-                        <li>Government and high-grade corporate bonds</li>
-                        <li>ETFs that track major indices</li>
-                        <li>Longer-term positions with less frequent trading</li>
-                      </ul>
-                    </div>
-                  ) : user.risk_appetite <= 6 ? (
-                    <div className="risk-description-card moderate">
-                      <h4>Moderate Investor</h4>
-                      <p>You seek a balance between growth and security. Your trading strategies may include:</p>
-                      <ul>
-                        <li>A mix of growth and value stocks</li>
-                        <li>Some exposure to international markets</li>
-                        <li>Moderate position sizing</li>
-                        <li>A combination of short and long-term positions</li>
-                      </ul>
-                    </div>
-                  ) : (
-                    <div className="risk-description-card aggressive">
-                      <h4>Aggressive Investor</h4>
-                      <p>You prioritize growth potential and are comfortable with volatility. Your trading strategies might include:</p>
-                      <ul>
-                        <li>Growth stocks and emerging markets</li>
-                        <li>Options trading and leveraged positions</li>
-                        <li>Sector rotation and momentum strategies</li>
-                        <li>More active trading with shorter holding periods</li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                {user.risk_appetite <= 3 ? (
+                  <div className="risk-description-card conservative">
+                    <h4>Conservative Investor</h4>
+                    <p>You prefer stability and security over high returns. Your trading strategies should focus on:</p>
+                    <ul>
+                      <li>Blue-chip stocks with stable dividends</li>
+                      <li>Government and high-grade corporate bonds</li>
+                      <li>ETFs that track major indices</li>
+                      <li>Longer-term positions with less frequent trading</li>
+                    </ul>
+                  </div>
+                ) : user.risk_appetite <= 6 ? (
+                  <div className="risk-description-card moderate">
+                    <h4>Moderate Investor</h4>
+                    <p>You seek a balance between growth and security. Your trading strategies may include:</p>
+                    <ul>
+                      <li>A mix of growth and value stocks</li>
+                      <li>Some exposure to international markets</li>
+                      <li>Moderate position sizing</li>
+                      <li>A combination of short and long-term positions</li>
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="risk-description-card aggressive">
+                    <h4>Aggressive Investor</h4>
+                    <p>You prioritize growth potential and are comfortable with volatility. Your trading strategies might include:</p>
+                    <ul>
+                      <li>Growth stocks and emerging markets</li>
+                      <li>Options trading and leveraged positions</li>
+                      <li>Sector rotation and momentum strategies</li>
+                      <li>More active trading with shorter holding periods</li>
+                    </ul>
+                  </div>
+                )}
                 
                 <div className="risk-actions">
                   <button 
@@ -409,6 +413,10 @@ function Account() {
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'journal' && (
+          <TradingJournal />
         )}
       </div>
       
