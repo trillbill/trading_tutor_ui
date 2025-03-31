@@ -367,6 +367,125 @@ const terminologyData = [
     ],
   },
   {
+    name: "Doji",
+    category: "Charts",
+    value:
+      "A Doji is a candlestick pattern that forms when a security's opening and closing prices are virtually equal, creating a candlestick with a very small body or no body at all. This pattern indicates market indecision, where neither buyers nor sellers have gained control. Dojis are significant because they often signal potential trend reversals, especially after a strong uptrend or downtrend. The longer the upper and lower shadows (wicks), the more significant the market indecision. Common variations include the Long-Legged Doji, Dragonfly Doji, and Gravestone Doji.",
+    shortDescription: "A candlestick pattern with virtually equal opening and closing prices, indicating market indecision.",
+    chartType: "doji",
+    lineColor: "orange",
+    data: [
+      { time: '2025-01-01', open: 49.9, high: 55, low: 45, close: 50 },
+    ],
+  },
+  {
+    name: "Engulfing Pattern",
+    category: "Charts",
+    value:
+      "An Engulfing Pattern is a two-candle reversal pattern that occurs when the body of a candle completely engulfs the body of the previous candle. A bullish engulfing pattern forms during a downtrend when a large bullish (green/white) candle completely engulfs the body of the previous bearish (red/black) candle, signaling a potential upward reversal. Conversely, a bearish engulfing pattern forms during an uptrend when a large bearish candle engulfs the previous bullish candle, indicating a potential downward reversal. The pattern is considered more reliable when it occurs after a clear trend and is accompanied by high trading volume.",
+    shortDescription: "A two-candle reversal pattern where one candle completely engulfs the body of the previous candle.",
+    chartType: "engulfing",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', open: 50, high: 52, low: 45, close: 47 },
+      { time: '2025-01-02', open: 46, high: 60, low: 45, close: 55 },
+    ],
+  },
+  {
+    name: "Morning Star",
+    category: "Charts",
+    value:
+      "The Morning Star is a bullish three-candle reversal pattern that signals a potential bottom in a downtrend. It consists of a large bearish candle, followed by a small-bodied candle (often a Doji or Spinning Top) that gaps down, and finally a large bullish candle that closes at least halfway up the first candle's body. This pattern represents a shift from selling pressure to buying pressure, with the middle candle showing indecision before buyers take control. The Morning Star is considered a strong reversal signal, especially when it occurs at support levels and is accompanied by increased volume on the third day.",
+    shortDescription: "A bullish three-candle reversal pattern signaling a potential bottom in a downtrend.",
+    chartType: "morningStar",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', open: 52, high: 54, low: 40, close: 42 },
+      { time: '2025-01-02', open: 40, high: 44, low: 39, close: 42 },
+      { time: '2025-01-03', open: 42, high: 54, low: 40, close: 52 },
+    ],
+  },
+  {
+    name: "Bullish Hammer",
+    category: "Charts",
+    value:
+      "The Bullish Hammer is a single-candle bullish reversal pattern that forms during a downtrend. It is characterized by a small body at the upper end of the trading range with a long lower shadow (wick) that is at least twice the size of the body. The long lower shadow indicates that sellers drove prices down during the session, but buyers were able to push the price back up by the close, suggesting a potential bullish reversal. The pattern is confirmed when the next candle closes higher, preferably with strong volume. The Bullish Hammer is most effective when it appears after a significant downtrend and at support levels.",
+    shortDescription: "A single-candle bullish reversal pattern with a small body and long lower shadow, appearing in downtrends.",
+    chartType: "hammer",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', open: 52, high: 54, low: 40, close: 42 },
+      { time: '2025-01-02', open: 40, high: 44, low: 25, close: 43 },
+    ],
+  },
+  {
+    name: "Piercing Line",
+    category: "Charts",
+    value:
+      "The Piercing Line is a two-candle bullish reversal pattern that occurs during a downtrend. It consists of a bearish (red/black) candle followed by a bullish (green/white) candle that opens below the previous day's low but closes above the midpoint of the previous day's body. This pattern indicates a shift from selling pressure to buying pressure, as buyers overcome the previous day's selling. The deeper the penetration into the first candle's body, the stronger the reversal signal. The Piercing Line is similar to the Bullish Engulfing pattern but doesn't completely engulf the previous candle. It's considered more reliable when accompanied by increased volume on the second day.",
+    shortDescription: "A two-candle bullish reversal pattern where the second candle closes above the midpoint of the first candle.",
+    chartType: "piercingLine",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', open: 55, high: 56, low: 40, close: 45 },
+      { time: '2025-01-02', open: 42, high: 54, low: 39, close: 53 },
+    ],
+  },
+  {
+    name: "Evening Star",
+    category: "Charts",
+    value:
+      "The Evening Star is a bearish three-candle reversal pattern that signals a potential top in an uptrend. It consists of a large bullish candle, followed by a small-bodied candle (often a Doji or Spinning Top) that gaps up, and finally a large bearish candle that closes at least halfway down the first candle's body. This pattern represents a shift from buying pressure to selling pressure, with the middle candle showing indecision before sellers take control. The Evening Star is considered a strong reversal signal, especially when it occurs at resistance levels and is accompanied by increased volume on the third day. It is the bearish counterpart to the Morning Star pattern.",
+    shortDescription: "A bearish three-candle reversal pattern signaling a potential top in an uptrend.",
+    chartType: "eveningStar",
+    lineColor: "red",
+    data: [
+      { time: '2025-01-01', open: 42, high: 54, low: 40, close: 52 },
+      { time: '2025-01-02', open: 52, high: 55, low: 50, close: 54 },
+      { time: '2025-01-03', open: 52, high: 54, low: 40, close: 42 },
+    ],
+  },
+  {
+    name: "Three White Soldiers",
+    category: "Charts",
+    value:
+      "The Three White Soldiers is a bullish reversal pattern that consists of three consecutive long-bodied bullish (green/white) candles, each closing higher than the previous one and opening within the body of the previous candle. This pattern indicates strong buying pressure and a potential trend reversal from a downtrend to an uptrend. Each candle should open within the previous candle's body and close near its high, showing consistent buying pressure. The pattern is considered more reliable when it forms after a downtrend, has little to no upper shadows (indicating buyers maintained control throughout each session), and is accompanied by increasing volume across the three days. It signals that bulls have taken control of the market and suggests further upward movement.",
+    shortDescription: "A bullish reversal pattern consisting of three consecutive rising bullish candles, indicating strong buying pressure.",
+    chartType: "threeWhiteSoldiers",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', open: 42, high: 54, low: 40, close: 52 },
+      { time: '2025-01-02', open: 46, high: 59, low: 44, close: 57 },
+      { time: '2025-01-03', open: 52, high: 65, low: 50, close: 62 },
+    ],
+  },
+  {
+    name: "Spinning Top",
+    category: "Charts",
+    value:
+      "A Spinning Top is a candlestick pattern characterized by a small body with upper and lower shadows that are usually longer than the body itself. The small body indicates little movement between the opening and closing prices, while the long shadows suggest that both buyers and sellers were active during the session but neither could gain decisive control. This pattern represents market indecision and is often interpreted as a potential signal for a trend reversal or continuation, depending on where it appears in the existing trend and what patterns follow it. When a Spinning Top appears after a strong trend, it may indicate weakening momentum and a possible reversal. In a ranging market, it may simply reflect ongoing indecision.",
+    shortDescription: "A candlestick with a small body and long upper and lower shadows, indicating market indecision.",
+    chartType: "spinningTop",
+    lineColor: "orange",
+    data: [
+      { time: '2025-01-01', open: 50, high: 60, low: 38, close: 47 },
+    ],
+  },
+  {
+    name: "Three Black Crows",
+    category: "Charts",
+    value:
+      "The Three Black Crows is a bearish reversal pattern that consists of three consecutive long-bodied bearish (red/black) candles, each closing lower than the previous one and opening within the body of the previous candle. This pattern indicates strong selling pressure and a potential trend reversal from an uptrend to a downtrend. Each candle should open within the previous candle's body and close near its low, showing consistent selling pressure. The pattern is considered more reliable when it forms after an uptrend, has little to no lower shadows (indicating sellers maintained control throughout each session), and is accompanied by increasing volume across the three days. It signals that bears have taken control of the market and suggests further downward movement.",
+    shortDescription: "A bearish reversal pattern consisting of three consecutive falling bearish candles, indicating strong selling pressure.",
+    chartType: "threeBlackCrows",
+    lineColor: "red",
+    data: [
+      { time: '2025-01-01', open: 62, high: 65, low: 50, close: 52 },
+      { time: '2025-01-02', open: 57, high: 59, low: 44, close: 46 },
+      { time: '2025-01-03', open: 52, high: 54, low: 40, close: 42 },
+    ],
+  },
+  {
     name: "Exponential Moving Average (EMA)",
     category: "Tools",
     value:
@@ -404,6 +523,24 @@ const terminologyData = [
     shortDescription: "The MACD is a momentum indicator that shows the relationship between two EMAs.",
     video: "https://www.youtube.com/embed/1AAJVAqAbHE?si=7wla9zhzzNKFvLOD",
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+MACD.png",
+  },
+  {
+    name: "Bollinger Bands",
+    category: "Tools",
+    value:
+      "Bollinger Bands are a technical analysis tool that consists of a middle band (typically a 20-period simple moving average) and two outer bands that are standard deviations away from the middle band. These bands expand and contract based on market volatility, with wider bands indicating higher volatility and narrower bands indicating lower volatility. Traders use Bollinger Bands to identify potential overbought or oversold conditions when prices touch or exceed the outer bands, as well as to recognize periods of consolidation before potential breakouts. The bands also help in identifying trend strength and potential reversal points, making them versatile for various trading strategies.",
+    shortDescription: "A volatility indicator consisting of a moving average with upper and lower bands based on standard deviations.",
+    video: "https://www.youtube.com/embed/wRiR8KTlGK8?si=bvs80ohmF0Kow7Dz",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Bollinger+Bands.png",
+  },
+  {
+    name: "Average True Range (ATR)",
+    category: "Tools",
+    value:
+      "The Average True Range (ATR) is a technical indicator that measures market volatility by decomposing the entire range of an asset price for a specific period. Developed by J. Welles Wilder, the ATR doesn't provide directional signals but instead quantifies the degree of price movement or volatility. Traders use the ATR to set stop-loss levels, determine position sizes, and identify potential breakout points. A higher ATR value indicates higher volatility, suggesting larger price movements, while a lower ATR value indicates lower volatility with smaller price movements. The ATR is particularly useful in trending markets to adjust trading strategies based on changing volatility conditions.",
+    shortDescription: "A volatility indicator that measures the average range of price movement over a specified period.",
+    video: "https://www.youtube.com/embed/h_R4bdlb7fM?si=hWC3Ij9Gg0QKc4n8",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Average+True+Range+(ATR).png",
   },
 
   // Technical Analysis Tools

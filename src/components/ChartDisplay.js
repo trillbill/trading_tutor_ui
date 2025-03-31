@@ -8,6 +8,17 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
   const getHigh = d => (d.hasOwnProperty('high') ? d.high : d.value);
   const getLow  = d => (d.hasOwnProperty('low')  ? d.low  : d.value);
   const getClose = d => (d.hasOwnProperty('close') ? d.close : d.value);
+  const getOpen = d => (d.hasOwnProperty('open') ? d.open : d.value);
+
+  // List of chart types that should be rendered as candlesticks
+  const candlestickPatterns = [
+    'candle', 'doji', 'engulfing', 'morningStar', 'eveningStar', 
+    'hammer', 'piercingLine', 'threeWhiteSoldiers', 'spinningTop', 
+    'threeBlackCrows'
+  ];
+
+  // Check if the current chart type should be rendered as candlesticks
+  const shouldRenderCandlesticks = candlestickPatterns.includes(chartType);
 
   useEffect(() => {
     const chart = createChart(chartContainerRef.current, {
@@ -33,18 +44,258 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
       handleScale: false,
     });
 
-    
-    // Use a line series.
-    // Map each data point to { time, value } using our helper for close if available.
-    const lineSeries = chart.addLineSeries({
-      color: lineColor === 'red' ? '#ca0e0e' : '#26a69a',
-      lineWidth: 2,
-    });
-    const lineData = data.map(d => ({
-      time: d.time,
-      value: getClose(d)
-    }));
-    lineSeries.setData(lineData);
+    // Check if we should render candlesticks or a line chart
+    if (shouldRenderCandlesticks) {
+      // For candlestick charts, we need OHLC data
+      const candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderVisible: false,
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+      });
+      
+      // Transform data to OHLC format if it's not already
+      const candleData = data.map((d, index) => {
+        // If the data already has OHLC properties, use them
+        if (d.hasOwnProperty('open') && d.hasOwnProperty('high') && 
+            d.hasOwnProperty('low') && d.hasOwnProperty('close')) {
+          return {
+            time: d.time,
+            open: d.open,
+            high: d.high,
+            low: d.low,
+            close: d.close
+          };
+        }
+        
+        // Otherwise, create synthetic OHLC data from the value
+        const value = d.value;
+        const range = value * 0.02; // 2% range for candle
+        
+        // Create pattern-specific candles for key dates
+        // The 7th day (index 6) is typically where we show the pattern
+        if (index === 6) {
+          switch (chartType) {
+            case 'doji':
+              return {
+                time: d.time,
+                open: value,
+                high: value + range * 0.5,
+                low: value - range * 0.5,
+                close: value
+              };
+            case 'spinningTop':
+              return {
+                time: d.time,
+                open: value - range * 0.1,
+                high: value + range,
+                low: value - range,
+                close: value + range * 0.1
+              };
+            case 'hammer':
+              return {
+                time: d.time,
+                open: value - range * 0.1,
+                high: value + range * 0.2,
+                low: value - range * 2,
+                close: value
+              };
+            case 'engulfing':
+              // For engulfing pattern, make a large bullish candle
+              return {
+                time: d.time,
+                open: value - range * 1.5,
+                high: value + range * 0.5,
+                low: value - range * 1.5,
+                close: value + range * 1.5
+              };
+            case 'piercingLine':
+              // For piercing line, make a bullish candle that pierces previous bearish candle
+              return {
+                time: d.time,
+                open: value - range * 1.2,
+                high: value + range * 0.5,
+                low: value - range * 1.2,
+                close: value + range
+              };
+            case 'morningStar':
+              // For morning star, make the third candle (bullish)
+              return {
+                time: d.time,
+                open: value - range,
+                high: value + range * 1.5,
+                low: value - range,
+                close: value + range * 1.5
+              };
+            case 'eveningStar':
+              // For evening star, make the third candle (bearish)
+              return {
+                time: d.time,
+                open: value + range,
+                high: value + range,
+                low: value - range * 1.5,
+                close: value - range * 1.5
+              };
+            case 'threeWhiteSoldiers':
+              // For three white soldiers, make the third bullish candle
+              return {
+                time: d.time,
+                open: value - range * 0.5,
+                high: value + range * 1.5,
+                low: value - range * 0.5,
+                close: value + range * 1.5
+              };
+            case 'threeBlackCrows':
+              // For three black crows, make the third bearish candle
+              return {
+                time: d.time,
+                open: value + range * 0.5,
+                high: value + range * 0.5,
+                low: value - range * 1.5,
+                close: value - range * 1.5
+              };
+            default:
+              // For other patterns or the default candle type
+              break;
+          }
+        }
+        
+        // For specific patterns, create special candles for days before/after the pattern
+        if (chartType === 'engulfing' && index === 5) {
+          // Small bearish candle before engulfing
+          return {
+            time: d.time,
+            open: value + range * 0.5,
+            high: value + range * 0.7,
+            low: value - range * 0.7,
+            close: value - range * 0.5
+          };
+        }
+        
+        if (chartType === 'piercingLine' && index === 5) {
+          // Bearish candle before piercing line
+          return {
+            time: d.time,
+            open: value + range,
+            high: value + range,
+            low: value - range,
+            close: value - range
+          };
+        }
+        
+        if (chartType === 'morningStar') {
+          if (index === 4) {
+            // First candle of morning star (bearish)
+            return {
+              time: d.time,
+              open: value + range,
+              high: value + range,
+              low: value - range,
+              close: value - range
+            };
+          } else if (index === 5) {
+            // Second candle of morning star (small/doji)
+            return {
+              time: d.time,
+              open: value - range * 0.2,
+              high: value + range * 0.3,
+              low: value - range * 0.3,
+              close: value
+            };
+          }
+        }
+        
+        if (chartType === 'eveningStar') {
+          if (index === 4) {
+            // First candle of evening star (bullish)
+            return {
+              time: d.time,
+              open: value - range,
+              high: value + range,
+              low: value - range,
+              close: value + range
+            };
+          } else if (index === 5) {
+            // Second candle of evening star (small/doji)
+            return {
+              time: d.time,
+              open: value + range * 0.2,
+              high: value + range * 0.3,
+              low: value - range * 0.3,
+              close: value
+            };
+          }
+        }
+        
+        if (chartType === 'threeWhiteSoldiers') {
+          if (index === 5) {
+            // First white soldier
+            return {
+              time: d.time,
+              open: value - range * 0.5,
+              high: value + range,
+              low: value - range * 0.5,
+              close: value + range
+            };
+          } else if (index === 6) {
+            // Second white soldier
+            return {
+              time: d.time,
+              open: value,
+              high: value + range * 1.2,
+              low: value,
+              close: value + range * 1.2
+            };
+          }
+        }
+        
+        if (chartType === 'threeBlackCrows') {
+          if (index === 5) {
+            // First black crow
+            return {
+              time: d.time,
+              open: value + range * 0.5,
+              high: value + range * 0.5,
+              low: value - range,
+              close: value - range
+            };
+          } else if (index === 6) {
+            // Second black crow
+            return {
+              time: d.time,
+              open: value,
+              high: value,
+              low: value - range * 1.2,
+              close: value - range * 1.2
+            };
+          }
+        }
+        
+        // For default candles, alternate between bullish and bearish
+        const isEven = parseInt(d.time.split('-')[2]) % 2 === 0;
+        return {
+          time: d.time,
+          open: isEven ? value - range * 0.5 : value + range * 0.5,
+          high: value + range,
+          low: value - range,
+          close: isEven ? value + range * 0.5 : value - range * 0.5
+        };
+      });
+      
+      candleSeries.setData(candleData);
+    } else {
+      // Use a line series for non-candle chart types
+      const lineSeries = chart.addLineSeries({
+        color: lineColor === 'red' ? '#ca0e0e' : '#26a69a',
+        lineWidth: 2,
+      });
+      const lineData = data.map(d => ({
+        time: d.time,
+        value: getClose(d)
+      }));
+      lineSeries.setData(lineData);
+    }
 
     // Fit the time scale.
     chart.timeScale().fitContent();
@@ -257,7 +508,7 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
       resizeObserver.disconnect();
       chart.remove();
     };
-  }, [data, chartType, height]);
+  }, [data, chartType, lineColor, height, shouldRenderCandlesticks]);
 
   return (
     <div
