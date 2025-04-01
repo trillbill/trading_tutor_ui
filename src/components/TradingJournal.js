@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 
@@ -20,6 +20,14 @@ function TradingJournal() {
     profit_loss: ''
   });
   const [editingEntryId, setEditingEntryId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [sortField, setSortField] = useState('created_at');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [filterOutcome, setFilterOutcome] = useState('all');
+  const [activeTooltip, setActiveTooltip] = useState(null);
+  
+  // Ref for tooltip positioning
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     fetchJournalEntries();
@@ -27,13 +35,20 @@ function TradingJournal() {
 
   const fetchJournalEntries = async () => {
     try {
+      setLoading(true);
       const response = await api.get('/api/journal');
       if (response.data.success) {
-        setJournalEntries(response.data.entries);
+        // Sort entries by created_at in descending order (newest first)
+        const sortedEntries = response.data.entries.sort((a, b) => 
+          new Date(b.created_at) - new Date(a.created_at)
+        );
+        setJournalEntries(sortedEntries);
       }
     } catch (error) {
       console.error('Error fetching journal entries:', error);
       setJournalError('Failed to load journal entries');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,11 +138,57 @@ function TradingJournal() {
     }).format(value);
   };
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  const formatDateTime = (dateString) => {
+    const options = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // Handle tooltip display
+  const showTooltip = (entryId, type) => {
+    setActiveTooltip({ id: entryId, type });
+  };
+
+  const hideTooltip = () => {
+    setActiveTooltip(null);
+  };
+
+  // Sort entries based on current sort field and direction
+  const getSortedEntries = () => {
+    if (!journalEntries.length) return [];
+    
+    return [...journalEntries]
+      .filter(entry => filterOutcome === 'all' || entry.outcome === filterOutcome)
+      .sort((a, b) => {
+        let aValue = a[sortField];
+        let bValue = b[sortField];
+        
+        // Handle numeric fields
+        if (['entry_price', 'exit_price', 'quantity', 'profit_loss'].includes(sortField)) {
+          aValue = parseFloat(aValue) || 0;
+          bValue = parseFloat(bValue) || 0;
+        }
+        
+        // Handle date fields
+        if (['trade_date', 'created_at', 'updated_at'].includes(sortField)) {
+          aValue = new Date(aValue);
+          bValue = new Date(bValue);
+        }
+        
+        if (sortDirection === 'asc') {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
+      });
+  };
+
+  // Calculate statistics
   const calculateStats = () => {
     const closedTrades = journalEntries.filter(entry => entry.outcome !== 'open');
     const wins = closedTrades.filter(entry => entry.outcome === 'win').length;
@@ -143,6 +204,7 @@ function TradingJournal() {
   };
 
   const stats = calculateStats();
+  const sortedEntries = getSortedEntries();
 
   return (
     <div className="journal-container">
@@ -325,7 +387,42 @@ function TradingJournal() {
         </div>
       )}
 
-      <div className="journal-entries">
+      <div className="journal-filters">
+        <div className="filter-group">
+          <select 
+            className="filter-select"
+            value={filterOutcome}
+            onChange={(e) => setFilterOutcome(e.target.value)}
+          >
+            <option value="all">All Trades</option>
+            <option value="open">Open Trades</option>
+            <option value="win">Winning Trades</option>
+            <option value="loss">Losing Trades</option>
+            <option value="breakeven">Breakeven Trades</option>
+          </select>
+        </div>
+        
+        <div className="filter-group">
+          <FaSort />
+          <select 
+            className="filter-select"
+            value={sortField}
+            onChange={(e) => setSortField(e.target.value)}
+          >
+            <option value="created_at">Date</option>
+            <option value="symbol">Symbol</option>
+            <option value="profit_loss">Profit/Loss</option>
+          </select>
+          <button 
+            className="sort-direction-button"
+            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+          >
+            {sortDirection === 'asc' ? <FaSortUp /> : <FaSortDown />}
+          </button>
+        </div>
+      </div>
+
+      <div className="journal-table-container">
         <table className="journal-table">
           <thead>
             <tr>
@@ -334,44 +431,69 @@ function TradingJournal() {
               <th>Type</th>
               <th>Entry</th>
               <th>Exit</th>
-              <th>Quantity</th>
-              <th>P/L</th>
+              <th>Qty</th>
+              <th>Strategy/Notes</th>
               <th>Outcome</th>
+              <th>P/L</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {journalEntries.map(entry => (
-              <tr key={entry.id}>
-                <td>{formatDate(entry.trade_date)}</td>
-                <td>{entry.symbol}</td>
-                <td>{entry.trade_type}</td>
+            {sortedEntries.map(entry => (
+              <tr key={entry.id} className={`outcome-${entry.outcome}`}>
+                <td>{formatDateTime(entry.created_at)}</td>
+                <td>{entry.symbol.toUpperCase()}</td>
+                <td className={entry.trade_type === 'buy' ? 'buy-type' : 'sell-type'}>
+                  {entry.trade_type === 'buy' ? 'Buy' : 'Sell'}
+                </td>
                 <td>{formatCurrency(entry.entry_price)}</td>
-                <td>{formatCurrency(entry.exit_price)}</td>
+                <td>{entry.exit_price ? formatCurrency(entry.exit_price) : '-'}</td>
                 <td>{entry.quantity}</td>
-                <td className={entry.profit_loss >= 0 ? 'positive' : 'negative'}>
-                  {formatCurrency(entry.profit_loss)}
+                <td className="strategy-notes-cell">
+                  <div className="tooltip-container">
+                    <FaInfoCircle 
+                      className="info-icon"
+                      onMouseEnter={() => showTooltip(entry.id, 'strategy')}
+                      onMouseLeave={hideTooltip}
+                    />
+                    {activeTooltip && activeTooltip.id === entry.id && activeTooltip.type === 'strategy' && (
+                      <div className="tooltip" ref={tooltipRef}>
+                        <div className="tooltip-header">Strategy & Notes</div>
+                        <div className="tooltip-section">
+                          <strong>Strategy:</strong> {entry.strategy || 'None'}
+                        </div>
+                        <div className="tooltip-section">
+                          <strong>Notes:</strong> {entry.notes || 'None'}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td>
                   <span className={`outcome-badge ${entry.outcome}`}>
-                    {entry.outcome}
+                    {entry.outcome.charAt(0).toUpperCase() + entry.outcome.slice(1)}
                   </span>
                 </td>
+                <td className={parseFloat(entry.profit_loss) >= 0 ? 'positive' : 'negative'}>
+                  {formatCurrency(entry.profit_loss)}
+                </td>
                 <td>
-                  <button
-                    className="icon-button"
-                    onClick={() => openJournalModal(entry)}
-                    title="Edit"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    className="icon-button delete"
-                    onClick={() => handleDeleteEntry(entry.id)}
-                    title="Delete"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="action-buttons">
+                    <button 
+                      className="icon-button edit" 
+                      onClick={() => openJournalModal(entry)}
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button 
+                      className="icon-button delete" 
+                      onClick={() => handleDeleteEntry(entry.id)}
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
