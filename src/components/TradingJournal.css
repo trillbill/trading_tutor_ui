@@ -72,6 +72,12 @@
   gap: 10px;
 }
 
+.filter-group label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .filter-select {
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.2);
@@ -79,6 +85,7 @@
   border-radius: 6px;
   color: #fff;
   font-size: 14px;
+  outline: none;
 }
 
 .sort-button {
@@ -108,15 +115,18 @@
 
 .journal-table th,
 .journal-table td {
-  padding: 12px;
+  padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .journal-table th {
   background-color: rgba(0, 0, 0, 0.2);
-  font-weight: 600;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .journal-table tr:hover {
@@ -373,4 +383,158 @@
 
 .modal-body {
   padding: 25px 30px;
+}
+
+/* Add these styles for tooltips */
+.strategy-notes-cell {
+  position: relative;
+}
+
+.tooltip-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.info-icon {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.info-icon:hover {
+  color: #4b937b;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 100;
+  width: 280px;
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  left: 50%;
+  transform: translateX(-50%);
+  top: -5px;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 8px 8px 8px;
+  border-style: solid;
+  border-color: transparent transparent rgba(30, 30, 30, 0.95) transparent;
+}
+
+.tooltip-header {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.tooltip-section {
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-word;
+}
+
+.tooltip-section:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-section strong {
+  color: #4b937b;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Update table styles to accommodate the new column */
+.journal-table th, 
+.journal-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.journal-table th {
+  background-color: rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Make the table horizontally scrollable on mobile */
+.journal-table-container {
+  overflow-x: auto;
+  margin-bottom: 30px;
+}
+
+/* Style for timestamps */
+.journal-table td:nth-child(10) {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Sort Direction Button Styling */
+.sort-direction-button {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  transition: all 0.2s ease;
+  margin-left: 5px;
+}
+
+.sort-direction-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.sort-direction-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(75, 147, 123, 0.3);
+}
+
+.sort-direction-button svg {
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sort-direction-button {
+    padding: 6px 8px;
+  }
+  
+  .sort-direction-button svg {
+    font-size: 14px;
+  }
+  
+  .filter-group {
+    gap: 5px;
+  }
 } 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
@@ -25,7 +25,7 @@ import chatIcon from './assets/chat-icon.png';
 import homeIcon from './assets/home-icon.png';
 
 const AuthRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
+  const { loading } = useContext(AuthContext);
   
   if (loading) {
     return <div>Loading...</div>;

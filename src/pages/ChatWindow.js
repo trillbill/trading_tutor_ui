@@ -20,6 +20,7 @@ const ChatWindow = () => {
   const { isAuthenticated, isEmailVerified } = useContext(AuthContext);
   const showAuthPrompt = !isAuthenticated || !isEmailVerified;
   const [lastImageAnalysis, setLastImageAnalysis] = useState(null);
+  const [userRiskProfile, setUserRiskProfile] = useState(null);
 
   // Prompt options
   const prompts = [
@@ -44,24 +45,34 @@ const ChatWindow = () => {
     img.onload = () => setImageLoaded(true);
   }, []);
 
+  // Fetch user risk profile when component mounts
   useEffect(() => {
-    // Load chat history when component mounts
-    const loadChatHistory = async () => {
-      try {
-        // The API call will include the HttpOnly cookie automatically
-        const response = await api.get('/api/chat/history');
-        if (response.data.success) {
-          setMessages(response.data.messages);
+    const fetchRiskProfile = async () => {
+      if (user) {
+        try {
+          const response = await api.get('/api/account/profile');
+          if (response.data.success && response.data.profile) {
+            setUserRiskProfile({
+              risk_appetite: response.data.profile.user.risk_appetite || null,
+              risk_level: getRiskLevel(response.data.profile.user.risk_appetite)
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching risk profile:', error);
         }
-      } catch (error) {
-        console.error('Error loading chat history:', error);
       }
     };
     
-    if (user) {
-      loadChatHistory();
-    }
+    fetchRiskProfile();
   }, [user]);
+
+  // Helper function to determine risk level from risk appetite
+  const getRiskLevel = (riskAppetite) => {
+    if (riskAppetite === null || riskAppetite === undefined) return null;
+    if (riskAppetite <= 3) return 'conservative';
+    if (riskAppetite <= 6) return 'moderate';
+    return 'aggressive';
+  };
 
   const handlePromptClick = async (prompt) => {
     // Create a new message object for the selected prompt
@@ -165,9 +176,10 @@ const ChatWindow = () => {
       });
     }
 
-    // Simplified payload - just send the messages
+    // Simplified payload - send messages and risk profile separately
     const payload = {
       messages: messagesForApi,
+      riskProfile: userRiskProfile // Send the entire risk profile object
     };
 
     try {
@@ -209,10 +221,12 @@ const ChatWindow = () => {
         content: msg.text
       }));
 
+    // Add risk profile to the payload if available
     const payload = {
       text: defaultPrompt,
       imageUrl: imageData,
-      conversationHistory
+      conversationHistory,
+      riskProfile: userRiskProfile // Send the entire risk profile object
     };
 
     try {

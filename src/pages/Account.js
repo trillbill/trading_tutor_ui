@@ -358,7 +358,7 @@ function Account() {
                     <h4>Conservative Investor</h4>
                     <p>You prefer stability and security over high returns. Your trading strategies should focus on:</p>
                     <ul>
-                      <li>Blue-chip stocks with stable dividends</li>
+                      <li>Blue-chip assets</li>
                       <li>Government and high-grade corporate bonds</li>
                       <li>ETFs that track major indices</li>
                       <li>Longer-term positions with less frequent trading</li>
@@ -369,8 +369,8 @@ function Account() {
                     <h4>Moderate Investor</h4>
                     <p>You seek a balance between growth and security. Your trading strategies may include:</p>
                     <ul>
-                      <li>A mix of growth and value stocks</li>
-                      <li>Some exposure to international markets</li>
+                      <li>A mix of growth and value assets</li>
+                      <li>Some exposure to more volatile markets</li>
                       <li>Moderate position sizing</li>
                       <li>A combination of short and long-term positions</li>
                     </ul>
@@ -380,7 +380,7 @@ function Account() {
                     <h4>Aggressive Investor</h4>
                     <p>You prioritize growth potential and are comfortable with volatility. Your trading strategies might include:</p>
                     <ul>
-                      <li>Growth stocks and emerging markets</li>
+                      <li>Growth assets and volatile markets</li>
                       <li>Options trading and leveraged positions</li>
                       <li>Sector rotation and momentum strategies</li>
                       <li>More active trading with shorter holding periods</li>
