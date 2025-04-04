@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaPlay, FaTimes, FaSearch, FaChartLine, FaBook, FaTools, FaChevronRight } from 'react-icons/fa';
+import { FaPlay, FaTimes, FaSearch, FaChevronRight } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import './Learn.css';
 import terminologyData from '../terminologyData';
@@ -17,17 +16,12 @@ const Learn = () => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         // Preload the hero image
         const img = new Image();
         img.src = heroImage;
         img.onload = () => setImageLoaded(true);
     }, []);
-
-    // Check if the user is logged in
-    const isLoggedIn = localStorage.getItem('userId') !== null;
 
     // Define topics and their associated categories
     const topics = {
@@ -44,7 +38,7 @@ const Learn = () => {
         Tools: { 
             icon: toolsIcon, 
             terms: ['Tools'],
-            description: 'Master the essential tools used by successful traders'
+            description: 'Master the essential tools and technical indicators used by successful traders'
         },
     };
 
@@ -159,10 +153,10 @@ const Learn = () => {
             {selectedTerm && (
                 <div className="modal" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="close" onClick={handleCloseModal}>
+                        <button className="modal-close-button" onClick={handleCloseModal}>
                             <FaTimes />
                         </button>
-                        <div className="modal-header">
+                        <div className="learn-modal-header">
                             <h2>{selectedTerm.name}</h2>
                         </div>
                         {selectedTerm.video ? (
@@ -184,13 +178,6 @@ const Learn = () => {
                         <div className="modal-description">
                             <p>{selectedTerm.value}</p>
                         </div>
-                        {isLoggedIn && (
-                            <div className="modal-actions">
-                                <button className="action-button" onClick={() => navigate('/quiz')}>
-                                    Take a Quiz on This Topic
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </div>
             )}

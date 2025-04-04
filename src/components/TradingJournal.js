@@ -29,9 +29,39 @@ function TradingJournal() {
   // Ref for tooltip positioning
   const tooltipRef = useRef(null);
 
+  // Add these constants at the top of your component
+  const MAX_STRATEGY_LENGTH = 80;
+  const MAX_NOTES_LENGTH = 180;
+
+  // Add a ref to store the error timeout
+  const errorTimeoutRef = useRef(null);
+
   useEffect(() => {
     fetchJournalEntries();
   }, []);
+
+  // Clear error message after a delay
+  useEffect(() => {
+    // If there's an error message
+    if (journalError) {
+      // Clear any existing timeout
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
+      
+      // Set a new timeout to clear the error after 5 seconds (5000ms)
+      errorTimeoutRef.current = setTimeout(() => {
+        setJournalError('');
+      }, 5000);
+    }
+    
+    // Cleanup function to clear the timeout when component unmounts
+    return () => {
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
+    };
+  }, [journalError]); // Run this effect whenever journalError changes
 
   const fetchJournalEntries = async () => {
     try {
@@ -54,18 +84,46 @@ function TradingJournal() {
 
   const handleJournalFormChange = (e) => {
     const { name, value } = e.target;
-    setJournalFormData(prev => ({
-      ...prev,
+    
+    // Apply character limits for strategy and notes fields
+    if (name === 'strategy' && value.length > MAX_STRATEGY_LENGTH) {
+      return; // Don't update if exceeding limit
+    }
+    
+    if (name === 'notes' && value.length > MAX_NOTES_LENGTH) {
+      return; // Don't update if exceeding limit
+    }
+    
+    setJournalFormData({
+      ...journalFormData,
       [name]: value
-    }));
+    });
   };
 
   const handleJournalSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Create a copy of the form data to modify before sending
+      const formDataToSubmit = { ...journalFormData };
+      
+      // Handle empty numeric fields - convert empty strings to null
+      // This prevents the "invalid input syntax for type numeric" error
+      if (formDataToSubmit.profit_loss === '') {
+        formDataToSubmit.profit_loss = null;
+      }
+      
+      if (formDataToSubmit.exit_price === '') {
+        formDataToSubmit.exit_price = null;
+      }
+      
+      // For open trades, ensure profit_loss is null
+      if (formDataToSubmit.outcome === 'open') {
+        formDataToSubmit.profit_loss = null;
+      }
+      
       const response = editingEntryId
-        ? await api.put(`/api/journal/${editingEntryId}`, journalFormData)
-        : await api.post('/api/journal', journalFormData);
+        ? await api.put(`/api/journal/${editingEntryId}`, formDataToSubmit)
+        : await api.post('/api/journal', formDataToSubmit);
 
       if (response.data.success) {
         setShowJournalModal(false);
@@ -73,7 +131,9 @@ function TradingJournal() {
         resetForm();
       }
     } catch (error) {
-      setJournalError('Failed to save journal entry');
+      console.error('Error adding journal entry:', error);
+      setJournalError('Failed to save journal entry: ' + 
+        (error.response?.data?.error || error.message));
     }
   };
 
@@ -215,7 +275,11 @@ function TradingJournal() {
         </button>
       </div>
 
-      {journalError && <div className="error-message">{journalError}</div>}
+      {journalError && (
+        <div className="error-message fade-out">
+          {journalError}
+        </div>
+      )}
 
       <div className="journal-stats">
         <div className="stat-card">
@@ -326,13 +390,16 @@ function TradingJournal() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="strategy">Strategy</label>
+                  <label htmlFor="strategy">
+                    Strategy <span className="char-count">{journalFormData.strategy.length}/{MAX_STRATEGY_LENGTH}</span>
+                  </label>
                   <input
                     type="text"
                     id="strategy"
                     name="strategy"
                     value={journalFormData.strategy}
                     onChange={handleJournalFormChange}
+                    maxLength={MAX_STRATEGY_LENGTH}
                   />
                 </div>
                 <div className="form-group">
@@ -364,13 +431,16 @@ function TradingJournal() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="notes">Notes</label>
+                <label htmlFor="notes">
+                  Notes <span className="char-count">{journalFormData.notes.length}/{MAX_NOTES_LENGTH}</span>
+                </label>
                 <textarea
                   id="notes"
                   name="notes"
                   value={journalFormData.notes}
                   onChange={handleJournalFormChange}
                   rows="3"
+                  maxLength={MAX_NOTES_LENGTH}
                 />
               </div>
 
