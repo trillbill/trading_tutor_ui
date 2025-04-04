@@ -403,30 +403,38 @@
     animation: scaleIn 0.3s ease;
 }
 
-.close {
+.modal-close-button {
     position: absolute;
     top: 15px;
-    right: 5px;
-    color: white;
-    font-size: 24px;
+    right: 2px;
     background: transparent;
     border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 20px;
     cursor: pointer;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 10;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    margin: 0;
+    touch-action: manipulation;
+    -webkit-appearance: none;
 }
 
 .close:hover {
     opacity: 1;
 }
 
-.modal-header {
-    padding: 25px 30px 20px;
+.learn-modal-header {
+    padding: 25px 15px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.modal-header h2 {
+.learn-modal-header h2 {
+    max-width: 90%;
     margin: 0 0 10px;
     font-size: 1.8rem;
     color: white;
@@ -511,7 +519,7 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .hero-section {
+    .learn-hero-section {
         height: 150px;
         padding: 60px 0;
     }
@@ -534,7 +542,58 @@
     }
     
     .topic-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 10px 0;
+        margin: 0 -15px 30px -15px;
+        padding: 0 15px;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        scrollbar-width: none; /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+    }
+    
+    /* Hide scrollbar for Chrome/Safari */
+    .topic-grid::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .topic-card {
+        min-width: 220px; /* Fixed width for cards */
+        width: 220px;
+        flex-shrink: 0; /* Prevent cards from shrinking */
+        padding: 20px 15px;
+    }
+    
+    .topic-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 15px;
+    }
+    
+    .topic-name {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .topic-description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    /* Add some padding to the last card to ensure scrolling works properly */
+    .topic-card:last-child {
+        margin-right: 15px;
+    }
+
+    .topic-card:hover {
+        transform:none;
+    }
+
+    .topic-card.selected {
+        background: linear-gradient(135deg, #4b937b 0%, #3a7261 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .learn-list {
@@ -545,7 +604,7 @@
         width: 95%;
     }
     
-    .modal-header h2 {
+    .learn-modal-header h2 {
         font-size: 1.5rem;
     }
 }
