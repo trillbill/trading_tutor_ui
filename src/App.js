@@ -49,7 +49,7 @@ function AppRoutes() {
       <Route path="/learn" element={<Learn />} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
       <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
-      <Route path="/chartanalysis" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
+      <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
       <Route path="/update-email" element={<UpdateEmail />} />
@@ -80,7 +80,7 @@ const App = () => {
                     <nav className="nav-options">
                         <Link to="/learn" className="nav-item">Learn</Link>
                         <Link to="/quiz" className="nav-item">Quiz</Link>
-                        <Link to="/chartanalysis" className="nav-item">Chat</Link>
+                        <Link to="/chat" className="nav-item">Chat</Link>
                     </nav>
                 </div>
                 <div className="header-column login-column">
@@ -100,7 +100,7 @@ const App = () => {
                         <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={homeIcon} className="hamburger-icon" alt="Home" />Home</Link>
                         <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
                         <Link to="/quiz" className="hamburger-item" onClick={toggleMenu}><img src={quizIcon} className="hamburger-icon" alt="Quiz" />Quiz</Link>
-                        <Link to="/chartanalysis" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon" alt="Chat" />Chat</Link>
+                        <Link to="/chat" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon" alt="Chat" />Chat</Link>
                         {isAuthenticated ? (
                             <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Account" />Account</Link>
                         ) : (

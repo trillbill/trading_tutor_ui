@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { AuthContext, useAuth } from '../context/AuthContext';
 import AuthPrompt from '../components/AuthPrompt';
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 
 const ChatWindow = () => {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ const ChatWindow = () => {
   const showAuthPrompt = !isAuthenticated || !isEmailVerified;
   const [lastImageAnalysis, setLastImageAnalysis] = useState(null);
   const [userRiskProfile, setUserRiskProfile] = useState(null);
+  const [tradeHistory, setTradeHistory] = useState(null);
 
   // Prompt options
   const prompts = [
@@ -64,6 +67,24 @@ const ChatWindow = () => {
     };
     
     fetchRiskProfile();
+  }, [user]);
+
+  // Update the trade history fetch function to handle the enhanced data
+  useEffect(() => {
+    const fetchTradeHistory = async () => {
+      if (user) {
+        try {
+          const response = await api.get('/api/journal/summary');
+          if (response.data.success && response.data.summary) {
+            setTradeHistory(response.data.summary);
+          }
+        } catch (error) {
+          console.error('Error fetching trade history:', error);
+        }
+      }
+    };
+    
+    fetchTradeHistory();
   }, [user]);
 
   // Helper function to determine risk level from risk appetite
@@ -274,6 +295,132 @@ const ChatWindow = () => {
     }
   };
 
+  // Add a function to generate a trade history summary for the user
+  const generateTradeHistorySummary = () => {
+    if (!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0) {
+      return "No trading history available yet.";
+    }
+    
+    const stats = tradeHistory.stats;
+    const winRate = stats.total_trades > 0 
+      ? Math.round((parseInt(stats.winning_trades) / parseInt(stats.total_trades)) * 100) 
+      : 0;
+    
+    let summary = `Trading Summary: ${stats.total_trades} trades, ${winRate}% win rate, P&L: $${parseFloat(stats.total_pnl).toFixed(2)}`;
+    
+    // Add top symbols if available
+    if (tradeHistory.symbolPerformance && tradeHistory.symbolPerformance.length > 0) {
+      const topSymbol = tradeHistory.symbolPerformance[0];
+      summary += `, Best symbol: ${topSymbol.symbol}`;
+    }
+    
+    // Add top strategy if available
+    if (tradeHistory.strategyPerformance && tradeHistory.strategyPerformance.length > 0) {
+      const topStrategy = tradeHistory.strategyPerformance[0];
+      if (topStrategy.strategy) {
+        summary += `, Best strategy: ${topStrategy.strategy}`;
+      }
+    }
+    
+    return summary;
+  };
+  
+  // Update the trade history analysis handler to include more detailed information
+  const handleTradeHistoryAnalysis = async () => {
+    if (!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0) {
+      // If no trade history, inform the user
+      const newMessage = {
+        text: "Analyze my trading history and suggest improvements",
+        sender: 'user',
+      };
+      setMessages((prev) => [...prev, newMessage]);
+      
+      // Send a response that no trade history is available
+      setTimeout(() => {
+        const aiMessage = {
+          text: "I don't see any trading history in your account yet. Once you've recorded some trades in your journal, I can analyze your performance and provide personalized suggestions for improvement.",
+          sender: 'ai',
+        };
+        setMessages((prev) => [...prev, aiMessage]);
+      }, 500);
+      return;
+    }
+    
+    // Create a detailed prompt about trade history
+    const prompt = "Please analyze my trading history in detail and suggest specific improvements based on my past performance.";
+    
+    // Add the message to the chat
+    const newMessage = {
+      text: prompt,
+      sender: 'user',
+    };
+    setMessages((prev) => [...prev, newMessage]);
+    
+    // Send to API with a special flag
+    setLoading(true);
+    
+    // Create a detailed analysis request
+    const payload = {
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      riskProfile: userRiskProfile,
+      tradeHistory: tradeHistory,
+      detailedTradeAnalysis: true // Special flag for detailed analysis
+    };
+    
+    try {
+      const response = await api.post(
+        'api/chat/completions',
+        payload,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      
+      // Process the AI's response
+      const aiResponse = response.data.choices[0].message.content;
+      const formattedResponse = aiResponse
+        .replace(/###/g, '<strong>')
+        .replace(/\n/g, '<br />')
+        .replace(/<\/strong>/g, '</strong><br />');
+      
+      const aiMessage = {
+        text: formattedResponse,
+        sender: 'ai',
+      };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+    } catch (error) {
+      console.error('Error analyzing trade history:', error);
+      
+      // Show error message to user
+      const errorMessage = {
+        text: "I'm sorry, I encountered an error while analyzing your trade history. Please try again later.",
+        sender: 'ai',
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update the message rendering in your JSX
+  const renderMessageContent = (message) => {
+    if (message.sender === 'ai') {
+      return (
+        <ReactMarkdown 
+          rehypePlugins={[rehypeSanitize]}
+          className="markdown-content"
+        >
+          {message.text}
+        </ReactMarkdown>
+      );
+    } else {
+      return <p>{message.text}</p>;
+    }
+  };
+
   return (
     <div className='chat-container'>
       <div className="title-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
@@ -288,20 +435,23 @@ const ChatWindow = () => {
 
       <div className="chat-window">
         <div className="chat-messages">
-          {messages.map((msg, index) => (
-            <div key={index} className={`chat-message ${msg.sender}`}>
-              {msg.sender === 'ai' ? (
-                <div className="ai-message-container" dangerouslySetInnerHTML={{ __html: msg.text }} />
-              ) : (
-                <div className="user-message-container">
-                  {msg.text}
-                  {msg.image && (
-                    <div className="user-image">
-                      <img src={msg.image} alt="User uploaded" className={msg.text.length ? "chat-image-w-text" : "chat-image"} />
-                    </div>
-                  )}
-                </div>
-              )}
+          {messages.map((message, index) => (
+            <div 
+              key={index} 
+              className={`message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`}
+            >
+              <div className="message-content">
+                {message.image && (
+                  <div className="message-image-container">
+                    <img 
+                      src={message.image} 
+                      alt="User uploaded" 
+                      className="message-image" 
+                    />
+                  </div>
+                )}
+                {renderMessageContent(message)}
+              </div>
             </div>
           ))}
           {loading && <div className="loading-spinner"></div>}
@@ -316,6 +466,17 @@ const ChatWindow = () => {
                 {prompt}
               </button>
             ))}
+            {
+              tradeHistory && tradeHistory.stats && tradeHistory.stats.total_trades >= 1 && (
+                <button 
+                  className={`prompt-button ${!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0 ? 'disabled-prompt' : 'highlight-prompt'}`} 
+                  onClick={handleTradeHistoryAnalysis}
+                  disabled={!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0}
+                >
+                  Analyze my trading history
+                </button>
+              )
+            }
           </div>
         )}
 

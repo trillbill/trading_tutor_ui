@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlay, FaTimes, FaSearch, FaChevronRight } from 'react-icons/fa';
+import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
+import AIChatModal from '../components/AIChatModal';
+import { useAuth } from '../context/AuthContext';
 import './Learn.css';
 import terminologyData from '../terminologyData';
 import heroImage from '../assets/man-trading3.png';
@@ -11,10 +13,13 @@ import chartsIcon from '../assets/charts-icon.png';
 import theoryIcon from '../assets/theory-icon.png';
 
 const Learn = () => {
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [showAIChatModal, setShowAIChatModal] = useState(false);
+    const [selectedTermForAI, setSelectedTermForAI] = useState(null);
 
     useEffect(() => {
         // Preload the hero image
@@ -60,6 +65,24 @@ const Learn = () => {
 
     const handleCloseModal = () => {
         setSelectedTerm(null);
+    };
+
+    const handleAskAITutor = (term, e) => {
+        e.stopPropagation(); // Prevent the card click event
+        
+        if (!user) {
+            // Show login prompt
+            alert("Please log in to use the AI Tutor feature.");
+            return;
+        }
+        
+        setSelectedTermForAI(term);
+        setShowAIChatModal(true);
+    };
+    
+    const handleCloseAIChatModal = () => {
+        setShowAIChatModal(false);
+        setSelectedTermForAI(null);
     };
 
     return (
@@ -116,6 +139,15 @@ const Learn = () => {
                                 <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
                                     <div className="term-header">
                                         {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
+                                        {user && (
+                                            <button 
+                                                className="ask-ai-button" 
+                                                onClick={(e) => handleAskAITutor(term, e)}
+                                                title="Ask AI Tutor about this term"
+                                            >
+                                                <FaRobot />
+                                            </button>
+                                        )}
                                     </div>
                                     {term.video ? (
                                         <div className="thumbnail-container">
@@ -158,6 +190,17 @@ const Learn = () => {
                         </button>
                         <div className="learn-modal-header">
                             <h2>{selectedTerm.name}</h2>
+                            {user && (
+                                <button 
+                                    className="ask-ai-button-large" 
+                                    onClick={() => {
+                                        handleCloseModal();
+                                        handleAskAITutor(selectedTerm, { stopPropagation: () => {} });
+                                    }}
+                                >
+                                    <FaRobot /> Ask AI Tutor
+                                </button>
+                            )}
                         </div>
                         {selectedTerm.video ? (
                             <div className="video-container">
@@ -180,6 +223,16 @@ const Learn = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* AI Chat Modal */}
+            {showAIChatModal && selectedTermForAI && (
+                <AIChatModal 
+                    isOpen={showAIChatModal}
+                    onClose={handleCloseAIChatModal}
+                    initialTerm={selectedTermForAI.name}
+                    initialDescription={selectedTermForAI.longDescription || selectedTermForAI.shortDescription}
+                />
             )}
         </div>
     );
