@@ -188,20 +188,11 @@ const Learn = () => {
                         <button className="modal-close-button" onClick={handleCloseModal}>
                             <FaTimes />
                         </button>
+                        
                         <div className="learn-modal-header">
                             <h2>{selectedTerm.name}</h2>
-                            {user && (
-                                <button 
-                                    className="ask-ai-button-large" 
-                                    onClick={() => {
-                                        handleCloseModal();
-                                        handleAskAITutor(selectedTerm, { stopPropagation: () => {} });
-                                    }}
-                                >
-                                    <FaRobot /> Ask AI Tutor
-                                </button>
-                            )}
                         </div>
+                        
                         {selectedTerm.video ? (
                             <div className="video-container">
                                 <iframe
@@ -218,8 +209,23 @@ const Learn = () => {
                                 <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
                             </div>
                         )}
+                        
                         <div className="modal-description">
-                            <p>{selectedTerm.value}</p>
+                            <p>{selectedTerm.longDescription || selectedTerm.shortDescription}</p>
+                        </div>
+                        
+                        <div className="learn-modal-actions">
+                            {user && (
+                                <button 
+                                    className="action-button"
+                                    onClick={() => {
+                                        handleCloseModal();
+                                        handleAskAITutor(selectedTerm, { stopPropagation: () => {} });
+                                    }}
+                                >
+                                    <FaRobot /> Ask AI Tutor
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

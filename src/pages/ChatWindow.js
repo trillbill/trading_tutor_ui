@@ -24,6 +24,7 @@ const ChatWindow = () => {
   const [lastImageAnalysis, setLastImageAnalysis] = useState(null);
   const [userRiskProfile, setUserRiskProfile] = useState(null);
   const [tradeHistory, setTradeHistory] = useState(null);
+  const [currentImageId, setCurrentImageId] = useState(null);
 
   // Prompt options
   const prompts = [
@@ -115,20 +116,31 @@ const ChatWindow = () => {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage({
-          data: reader.result,
-          name: file.name
-        });
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    // Clear any previous image analysis context
+    setLastImageAnalysis(null);
+    
+    // Generate a unique ID for this image
+    const newImageId = Date.now().toString();
+    setCurrentImageId(newImageId);
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setUploadedImage({
+        id: newImageId,
+        data: e.target.result,
+        name: file.name
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = () => {
     setUploadedImage(null);
+    // Also clear any previous image analysis context
+    setLastImageAnalysis(null);
+    
     // Reset the file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -137,30 +149,36 @@ const ChatWindow = () => {
 
   const handleSendMessage = async () => {
     if ((!inputValue.trim() && !uploadedImage) || loading) return;
-
-    // Create message text
-    const messageText = inputValue.trim();
     
-    // Create a new message object
+    // Create a new message with the user's text
     const newMessage = {
-      text: messageText,
+      text: inputValue,
       sender: 'user',
-      image: uploadedImage ? uploadedImage.data : null
     };
-
-    // Add the new message to the messages array
-    setMessages((prev) => [...prev, newMessage]);
     
-    // Clear the input and uploaded image
+    // If there's an uploaded image, add it to the message
+    if (uploadedImage) {
+      newMessage.image = uploadedImage.data;
+    }
+    
+    // Add the message to the chat
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    
+    // Clear the input field
     setInputValue('');
     
-    // If there's an image, send it with the message
+    // If there's an image, send it to the API
     if (uploadedImage) {
-      await sendImageToAPI(messageText, uploadedImage.data);
+      await sendImageToAPI(inputValue, uploadedImage.data);
+      // Clear the uploaded image after sending
       setUploadedImage(null);
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } else {
-      // Otherwise just send the text message
-      await sendMessageToAPI(messageText);
+      // Otherwise, just send the text message
+      await sendMessageToAPI(inputValue);
     }
   };
 
@@ -183,24 +201,28 @@ const ChatWindow = () => {
       }
     ];
 
-    // If we have image analysis and this appears to be a follow-up about an image
-    if (lastImageAnalysis && 
-        (text.toLowerCase().includes('chart') || 
-         text.toLowerCase().includes('image') || 
-         text.toLowerCase().includes('price') ||
-         text.toLowerCase().includes('indicator'))) {
-      
+    // Check if this is a follow-up about the most recent image
+    // Only include image context if the user's message appears to be about the current image
+    const isImageFollowUp = 
+      lastImageAnalysis && 
+      currentImageId === lastImageAnalysis.imageId &&
+      (text.toLowerCase().includes('chart') || 
+       text.toLowerCase().includes('image') || 
+       text.toLowerCase().includes('price') ||
+       text.toLowerCase().includes('indicator'));
+
+    if (isImageFollowUp) {
       // Insert the image analysis as context before the user's latest message
       messagesForApi.splice(messagesForApi.length - 1, 0, {
         role: 'assistant',
-        content: `Here's the chart analysis for reference:\n\n${lastImageAnalysis}`
+        content: `Here's the chart analysis for reference:\n\n${lastImageAnalysis.analysis}`
       });
     }
 
     // Simplified payload - send messages and risk profile separately
     const payload = {
       messages: messagesForApi,
-      riskProfile: userRiskProfile // Send the entire risk profile object
+      riskProfile: userRiskProfile
     };
 
     try {
@@ -211,16 +233,15 @@ const ChatWindow = () => {
       );
 
       // Process the AI's response
-      const aiResponse = response.data.choices[0].message.content;
-      const formattedResponse = aiResponse
-        .replace(/###/g, '<strong>')
-        .replace(/\n/g, '<br />')
-        .replace(/<\/strong>/g, '</strong><br />');
+      let aiResponse = response.data.choices[0].message.content;
 
       const aiMessage = {
-        text: formattedResponse,
+        text: aiResponse,
         sender: 'ai',
+        // If this was a follow-up to an image, tag it with the image ID
+        ...(isImageFollowUp && { imageId: currentImageId })
       };
+      
       setMessages((prevMessages) => [...prevMessages, aiMessage]);
     } catch (error) {
       console.error('Error communicating with AI API:', error);
@@ -231,60 +252,63 @@ const ChatWindow = () => {
 
   const sendImageToAPI = async (text, imageData) => {
     setLoading(true);
+    
+    // Store the current image ID for this analysis
+    const imageId = currentImageId;
 
     const defaultPrompt = text || "Please analyze this price chart and provide insights on bullish or bearish momentum, any indicators present (RSI, MACD, volume, price levels, etc.), and suggestions for trading.";
 
-    // Include conversation history for context
-    const conversationHistory = messages
-      .slice(-4) // Get last few messages for context
-      .map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.text
-      }));
-
-    // Add risk profile to the payload if available
+    // Don't include any previous conversation history for image analysis
+    // This ensures a clean context for each new image
     const payload = {
       text: defaultPrompt,
       imageUrl: imageData,
-      conversationHistory,
-      riskProfile: userRiskProfile // Send the entire risk profile object
+      riskProfile: userRiskProfile,
+      newImageAnalysis: true
     };
 
     try {
-      const response = await api.post(
-        'api/chat/image-analysis',
-        payload,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-
-      // Store the image analysis for future reference
-      setLastImageAnalysis(response.data.analysis);
-
-      // Process the AI's response
-      const aiResponse = response.data.response.choices[0].message.content;
-      const formattedResponse = aiResponse
-        .replace(/###/g, '<strong>')
-        .replace(/\n/g, '<br />')
-        .replace(/<\/strong>/g, '</strong><br />');
-
-      // Add a hidden message with the image analysis (optional)
+      const response = await api.post('api/chat/image-analysis', payload);
+      
+      // Store the analysis with the image ID
+      setLastImageAnalysis({
+        imageId: imageId,
+        analysis: response.data.analysis
+      });
+      
+      // Add a hidden message with the image analysis and image ID
       const hiddenAnalysisMessage = {
         text: response.data.analysis,
         sender: 'ai',
-        hidden: true, // You can use this flag to not display this message
+        hidden: true,
+        imageId: imageId
       };
 
-      // Add the visible response
+      // Add the visible response with the image ID
       const aiMessage = {
-        text: formattedResponse,
+        text: response.data.response,
         sender: 'ai',
+        imageId: imageId
       };
 
       setMessages((prevMessages) => [...prevMessages, hiddenAnalysisMessage, aiMessage]);
     } catch (error) {
       console.error('Error analyzing image:', error);
+      
+      // Add an error message to the chat
+      const errorMessage = {
+        text: "Sorry, I encountered an error analyzing this image. Please try again or upload a different image.",
+        sender: 'ai'
+      };
+      
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
       setLoading(false);
+      setUploadedImage(null); // Clear the uploaded image after sending
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -293,36 +317,6 @@ const ChatWindow = () => {
       event.preventDefault();
       handleSendMessage();
     }
-  };
-
-  // Add a function to generate a trade history summary for the user
-  const generateTradeHistorySummary = () => {
-    if (!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0) {
-      return "No trading history available yet.";
-    }
-    
-    const stats = tradeHistory.stats;
-    const winRate = stats.total_trades > 0 
-      ? Math.round((parseInt(stats.winning_trades) / parseInt(stats.total_trades)) * 100) 
-      : 0;
-    
-    let summary = `Trading Summary: ${stats.total_trades} trades, ${winRate}% win rate, P&L: $${parseFloat(stats.total_pnl).toFixed(2)}`;
-    
-    // Add top symbols if available
-    if (tradeHistory.symbolPerformance && tradeHistory.symbolPerformance.length > 0) {
-      const topSymbol = tradeHistory.symbolPerformance[0];
-      summary += `, Best symbol: ${topSymbol.symbol}`;
-    }
-    
-    // Add top strategy if available
-    if (tradeHistory.strategyPerformance && tradeHistory.strategyPerformance.length > 0) {
-      const topStrategy = tradeHistory.strategyPerformance[0];
-      if (topStrategy.strategy) {
-        summary += `, Best strategy: ${topStrategy.strategy}`;
-      }
-    }
-    
-    return summary;
   };
   
   // Update the trade history analysis handler to include more detailed information
@@ -381,13 +375,9 @@ const ChatWindow = () => {
       
       // Process the AI's response
       const aiResponse = response.data.choices[0].message.content;
-      const formattedResponse = aiResponse
-        .replace(/###/g, '<strong>')
-        .replace(/\n/g, '<br />')
-        .replace(/<\/strong>/g, '</strong><br />');
       
       const aiMessage = {
-        text: formattedResponse,
+        text: aiResponse,
         sender: 'ai',
       };
       setMessages((prevMessages) => [...prevMessages, aiMessage]);
@@ -408,16 +398,20 @@ const ChatWindow = () => {
   // Update the message rendering in your JSX
   const renderMessageContent = (message) => {
     if (message.sender === 'ai') {
+      // Make sure we're passing a string to ReactMarkdown
+      const messageText = typeof message.text === 'object' 
+        ? JSON.stringify(message.text) 
+        : String(message.text || '');
+        
       return (
-        <ReactMarkdown 
-          rehypePlugins={[rehypeSanitize]}
-          className="markdown-content"
-        >
-          {message.text}
-        </ReactMarkdown>
+        <div className="cw-markdown-content">
+          <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+            {messageText}
+          </ReactMarkdown>
+        </div>
       );
     } else {
-      return <p>{message.text}</p>;
+      return <p>{typeof message.text === 'object' ? JSON.stringify(message.text) : message.text}</p>;
     }
   };
 
@@ -433,43 +427,55 @@ const ChatWindow = () => {
         </div>
       </div>
 
-      <div className="chat-window">
-        <div className="chat-messages">
+      <div className="cw-chat-window">
+        <div className="cw-chat-messages">
           {messages.map((message, index) => (
-            <div 
-              key={index} 
-              className={`message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`}
-            >
-              <div className="message-content">
-                {message.image && (
-                  <div className="message-image-container">
-                    <img 
-                      src={message.image} 
-                      alt="User uploaded" 
-                      className="message-image" 
-                    />
-                  </div>
-                )}
-                {renderMessageContent(message)}
+            !message.hidden && (
+              <div 
+                key={index} 
+                className={`cw-message ${message.sender === 'user' ? 'cw-user-message' : 'cw-ai-message'}`}
+              >
+                <div className="cw-message-content">
+                  {message.image && (
+                    <div className="cw-message-image-container">
+                      <img 
+                        src={message.image} 
+                        alt="User uploaded" 
+                        className="cw-message-image" 
+                      />
+                    </div>
+                  )}
+                  {renderMessageContent(message)}
+                </div>
+              </div>
+            )
+          ))}
+          {loading && (
+            <div className="cw-message cw-ai-message">
+              <div className="cw-message-content">
+                <div className="cw-typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </div>
-          ))}
-          {loading && <div className="loading-spinner"></div>}
-          <div ref={messagesEndRef} /> {/* Empty div for auto-scrolling */}
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Centered Prompt Carousel */}
+        {/* Prompt carousel at the bottom - only show when no messages */}
         {messages.length < 1 && (
-          <div className="prompt-carousel">
+          <div className="cw-prompt-carousel">
             {prompts.map((prompt, index) => (
-              <button key={index} className="prompt-button" onClick={() => handlePromptClick(prompt)}>
+              <button key={index} className="cw-prompt-button" onClick={() => handlePromptClick(prompt)}>
                 {prompt}
               </button>
             ))}
             {
               tradeHistory && tradeHistory.stats && tradeHistory.stats.total_trades >= 1 && (
                 <button 
-                  className={`prompt-button ${!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0 ? 'disabled-prompt' : 'highlight-prompt'}`} 
+                  className={`cw-prompt-button ${!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0 ? 'cw-disabled-prompt' : 'cw-highlight-prompt'}`} 
                   onClick={handleTradeHistoryAnalysis}
                   disabled={!tradeHistory || !tradeHistory.stats || tradeHistory.stats.total_trades <= 0}
                 >
@@ -482,14 +488,14 @@ const ChatWindow = () => {
 
         {/* Display uploaded image preview */}
         {uploadedImage && !loading && (
-          <div className="uploaded-image-preview">
+          <div className="cw-uploaded-image-preview">
             <img src={uploadedImage.data} alt="Upload preview" />
             <span>{uploadedImage.name}</span>
             <button onClick={handleRemoveImage}><FontAwesomeIcon icon={faTimes} /></button>
           </div>
         )}
 
-        <div className="chat-input">
+        <div className="cw-chat-input">
           <input
             type="text"
             value={inputValue}
@@ -498,7 +504,7 @@ const ChatWindow = () => {
             onKeyPress={handleKeyPress}
           />
           
-          <div className="input-buttons">
+          <div className="cw-input-buttons">
             <input
               type="file"
               accept="image/*"
@@ -508,14 +514,14 @@ const ChatWindow = () => {
             />
             <button 
               onClick={handleFileButtonClick} 
-              className="upload-button" 
+              className="cw-upload-button" 
               title="Upload image"
             >
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <button 
               onClick={handleSendMessage} 
-              className="send-button" 
+              className="cw-send-button" 
               disabled={loading || (!inputValue.trim() && !uploadedImage)}
               title="Send message"
             >
