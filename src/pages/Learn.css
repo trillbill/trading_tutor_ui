@@ -478,7 +478,7 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
-.modal-actions {
+.learn-modal-actions {
     padding: 0 30px 30px;
     display: flex;
     justify-content: center;
@@ -494,6 +494,9 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .action-button:hover {
@@ -611,7 +614,7 @@
 
 /* AI Tutor button styling */
 .ask-ai-button {
-    background-color: #0084ff;
+    background-color: #4b937b;
     color: white;
     border: none;
     border-radius: 50%;
@@ -627,7 +630,7 @@
 }
 
 .ask-ai-button:hover {
-    background-color: #0077e6;
+    background-color: #3a7261;
     transform: scale(1.05);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
@@ -646,7 +649,7 @@
 
 /* Larger AI Tutor button for the modal */
 .ask-ai-button-large {
-    background-color: #0084ff;
+    background-color: #4b937b;
     color: white;
     border: none;
     border-radius: 20px;
@@ -661,7 +664,7 @@
 }
 
 .ask-ai-button-large:hover {
-    background-color: #0077e6;
+    background-color: #3a7261;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }

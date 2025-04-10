@@ -80,7 +80,7 @@
 
 .user-message {
   align-self: flex-end;
-  background-color: #0084ff;
+  background-color: #4b937b;
   color: white;
   border-bottom-right-radius: 5px;
 }
@@ -124,11 +124,7 @@
   resize: none;
   height: 40px;
   outline: none;
-  transition: border-color 0.2s;
-}
-
-.ai-chat-modal-input textarea:focus {
-  border-color: #0084ff;
+  font-family: 'Roboto', sans-serif;
 }
 
 .send-button {
@@ -151,7 +147,6 @@
 }
 
 .send-button:disabled {
-  background-color: #ccc;
   cursor: not-allowed;
 }
 

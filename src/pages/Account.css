@@ -40,7 +40,7 @@
 .update-email-button {
   margin: 10px;
   padding: 10px 20px;
-  background-color: #26a69a;
+  background-color: #4b937b;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -50,7 +50,7 @@
 }
 
 .update-email-button:hover {
-  background-color: #21867a;
+  background-color: #3a7261;
 }
 
 .signout-button {

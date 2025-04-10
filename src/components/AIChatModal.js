@@ -72,7 +72,19 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription }) => {
         sender: 'ai',
       };
       
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+      // Use a callback function with the previous state to ensure we're working with the latest state
+      setMessages(prevMessages => {
+        // Check if the last message is from the user (to avoid duplicates)
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        if (lastMessage && lastMessage.sender === 'user') {
+          return [...prevMessages, aiMessage];
+        } else {
+          // If the last message is not from the user, something went wrong
+          // Log for debugging and return a corrected message array
+          console.warn('Unexpected message state detected, correcting...');
+          return [...prevMessages.filter(msg => msg.sender === 'user'), aiMessage];
+        }
+      });
     } catch (error) {
       console.error('Error sending message to API:', error);
       
@@ -97,9 +109,11 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription }) => {
       sender: 'user',
     };
     
+    // Update messages with the new user message
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInputValue('');
     
+    // Send to API (without adding the message again)
     sendMessageToAPI(inputValue);
   };
   
