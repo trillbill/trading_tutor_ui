@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 
-function TradingJournal() {
+function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [journalError, setJournalError] = useState('');
@@ -35,6 +35,28 @@ function TradingJournal() {
 
   // Add a ref to store the error timeout
   const errorTimeoutRef = useRef(null);
+
+  // Add a ref to track if we've already updated stats
+  const hasUpdatedStats = useRef(false);
+
+  // Create a memoized function to calculate stats
+  const calculateStats = useCallback(() => {
+    // Calculate win rate
+    const closedTrades = journalEntries.filter(entry => entry.outcome !== 'open');
+    const wins = journalEntries.filter(entry => entry.outcome === 'win').length;
+    const winRate = closedTrades.length ? Math.round((wins / closedTrades.length) * 100) : 0;
+    
+    // Calculate total profit
+    const totalProfit = journalEntries.reduce((sum, entry) => {
+      return sum + (parseFloat(entry.profit_loss) || 0);
+    }, 0);
+    
+    return {
+      total: journalEntries.length,
+      winRate,
+      totalProfit
+    };
+  }, [journalEntries]);
 
   useEffect(() => {
     fetchJournalEntries();
@@ -248,22 +270,23 @@ function TradingJournal() {
       });
   };
 
-  // Calculate statistics
-  const calculateStats = () => {
-    const closedTrades = journalEntries.filter(entry => entry.outcome !== 'open');
-    const wins = closedTrades.filter(entry => entry.outcome === 'win').length;
-    const totalProfit = journalEntries.reduce((sum, entry) => 
-      sum + (parseFloat(entry.profit_loss) || 0), 0);
+  // Update stats after entries are loaded
+  useEffect(() => {
+    if (!loading && journalEntries.length > 0 && onStatsUpdate && !hasUpdatedStats.current) {
+      const stats = calculateStats();
+      onStatsUpdate(stats);
+      hasUpdatedStats.current = true;
+    }
+  }, [loading, journalEntries, calculateStats, onStatsUpdate]);
+  
+  // Update stats when entries change (after initial load)
+  useEffect(() => {
+    if (hasUpdatedStats.current && onStatsUpdate) {
+      const stats = calculateStats();
+      onStatsUpdate(stats);
+    }
+  }, [calculateStats, onStatsUpdate]);
 
-    return {
-      total: journalEntries.length,
-      wins,
-      winRate: closedTrades.length ? Math.round((wins / closedTrades.length) * 100) : 0,
-      totalProfit
-    };
-  };
-
-  const stats = calculateStats();
   const sortedEntries = getSortedEntries();
 
   return (
@@ -283,20 +306,20 @@ function TradingJournal() {
 
       <div className="journal-stats">
         <div className="stat-card">
-          <span className="stat-value">{stats.total}</span>
+          <span className="stat-value">{journalEntries.length}</span>
           <span className="stat-label">Total Trades</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{stats.wins}</span>
-          <span className="stat-label">Winning Trades</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-value">{stats.winRate}%</span>
+          <span className="stat-value">{journalEntries.filter(entry => entry.outcome !== 'open').length ? Math.round((journalEntries.filter(entry => entry.outcome === 'win').length / journalEntries.filter(entry => entry.outcome !== 'open').length) * 100) : 0}%</span>
           <span className="stat-label">Win Rate</span>
         </div>
         <div className="stat-card">
-          <span className={`stat-value ${stats.totalProfit >= 0 ? 'positive' : 'negative'}`}>
-            {formatCurrency(stats.totalProfit)}
+          <span className={`stat-value ${journalEntries.reduce((sum, entry) => {
+            return sum + (parseFloat(entry.profit_loss) || 0);
+          }, 0) >= 0 ? 'positive' : 'negative'}`}>
+            {formatCurrency(journalEntries.reduce((sum, entry) => {
+              return sum + (parseFloat(entry.profit_loss) || 0);
+            }, 0))}
           </span>
           <span className="stat-label">Total P/L</span>
         </div>
@@ -473,15 +496,14 @@ function TradingJournal() {
         </div>
         
         <div className="filter-group">
-          <FaSort />
           <select 
             className="filter-select"
             value={sortField}
             onChange={(e) => setSortField(e.target.value)}
           >
-            <option value="created_at">Date</option>
-            <option value="symbol">Symbol</option>
-            <option value="profit_loss">Profit/Loss</option>
+            <option value="created_at">Sort by: Date</option>
+            <option value="symbol">Sort by: Symbol</option>
+            <option value="profit_loss">Sort by: Profit/Loss</option>
           </select>
           <button 
             className="sort-direction-button"
@@ -573,5 +595,10 @@ function TradingJournal() {
     </div>
   );
 }
+
+// Add default props
+TradingJournal.defaultProps = {
+  onStatsUpdate: () => {}
+};
 
 export default TradingJournal; 

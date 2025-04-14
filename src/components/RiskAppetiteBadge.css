@@ -1,0 +1,104 @@
+.risk-badge {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 100%;
+}
+
+.risk-badge.conservative {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(76, 175, 80, 0.2) 100%);
+  border-left: 3px solid #4CAF50;
+}
+
+.risk-badge.moderate {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(33, 150, 243, 0.2) 100%);
+  border-left: 3px solid #2196F3;
+}
+
+.risk-badge.aggressive {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(244, 67, 54, 0.2) 100%);
+  border-left: 3px solid #F44336;
+}
+
+.risk-badge.not-set {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(158, 158, 158, 0.2) 100%);
+  border-left: 3px solid #9E9E9E;
+}
+
+.risk-badge-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.conservative .risk-badge-icon {
+  color: #4CAF50;
+}
+
+.moderate .risk-badge-icon {
+  color: #2196F3;
+}
+
+.aggressive .risk-badge-icon {
+  color: #F44336;
+}
+
+.not-set .risk-badge-icon {
+  color: #9E9E9E;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.risk-badge-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.risk-badge-label {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.risk-badge-score {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* For small badges in card selectors */
+.risk-badge.small {
+  padding: 10px;
+}
+
+.risk-badge.small .risk-badge-icon {
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.risk-badge.small .risk-badge-label {
+  font-size: 16px;
+}
+
+.risk-badge.small .risk-badge-score {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .risk-badge {
+    width: 100%;
+  }
+}
