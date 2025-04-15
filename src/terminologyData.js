@@ -367,6 +367,52 @@ const terminologyData = [
     ],
   },
   {
+    name: "Swing Failure Pattern (SFP)",
+    category: "Charts",
+    value:
+      "A Swing Failure Pattern (SFP) is a price action pattern that occurs when the market makes a new high or low but quickly reverses, failing to maintain the new price level. This pattern indicates a potential trend reversal as it shows that the market attempted to continue in the prevailing direction but failed to do so. In an uptrend, an SFP forms when price makes a new high but quickly reverses and closes below the previous high. In a downtrend, it forms when price makes a new low but quickly reverses and closes above the previous low. Traders often use this pattern to identify exhaustion in the current trend and potential reversal points.",
+    shortDescription: "A price action pattern showing failure to maintain a new high or low, signaling potential trend reversal.",
+    chartType: "swingFailure",
+    lineColor: "orange",
+    data: [
+      { time: '2025-01-01', value: 50 },
+      { time: '2025-01-02', value: 52 },
+      { time: '2025-01-03', value: 55 },
+      { time: '2025-01-04', value: 58 },
+      { time: '2025-01-05', value: 62 },  // Previous high
+      { time: '2025-01-06', value: 60 },
+      { time: '2025-01-07', value: 61 },
+      { time: '2025-01-08', value: 64 },  // New high (failure point)
+      { time: '2025-01-09', value: 59 },  // Quick reversal
+      { time: '2025-01-10', value: 56 },
+      { time: '2025-01-11', value: 52 },
+      { time: '2025-01-12', value: 48 },
+    ],
+  },
+  {
+    name: "Break of Structure",
+    category: "Charts",
+    value:
+      "A Break of Structure (BOS) is a technical pattern that occurs when price breaks above a significant previous high in an uptrend or below a significant previous low in a downtrend, indicating a continuation or strengthening of the current trend. This pattern is important because it shows that the market has enough momentum to overcome key structural levels. In an uptrend, a BOS confirms bullish momentum when price breaks above a previous swing high. In a downtrend, it confirms bearish momentum when price breaks below a previous swing low. Traders often use this pattern to enter trades in the direction of the trend or to add to existing positions.",
+    shortDescription: "A pattern showing price breaking past significant previous highs or lows, confirming trend strength.",
+    chartType: "breakOfStructure",
+    lineColor: "green",
+    data: [
+      { time: '2025-01-01', value: 45 },
+      { time: '2025-01-02', value: 48 },
+      { time: '2025-01-03', value: 52 },
+      { time: '2025-01-04', value: 55 },  // First high
+      { time: '2025-01-05', value: 52 },
+      { time: '2025-01-06', value: 50 },
+      { time: '2025-01-07', value: 53 },
+      { time: '2025-01-08', value: 51 },
+      { time: '2025-01-09', value: 54 },
+      { time: '2025-01-10', value: 57 },  // Break of structure (above previous high)
+      { time: '2025-01-11', value: 60 },
+      { time: '2025-01-12', value: 63 },
+    ],
+  },
+  {
     name: "Doji",
     category: "Charts",
     value:
