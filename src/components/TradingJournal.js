@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 
@@ -39,6 +39,21 @@ function TradingJournal({ onStatsUpdate }) {
   // Add a ref to track if we've already updated stats
   const hasUpdatedStats = useRef(false);
 
+  // Add pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    total: 0,
+    limit: 20
+  });
+
+  // Add a new state for total stats
+  const [totalStats, setTotalStats] = useState({
+    total: 0,
+    winRate: 0,
+    totalProfit: 0
+  });
+
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
     // Calculate win rate
@@ -59,8 +74,8 @@ function TradingJournal({ onStatsUpdate }) {
   }, [journalEntries]);
 
   useEffect(() => {
-    fetchJournalEntries();
-  }, []);
+    fetchJournalEntries(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   // Clear error message after a delay
   useEffect(() => {
@@ -85,16 +100,19 @@ function TradingJournal({ onStatsUpdate }) {
     };
   }, [journalError]); // Run this effect whenever journalError changes
 
-  const fetchJournalEntries = async () => {
+  const fetchJournalEntries = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await api.get('/api/journal');
+      const response = await api.get('/api/journal', {
+        params: {
+          page,
+          limit: pagination.limit
+        }
+      });
+      
       if (response.data.success) {
-        // Sort entries by created_at in descending order (newest first)
-        const sortedEntries = response.data.entries.sort((a, b) => 
-          new Date(b.created_at) - new Date(a.created_at)
-        );
-        setJournalEntries(sortedEntries);
+        setJournalEntries(response.data.entries);
+        setPagination(response.data.pagination);
       }
     } catch (error) {
       console.error('Error fetching journal entries:', error);
@@ -149,7 +167,7 @@ function TradingJournal({ onStatsUpdate }) {
 
       if (response.data.success) {
         setShowJournalModal(false);
-        fetchJournalEntries();
+        fetchJournalEntries(pagination.currentPage);
         resetForm();
       }
     } catch (error) {
@@ -164,7 +182,7 @@ function TradingJournal({ onStatsUpdate }) {
       try {
         const response = await api.delete(`/api/journal/${id}`);
         if (response.data.success) {
-          fetchJournalEntries();
+          fetchJournalEntries(pagination.currentPage);
         }
       } catch (error) {
         setJournalError('Failed to delete entry');
@@ -289,6 +307,46 @@ function TradingJournal({ onStatsUpdate }) {
 
   const sortedEntries = getSortedEntries();
 
+  // Add function to handle page changes
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setPagination(prev => ({
+        ...prev,
+        currentPage: newPage
+      }));
+    }
+  };
+
+  // Add a function to fetch summary stats
+  const fetchJournalSummary = async () => {
+    try {
+      const response = await api.get('/api/journal/summary');
+      if (response.data.success) {
+        const stats = {
+          total: response.data.summary.stats.total_trades || 0,
+          winRate: response.data.summary.stats.winning_trades && response.data.summary.stats.total_trades 
+            ? Math.round((response.data.summary.stats.winning_trades / response.data.summary.stats.total_trades) * 100) 
+            : 0,
+          totalProfit: response.data.summary.stats.total_pnl || 0
+        };
+        
+        setTotalStats(stats);
+        
+        // Update parent component if needed
+        if (onStatsUpdate) {
+          onStatsUpdate(stats);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching journal summary:', error);
+    }
+  };
+
+  // Call this in useEffect
+  useEffect(() => {
+    fetchJournalSummary();
+  }, []);
+
   return (
     <div className="journal-container">
       <div className="journal-header">
@@ -306,20 +364,16 @@ function TradingJournal({ onStatsUpdate }) {
 
       <div className="journal-stats">
         <div className="stat-card">
-          <span className="stat-value">{journalEntries.length}</span>
+          <span className="stat-value">{totalStats.total}</span>
           <span className="stat-label">Total Trades</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value">{journalEntries.filter(entry => entry.outcome !== 'open').length ? Math.round((journalEntries.filter(entry => entry.outcome === 'win').length / journalEntries.filter(entry => entry.outcome !== 'open').length) * 100) : 0}%</span>
+          <span className="stat-value">{totalStats.winRate}%</span>
           <span className="stat-label">Win Rate</span>
         </div>
         <div className="stat-card">
-          <span className={`stat-value ${journalEntries.reduce((sum, entry) => {
-            return sum + (parseFloat(entry.profit_loss) || 0);
-          }, 0) >= 0 ? 'positive' : 'negative'}`}>
-            {formatCurrency(journalEntries.reduce((sum, entry) => {
-              return sum + (parseFloat(entry.profit_loss) || 0);
-            }, 0))}
+          <span className={`stat-value ${totalStats.totalProfit >= 0 ? 'positive' : 'negative'}`}>
+            {formatCurrency(totalStats.totalProfit)}
           </span>
           <span className="stat-label">Total P/L</span>
         </div>
@@ -591,6 +645,30 @@ function TradingJournal({ onStatsUpdate }) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Add pagination controls */}
+      <div className="pagination-controls">
+        <button 
+          className="pagination-button"
+          disabled={pagination.currentPage === 1}
+          onClick={() => handlePageChange(pagination.currentPage - 1)}
+        >
+          <FaChevronLeft />
+        </button>
+        
+        <div className="pagination-info">
+          Page {pagination.currentPage} of {pagination.totalPages}
+          {pagination.total > 0 && ` (${pagination.total} total entries)`}
+        </div>
+        
+        <button 
+          className="pagination-button"
+          disabled={pagination.currentPage === pagination.totalPages}
+          onClick={() => handlePageChange(pagination.currentPage + 1)}
+        >
+          <FaChevronRight />
+        </button>
       </div>
     </div>
   );
