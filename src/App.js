@@ -17,12 +17,18 @@ import ResetPassword from './pages/ResetPassword';
 import Home from './pages/Home';
 import RiskAppetiteQuiz from './pages/RiskAppetiteQuiz';
 import UpdateEmail from './pages/UpdateEmail';
+import Pricing from './pages/Pricing';
+import CookieConsent from './components/CookieConsent';
+import Footer from './components/Footer';
+import Terms from './pages/Terms';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
 import quizIcon from './assets/quiz-icon.png';
 import chatIcon from './assets/chat-icon.png';
 import homeIcon from './assets/home-icon.png';
+import pricingIcon from './assets/pricing-icon.png';
 
 const AuthRoute = ({ children }) => {
   const { loading } = useContext(AuthContext);
@@ -53,6 +59,9 @@ function AppRoutes() {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
       <Route path="/update-email" element={<UpdateEmail />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -81,6 +90,7 @@ const App = () => {
                         <Link to="/learn" className="nav-item">Learn</Link>
                         <Link to="/quiz" className="nav-item">Quiz</Link>
                         <Link to="/chat" className="nav-item">Chat</Link>
+                        <Link to="/pricing" className="nav-item">Pricing</Link>
                     </nav>
                 </div>
                 <div className="header-column login-column">
@@ -101,6 +111,7 @@ const App = () => {
                         <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
                         <Link to="/quiz" className="hamburger-item" onClick={toggleMenu}><img src={quizIcon} className="hamburger-icon" alt="Quiz" />Quiz</Link>
                         <Link to="/chat" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon" alt="Chat" />Chat</Link>
+                        <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
                         {isAuthenticated ? (
                             <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Account" />Account</Link>
                         ) : (
@@ -112,6 +123,9 @@ const App = () => {
             <div className="content" onClick={() => setIsMenuOpen(false)}>
                 <AppRoutes />
             </div>
+            
+            <Footer />
+            <CookieConsent />
         </div>
     );
 };
