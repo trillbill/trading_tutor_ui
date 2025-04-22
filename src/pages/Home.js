@@ -24,6 +24,10 @@ const Home = () => {
     const handleExploreLearn = () => {
         navigate('/learn');
     };
+    
+    const handleViewPricing = () => {
+        navigate('/pricing');
+    };
 
     return (
         <div className="home-container">
@@ -48,8 +52,8 @@ const Home = () => {
                                 Get Started <FaChevronRight className="button-icon" />
                             </button>
                         )}
-                        <button className="explore-button" onClick={handleExploreLearn}>
-                            Explore Learning Resources <FaChevronRight className="button-icon" />
+                        <button className="explore-button" onClick={handleViewPricing}>
+                            View Pricing Plans <FaChevronRight className="button-icon" />
                         </button>
                     </div>
                 </div>
@@ -87,13 +91,17 @@ const Home = () => {
                     <p>Join thousands of traders who are improving their skills with Trading Tutor</p>
                     <div className="cta-buttons">
                         {!isAuthenticated ? (
-                            <button onClick={handleSignUp} className="primary-button">
-                                Create Free Account
-                            </button>
+                            <>
+                                <button onClick={handleSignUp} className="primary-button">
+                                    Create Free Account
+                                </button>
+                            </>
                         ) : (
-                            <button onClick={handleExploreLearn} className="primary-button">
-                                Continue Learning
-                            </button>
+                            <>
+                                <button onClick={handleExploreLearn} className="primary-button">
+                                    Continue Learning
+                                </button>
+                            </>
                         )}
                     </div>
                 </div>

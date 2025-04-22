@@ -1,0 +1,425 @@
+.pricing-container {
+    padding: 0;
+    color: white;
+    margin: 0 auto;
+    background-color: black;
+}
+
+/* Hero Section */
+.pricing-hero-section {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-image: linear-gradient(135deg, #333 0%, #111 100%);
+    height: 50vh;
+    min-height: 400px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+}
+
+.pricing-hero-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+}
+
+.pricing-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+    margin-top: 10vh;
+    animation: fadeInUp 1s ease-out;
+}
+
+.pricing-hero-content h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.pricing-tagline {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    color: #e0e0e0;
+    font-weight: 300;
+}
+
+/* Pricing Plans Section */
+.pricing-plans-section {
+    padding: 100px 20px;
+    background-color: #1a1a1a;
+    text-align: center;
+}
+
+.pricing-plans-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.pricing-plans-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-plan {
+    background: linear-gradient(135deg, #2a2a2a 0%, #222222 100%);
+    border-radius: 15px;
+    padding: 40px 30px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-plan:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.premium-plan {
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+    border: 1px solid #4b937b;
+}
+
+.annual-plan {
+    background: linear-gradient(135deg, #2d4d43 0%, #1e332d 100%);
+}
+
+.plan-badge {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background-color: #4b937b;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.plan-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.plan-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.plan-price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #4b937b;
+    margin-bottom: 5px;
+}
+
+.plan-billing {
+    color: #aaa;
+    font-size: 1rem;
+}
+
+.plan-features {
+    flex-grow: 1;
+    margin-bottom: 30px;
+}
+
+.plan-feature {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.feature-icon {
+    color: #4b937b;
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.plan-button {
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    color: white;
+    border: 2px solid #4b937b;
+}
+
+.premium-button {
+    background-color: #4b937b;
+    border: none;
+}
+
+.plan-button:hover {
+    background-color: rgba(75, 147, 123, 0.1);
+    transform: translateY(-2px);
+}
+
+.premium-button:hover {
+    background-color: #3a7261;
+}
+
+.button-icon {
+    margin-left: 8px;
+}
+
+/* eBook Section */
+.ebook-section {
+    padding: 80px 20px;
+    background-color: #222;
+}
+
+.ebook-content {
+    display: flex;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #2a2a2a 0%, #222222 100%);
+    border-radius: 15px;
+    padding: 40px;
+    gap: 40px;
+}
+
+.ebook-image {
+    flex: 0 0 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ebook-cover-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.ebook-details {
+    flex: 1;
+}
+
+.ebook-details h2 {
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.ebook-details h3 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #4b937b;
+    font-weight: 400;
+}
+
+.ebook-details p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.ebook-included-note {
+    background-color: rgba(75, 147, 123, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border-left: 4px solid #4b937b;
+    margin-bottom: 25px;
+}
+
+.ebook-pricing {
+    margin-bottom: 25px;
+}
+
+.ebook-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4b937b;
+    margin-bottom: 5px;
+}
+
+.ebook-button {
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    background-color: #4b937b;
+    color: white;
+    border: none;
+}
+
+.ebook-button:hover {
+    background-color: #3a7261;
+    transform: translateY(-2px);
+}
+
+.ebook-login-message {
+    background-color: rgba(75, 147, 123, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.ebook-login-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #4b937b;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.ebook-login-button:hover {
+    background-color: #3a7261;
+}
+
+/* FAQ Section */
+.faq-section {
+    padding: 100px 20px;
+    background-color: #1a1a1a;
+    text-align: center;
+}
+
+.faq-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.faq-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background: linear-gradient(135deg, #2a2a2a 0%, #222222 100%);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: left;
+    transition: transform 0.3s ease;
+}
+
+.faq-item:hover {
+    transform: translateY(-5px);
+}
+
+.faq-item h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #4b937b;
+}
+
+.faq-item p {
+    color: #e0e0e0;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* CTA Section */
+.pricing-cta-section {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+    text-align: center;
+}
+
+.pricing-cta-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.pricing-cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.pricing-cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #e0e0e0;
+}
+
+.pricing-cta-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .pricing-hero-content h1 {
+        font-size: 2.8rem;
+    }
+    
+    .pricing-tagline {
+        font-size: 1.2rem;
+    }
+    
+    .pricing-plans-section h2,
+    .faq-section h2,
+    .pricing-cta-section h2 {
+        font-size: 2rem;
+    }
+    
+    .ebook-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .faq-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .pricing-plan {
+        min-width: 100%;
+    }
+    
+    .plan-price {
+        font-size: 2.5rem;
+    }
+    
+    .ebook-price {
+        font-size: 2rem;
+    }
+}
