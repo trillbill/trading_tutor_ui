@@ -7,6 +7,7 @@ function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [journalError, setJournalError] = useState('');
+  const [entriesChanged, setEntriesChanged] = useState(false);
   const [journalFormData, setJournalFormData] = useState({
     trade_date: new Date().toISOString().split('T')[0],
     symbol: '',
@@ -142,34 +143,19 @@ function TradingJournal({ onStatsUpdate }) {
 
   const handleJournalSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      // Create a copy of the form data to modify before sending
-      const formDataToSubmit = { ...journalFormData };
+      setJournalError(null);
       
-      // Handle empty numeric fields - convert empty strings to null
-      // This prevents the "invalid input syntax for type numeric" error
-      if (formDataToSubmit.profit_loss === '') {
-        formDataToSubmit.profit_loss = null;
+      if (editingEntryId) {
+        await api.put(`/api/journal/${editingEntryId}`, journalFormData);
+      } else {
+        await api.post('/api/journal', journalFormData);
       }
       
-      if (formDataToSubmit.exit_price === '') {
-        formDataToSubmit.exit_price = null;
-      }
-      
-      // For open trades, ensure profit_loss is null
-      if (formDataToSubmit.outcome === 'open') {
-        formDataToSubmit.profit_loss = null;
-      }
-      
-      const response = editingEntryId
-        ? await api.put(`/api/journal/${editingEntryId}`, formDataToSubmit)
-        : await api.post('/api/journal', formDataToSubmit);
-
-      if (response.data.success) {
-        setShowJournalModal(false);
-        fetchJournalEntries(pagination.currentPage);
-        resetForm();
-      }
+      fetchJournalEntries();
+      setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+      closeJournalModal();
     } catch (error) {
       console.error('Error adding journal entry:', error);
       setJournalError('Failed to save journal entry: ' + 
@@ -177,13 +163,12 @@ function TradingJournal({ onStatsUpdate }) {
     }
   };
 
-  const handleDeleteEntry = async (id) => {
+  const handleDeleteEntry = async (entryId) => {
     if (window.confirm('Are you sure you want to delete this entry?')) {
       try {
-        const response = await api.delete(`/api/journal/${id}`);
-        if (response.data.success) {
-          fetchJournalEntries(pagination.currentPage);
-        }
+        await api.delete(`/api/journal/${entryId}`);
+        fetchJournalEntries();
+        setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
       } catch (error) {
         setJournalError('Failed to delete entry');
       }
@@ -342,10 +327,19 @@ function TradingJournal({ onStatsUpdate }) {
     }
   };
 
-  // Call this in useEffect
+  // Update the useEffect that fetches journal summary
   useEffect(() => {
-    fetchJournalSummary();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const summaryData = await fetchJournalSummary();
+        setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+      } catch (error) {
+        console.error('Error fetching journal summary:', error);
+      }
+    };
+
+    fetchData();
+  }, [entriesChanged]); // Add entriesChanged as a dependency
 
   return (
     <div className="journal-container">
@@ -587,7 +581,7 @@ function TradingJournal({ onStatsUpdate }) {
           <tbody>
             {sortedEntries.map(entry => (
               <tr key={entry.id} className={`outcome-${entry.outcome}`}>
-                <td>{formatDateTime(entry.created_at)}</td>
+                <td>{formatDateTime(entry.trade_date)}</td>
                 <td>{entry.symbol.toUpperCase()}</td>
                 <td className={entry.trade_type === 'buy' ? 'buy-type' : 'sell-type'}>
                   {entry.trade_type === 'buy' ? 'Buy' : 'Sell'}
