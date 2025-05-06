@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot, FaChevronDown, FaLock, FaClock, FaVideo } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import AIChatModal from '../components/AIChatModal';
 import { useAuth } from '../context/AuthContext';
 import './Learn.css';
 import terminologyData from '../terminologyData';
+import coursesData from '../coursesData';
 import heroImage from '../assets/man-trading3.png';
-
-// Import your icons
-import toolsIcon from '../assets/tools-icon.png';
-import chartsIcon from '../assets/charts-icon.png';
-import theoryIcon from '../assets/theory-icon.png';
+import { useNavigate } from 'react-router-dom';
 
 const Learn = () => {
     const { user } = useAuth();
@@ -20,6 +17,14 @@ const Learn = () => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [showAIChatModal, setShowAIChatModal] = useState(false);
     const [selectedTermForAI, setSelectedTermForAI] = useState(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+    
+    // New state for courses
+    const [selectedCourse, setSelectedCourse] = useState(null);
+
+    // Add navigate for redirection
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Preload the hero image
@@ -28,33 +33,43 @@ const Learn = () => {
         img.onload = () => setImageLoaded(true);
     }, []);
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     // Define topics and their associated categories
     const topics = {
+        All: {
+            terms: ['Charts', 'Theory', 'Tools'],
+        },
         Charts: { 
-            icon: chartsIcon, 
             terms: ['Charts'],
-            description: 'Learn to read and interpret different chart patterns and indicators'
         },
         Theory: { 
-            icon: theoryIcon, 
             terms: ['Theory'],
-            description: 'Understand the fundamental concepts behind trading strategies'
         },
         Tools: { 
-            icon: toolsIcon, 
             terms: ['Tools'],
-            description: 'Master the essential tools and technical indicators used by successful traders'
         },
     };
 
-    // Set the default selected topic to the first item in the topics array
-    const defaultTopic = Object.keys(topics)[0];
-    const [selectedTopic, setSelectedTopic] = useState(defaultTopic);
+    // Set the default selected topic to All
+    const [selectedTopic, setSelectedTopic] = useState('All');
 
     // Filtered terms based on the selected topic
     const filteredTerms = terminologyData
         .filter(term => {
-            if (!selectedTopic) return true;
+            if (selectedTopic === 'All') return true;
             return topics[selectedTopic].terms.includes(term.category);
         })
         .filter(term => term.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -85,6 +100,46 @@ const Learn = () => {
         setSelectedTermForAI(null);
     };
 
+    const handleTopicSelect = (topic) => {
+        setSelectedTopic(topic);
+        setIsDropdownOpen(false);
+    };
+    
+    // Course handlers
+    const handleCourseClick = (course) => {
+        setSelectedCourse(course);
+    };
+    
+    const handleCloseCourseModal = () => {
+        setSelectedCourse(null);
+    };
+
+    // Calculate total duration for a course
+    const calculateCourseDuration = (course) => {
+        let totalMinutes = 0;
+        course.modules.forEach(module => {
+            const durationMatch = module.duration.match(/(\d+)/);
+            if (durationMatch) {
+                totalMinutes += parseInt(durationMatch[0]);
+            }
+        });
+        
+        if (totalMinutes >= 60) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return `${hours}h ${minutes > 0 ? minutes + 'm' : ''}`;
+        } else {
+            return `${totalMinutes} min`;
+        }
+    };
+
+    // Function to handle premium content click
+    const handlePremiumContentClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigate('/login'); // Redirect to login page
+    };
+
     return (
         <div className="learn-container">
             <div className="learn-hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
@@ -96,92 +151,242 @@ const Learn = () => {
                     </p>
                 </div>
             </div>
-            {/* Learning Categories Section */}
-            <div className="learning-categories-section">                
-                {/* Topic Grid */}
-                <div className="topic-grid">
-                    {Object.keys(topics).map(topic => (
-                        <div
-                            key={topic}
-                            className={`topic-card ${selectedTopic === topic ? 'selected' : ''}`}
-                            onClick={() => setSelectedTopic(topic)}
+
+            {/* Courses Section */}
+            <div className="courses-section">
+                <h2 className="section-title">Courses</h2>
+                <div className="courses-grid">
+                    {coursesData.map((course) => (
+                        <div 
+                            key={course.id} 
+                            className={`course-card ${course.premium && !user ? 'locked' : ''}`}
+                            onClick={() => handleCourseClick(course)}
                         >
-                            <img src={topics[topic].icon} alt={`${topic} icon`} className="topic-icon" />
-                            <h3 className="topic-name">{topic}</h3>
-                            <p className="topic-description">{topics[topic].description}</p>
+                            <div className="course-thumbnail">
+                                <img src={course.thumbnail} alt={course.title} />
+                                {course.premium && !user && (
+                                    <div className="course-lock">
+                                        <FaLock />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="course-content">
+                                <h3>{course.title}</h3>
+                                <p>{course.description}</p>
+                                <div className="course-meta">
+                                    <span><FaClock /> {calculateCourseDuration(course)}</span>
+                                    <span><FaVideo /> {course.modules.length} lessons</span>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Content Section */}
-            {selectedTopic && (
-                <div className="content-section">
-                    <div className="section-header">
-                        <h2 className="section-title">{selectedTopic}</h2>
-                        <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
-                            <FaSearch className="search-icon" />
-                            <input
-                                type="text"
-                                placeholder={`Search ${selectedTopic.toLowerCase()}...`}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onFocus={() => setIsSearchFocused(true)}
-                                onBlur={() => setIsSearchFocused(false)}
-                                className="search-input"
-                            />
-                        </div>
+            {/* Terminology Section */}
+            <div className="content-section">
+                <h2 className="section-title">Concepts</h2>
+                <div className="section-header">
+                    <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
+                        <FaSearch className="search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Search terminology..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onFocus={() => setIsSearchFocused(true)}
+                            onBlur={() => setIsSearchFocused(false)}
+                            className="search-input"
+                        />
                     </div>
-                    
-                    {filteredTerms.length > 0 ? (
-                        <div className="learn-list">
-                            {filteredTerms.map((term, index) => (
-                                <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                                    <div className="term-header">
-                                        {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
-                                        {user && (
-                                            <button 
-                                                className="ask-ai-button" 
-                                                onClick={(e) => handleAskAITutor(term, e)}
-                                                title="Ask AI Tutor about this term"
-                                            >
-                                                <FaRobot />
-                                            </button>
+                    <div className="filter-dropdown" ref={dropdownRef}>
+                        <button 
+                            className="dropdown-button" 
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                            {selectedTopic} <FaChevronDown className={`dropdown-icon ${isDropdownOpen ? 'open' : ''}`} />
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="dropdown-menu">
+                                {Object.keys(topics).map(topic => (
+                                    <button
+                                        key={topic}
+                                        className={`dropdown-item ${selectedTopic === topic ? 'active' : ''}`}
+                                        onClick={() => handleTopicSelect(topic)}
+                                    >
+                                        {topic}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                
+                {filteredTerms.length > 0 ? (
+                    <div className="learn-list">
+                        {filteredTerms.map((term, index) => (
+                            <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
+                                <div className="term-header">
+                                    {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
+                                    {user && (
+                                        <button 
+                                            className="ask-ai-button" 
+                                            onClick={(e) => handleAskAITutor(term, e)}
+                                            title="Ask AI Tutor about this term"
+                                        >
+                                            <FaRobot />
+                                        </button>
+                                    )}
+                                </div>
+                                {term.video ? (
+                                    <div className="thumbnail-container">
+                                        <img
+                                            src={term.thumbnail}
+                                            alt={`${term.name} thumbnail`}
+                                            className="thumbnail"
+                                        />
+                                        <div className="play-button"><FaPlay /></div>
+                                    </div>
+                                ) : (
+                                    <div className="chart-container">
+                                        <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                    </div>
+                                )}
+                                <p className="term-description">{term.shortDescription}</p>
+                                <button className="learn-more-button">
+                                    Learn More <FaChevronRight className="button-icon" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="no-results">
+                        <p>No resources found for "{searchTerm}" in {selectedTopic}.</p>
+                        <button className="clear-search" onClick={() => setSearchTerm('')}>
+                            Clear Search
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Course Modal */}
+            {selectedCourse && (
+                <div className="modal course-modal" onClick={handleCloseCourseModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close-button" onClick={handleCloseCourseModal}>
+                            <FaTimes />
+                        </button>
+                        
+                        <div className="course-modal-header">
+                            <h2>{selectedCourse.title}</h2>
+                        </div>
+                        
+                        <div className="course-modal-info">
+                            <div className="course-thumbnail-large">
+                                <img src={selectedCourse.thumbnail} alt={selectedCourse.title} />
+                            </div>
+                            
+                            <div className="course-details">
+                                <p className="course-full-description">{selectedCourse.fullDescription}</p>
+                                
+                                <div className="course-meta-info">
+                                    <span><FaClock /> {calculateCourseDuration(selectedCourse)}</span>
+                                    <span><FaVideo /> {selectedCourse.modules.length} lessons</span>
+                                    <span>Level: {selectedCourse.level}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="course-modules">
+                            <h3>Course Content</h3>
+                            {selectedCourse.modules.map((module, index) => (
+                                <div key={index} className="course-module">
+                                    <div className="module-container">
+                                        <div className="module-info">
+                                            <div className="module-header">
+                                                <h4>{module.title}</h4>
+                                                <span className="module-duration"><FaClock /> {module.duration}</span>
+                                            </div>
+                                            <p>{module.description}</p>
+                                        </div>
+                                        
+                                        {/* Video thumbnail with play button or lock */}
+                                        {module.thumbnailUrl && module.videoUrl && (
+                                            <div className="module-video-container">
+                                                <div className={`module-thumbnail ${selectedCourse.premium && !user ? 'locked' : ''}`}>
+                                                    <img src={module.thumbnailUrl} alt={`${module.title} thumbnail`} />
+                                                    
+                                                    {selectedCourse.premium && !user ? (
+                                                        // Lock icon for unauthenticated users
+                                                        <div 
+                                                            className="module-lock-overlay"
+                                                            onClick={handlePremiumContentClick}
+                                                        >
+                                                            <FaLock className="module-lock-icon" />
+                                                        </div>
+                                                    ) : (
+                                                        // Play button for authenticated users
+                                                        <a 
+                                                            href={module.videoUrl} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="module-play-button"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <FaPlay />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
-                                    {term.video ? (
-                                        <div className="thumbnail-container">
-                                            <img
-                                                src={term.thumbnail}
-                                                alt={`${term.name} thumbnail`}
-                                                className="thumbnail"
-                                            />
-                                            <div className="play-button"><FaPlay /></div>
-                                        </div>
-                                    ) : (
-                                        <div className="chart-container">
-                                            <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                    
+                                    {/* Watch video link - only show for authenticated users */}
+                                    {module.videoUrl && (
+                                        <div className="watch-video-link-container">
+                                            {selectedCourse.premium && !user ? (
+                                                <button 
+                                                    className="premium-content-button"
+                                                    onClick={handlePremiumContentClick}
+                                                >
+                                                    <FaLock /> Sign in to watch
+                                                </button>
+                                            ) : (
+                                                <a 
+                                                    href={module.videoUrl} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="watch-video-link"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <FaPlay /> Watch Video
+                                                </a>
+                                            )}
                                         </div>
                                     )}
-                                    <p className="term-description">{term.shortDescription}</p>
-                                    <button className="learn-more-button">
-                                        Learn More <FaChevronRight className="button-icon" />
-                                    </button>
                                 </div>
                             ))}
                         </div>
-                    ) : (
-                        <div className="no-results">
-                            <p>No resources found for "{searchTerm}" in {selectedTopic}.</p>
-                            <button className="clear-search" onClick={() => setSearchTerm('')}>
-                                Clear Search
-                            </button>
-                        </div>
-                    )}
+                        
+                        {selectedCourse.premium && !user && (
+                            <div className="premium-content-message">
+                                <p>This is premium content. Please log in or subscribe to access all lessons.</p>
+                                <button 
+                                    className="action-button"
+                                    onClick={() => {
+                                        handleCloseCourseModal();
+                                        navigate('/login');
+                                    }}
+                                >
+                                    Sign In Now
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
 
-            {/* Modal */}
+            {/* Term Modal */}
             {selectedTerm && (
                 <div className="modal" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>

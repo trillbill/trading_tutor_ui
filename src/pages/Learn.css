@@ -679,3 +679,603 @@
 .learn-modal-header h2 {
     margin: 0;
 }
+
+/* Content Type Selection */
+.content-type-selection {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    padding: 0 20px;
+}
+
+.content-type-tabs {
+    display: flex;
+    border-bottom: 1px solid #333;
+}
+
+.content-type-tab {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.content-type-tab:hover {
+    color: white;
+}
+
+.content-type-tab.active {
+    color: #4b937b;
+}
+
+.content-type-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #4b937b;
+}
+
+/* Courses Section */
+.courses-section {
+    margin: 30px auto;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: white;
+    font-weight: 600;
+}
+
+/* Update the courses grid to horizontal scroll */
+.courses-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 25px;
+    margin-bottom: 40px;
+    padding-bottom: 15px; /* Add padding for scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #4b937b #2a2a2a;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Hide scrollbar for Chrome/Safari/Opera */
+.courses-grid::-webkit-scrollbar {
+    height: 6px;
+}
+
+.courses-grid::-webkit-scrollbar-track {
+    background: #2a2a2a;
+    border-radius: 10px;
+}
+
+.courses-grid::-webkit-scrollbar-thumb {
+    background: #4b937b;
+    border-radius: 10px;
+}
+
+/* Set fixed width for course cards */
+.course-card {
+    min-width: 350px;
+    width: 350px;
+    flex-shrink: 0;
+    background-color: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Add some padding to the last card to ensure scrolling works properly */
+.course-card:last-child {
+    margin-right: 20px;
+}
+
+.course-thumbnail {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.course-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.course-card:hover .course-thumbnail img {
+    transform: scale(1.05);
+}
+
+.course-lock {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.course-content {
+    padding: 20px;
+}
+
+.course-content h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.course-content p {
+    margin: 0 0 15px;
+    color: #aaa;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.course-meta {
+    display: flex;
+    gap: 15px;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.course-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Course Modal */
+.course-modal .modal-content {
+    max-width: 900px;
+    width: 90%;
+    padding: 30px;
+}
+
+.course-modal-header {
+    margin-bottom: 20px;
+}
+
+.course-modal-header h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: white;
+}
+
+.course-modal-info {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.course-thumbnail-large {
+    flex: 0 0 40%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.course-thumbnail-large img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.course-details {
+    flex: 1;
+}
+
+.course-full-description {
+    margin: 0 0 20px;
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.course-meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.course-meta-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.course-modules {
+    margin-top: 30px;
+}
+
+.course-modules h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.course-module {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.module-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.module-info {
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.module-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.module-duration {
+    color: #aaa;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.course-module p {
+    color: #bbb;
+    margin: 0 0 15px;
+    font-size: 0.95rem;
+}
+
+/* Video thumbnail styling */
+.module-video-container {
+    flex-shrink: 0;
+}
+
+.module-thumbnail {
+    position: relative;
+    width: 180px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.module-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.module-thumbnail:hover img {
+    transform: scale(1.05);
+}
+
+.module-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.module-play-button:hover {
+    background-color: #4b937b;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.watch-video-link-container {
+    margin-top: 10px;
+}
+
+.watch-video-link {
+    color: #4b937b;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+}
+
+.watch-video-link:hover {
+    color: #5daf93;
+    text-decoration: underline;
+}
+
+.premium-module-lock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .module-container {
+        flex-direction: column;
+    }
+    
+    .module-video-container {
+        margin-top: 15px;
+        align-self: center;
+    }
+    
+    .module-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .module-duration {
+        margin-top: 5px;
+    }
+}
+
+/* Topic Tabs - Updated for better alignment and mobile responsiveness */
+.topic-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.topic-tab {
+    display: flex;
+    align-items: center; /* This ensures vertical alignment */
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 8px 12px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+    line-height: 1; /* Helps with alignment */
+}
+
+.topic-tab:hover {
+    color: white;
+}
+
+.topic-tab.active {
+    color: #4b937b;
+}
+
+.topic-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4b937b;
+}
+
+.topic-icon {
+    width: 20px;
+    height: 20px;
+    display: flex; /* Helps with alignment */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        width: 100%; /* Ensure full width */
+    }
+    
+    .topic-tabs {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px; /* Reduce gap on mobile */
+    }
+    
+    .topic-tab {
+        padding: 8px 8px; /* Reduce padding on mobile */
+        font-size: 0.9rem; /* Slightly smaller font on mobile */
+    }
+    
+    .search-container {
+        width: 100%;
+    }
+    
+    .content-section {
+        width: 100%;
+        padding: 0; /* Remove padding to maximize space */
+    }
+    
+    .learn-list {
+        width: 100%;
+    }
+}
+
+/* Filter Dropdown */
+.filter-dropdown {
+    position: relative;
+    z-index: 10;
+}
+
+.dropdown-button {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: white;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-button:hover {
+    background-color: #333;
+}
+
+.dropdown-icon {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.dropdown-icon.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    width: 100%;
+    min-width: 150px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+    background: none;
+    border: none;
+    color: #ddd;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #333;
+}
+
+.dropdown-item.active {
+    color: #4b937b;
+    background-color: rgba(75, 147, 123, 0.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .filter-dropdown, 
+    .search-container {
+        width: 100%;
+    }
+    
+    .dropdown-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* Add styles for locked content */
+.module-thumbnail.locked {
+    cursor: pointer;
+}
+
+.module-thumbnail.locked img {
+    filter: brightness(0.7);
+}
+
+.module-lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.module-lock-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.module-lock-icon {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.premium-content-button {
+    background: none;
+    border: 1px solid #4b937b;
+    border-radius: 4px;
+    color: #4b937b;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.premium-content-button:hover {
+    background-color: rgba(75, 147, 123, 0.1);
+}
