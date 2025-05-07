@@ -413,6 +413,27 @@ const terminologyData = [
     ],
   },
   {
+    name: "Three Drives Pattern",
+    category: "Charts",
+    shortDescription: "A harmonic pattern consisting of three consecutive price movements (drives) of similar length that indicate a potential reversal point.",
+    value: "The Three Drives pattern is a reversal pattern that consists of three consecutive price movements or 'drives' in the same direction, each typically of similar length. The pattern follows specific Fibonacci measurements, with each drive often reaching a 127.2% or 161.8% extension of the previous correction. After the completion of the third drive, the market is expected to reverse direction.\n\nKey characteristics include:\n\n1. Three consecutive price movements in the same direction (either all up or all down)\n2. Each drive should reach similar Fibonacci extension levels\n3. The time taken to complete each drive is often symmetrical\n4. Volume typically decreases with each successive drive\n\nTraders look for the completion of the third drive to enter a counter-trend position, with a stop loss placed beyond the extreme of the third drive. This pattern works well in all timeframes and across different markets, making it a versatile tool for identifying potential reversal points.",
+    chartType: "threeDrives",
+    data: [
+      { time: '2025-01-01', value: 50 },
+      { time: '2025-01-02', value: 70 }, // First drive up
+      { time: '2025-01-03', value: 60 }, // Pullback
+      { time: '2025-01-04', value: 85 }, // Second drive up
+      { time: '2025-01-05', value: 75 }, // Pullback
+      { time: '2025-01-06', value: 95 }, // Third drive up
+      { time: '2025-01-07', value: 70 }, // Reversal begins
+      { time: '2025-01-08', value: 75 },
+      { time: '2025-01-09', value: 65 },
+      { time: '2025-01-10', value: 55 },
+      { time: '2025-01-11', value: 60 }
+    ],
+    lineColor: "red"
+  },
+  {
     name: "Doji",
     category: "Charts",
     value:
