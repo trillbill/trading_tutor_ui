@@ -1,0 +1,174 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Overview Cards */
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.overview-card {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.overview-card h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #aaa;
+}
+
+.card-value {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.positive {
+  color: #4CAF50;
+}
+
+.negative {
+  color: #F44336;
+}
+
+.tip-card {
+  grid-column: span 1;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tip-header svg {
+  color: #FFD700;
+}
+
+/* Quick Ask Section */
+.quick-ask-section {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.quick-ask-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.quick-ask-input {
+  display: flex;
+  gap: 10px;
+}
+
+.quick-ask-input input {
+  flex: 1;
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+}
+
+.quick-ask-input button {
+  padding: 0 20px;
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.quick-ask-input button:hover {
+  background-color: #5daf93;
+}
+
+/* Dashboard Tabs */
+.dashboard-tabs {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 600px; /* Set a fixed height for the tabs container */
+}
+
+.tab-buttons {
+  display: flex;
+  border-bottom: 1px solid #444;
+}
+
+.tab-buttons button {
+  padding: 15px 25px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.tab-buttons button.active {
+  color: white;
+  background-color: #333;
+  border-bottom: 2px solid #4b937b;
+}
+
+.tab-buttons button:hover:not(.active) {
+  background-color: #333;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .overview-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .tip-card {
+    grid-column: span 1;
+  }
+  
+  .quick-ask-input {
+    flex-direction: column;
+  }
+  
+  .tab-buttons {
+    flex-direction: column;
+  }
+  
+  .dashboard-tabs {
+    height: 800px; /* Taller on mobile */
+  }
+}
