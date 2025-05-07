@@ -416,7 +416,7 @@ const Learn = () => {
                         )}
                         
                         <div className="modal-description">
-                            <p>{selectedTerm.longDescription || selectedTerm.shortDescription}</p>
+                            <p>{selectedTerm.value || selectedTerm.shortDescription}</p>
                         </div>
                         
                         <div className="learn-modal-actions">
