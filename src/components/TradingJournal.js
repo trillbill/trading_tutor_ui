@@ -331,15 +331,14 @@ function TradingJournal({ onStatsUpdate }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const summaryData = await fetchJournalSummary();
-        setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+        await fetchJournalSummary();
       } catch (error) {
         console.error('Error fetching journal summary:', error);
       }
     };
 
     fetchData();
-  }, [entriesChanged]); // Add entriesChanged as a dependency
+  }, [entriesChanged]); // Keep entriesChanged as a dependency
 
   return (
     <div className="journal-container">
