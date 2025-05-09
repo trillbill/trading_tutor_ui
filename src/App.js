@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
@@ -10,7 +10,7 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import VerifyEmail from './pages/VerifyEmail';
 import VerificationRequired from './pages/VerificationRequired';
-import { AuthContext, AuthProvider, useAuth } from './context/AuthContext';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/ResetPassword';
@@ -22,7 +22,6 @@ import CookieConsent from './components/CookieConsent';
 import Footer from './components/Footer';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
-import Dashboard from './pages/Dashboard';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -41,31 +40,19 @@ const AuthRoute = ({ children }) => {
   return children;
 };
 
-const PublicRoute = ({ children }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) return <div className="loading">Loading...</div>;
-  
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return children;
-};
-
 function AppRoutes() {
   
   return (
     <Routes>
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/login" element={<Login />} />
       <Route path="/verification-required" element={
         <AuthRoute>
           <VerificationRequired />
         </AuthRoute>
       } />
-      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-      <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
+      <Route path="/" element={<Home />} />
+      <Route path="/learn" element={<Learn />} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
       <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
       <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
@@ -75,7 +62,6 @@ function AppRoutes() {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
