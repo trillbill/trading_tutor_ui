@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot, FaChevronDown, FaLock, FaClock, FaVideo } from 'react-icons/fa';
+import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot, FaChevronDown, FaLock, FaClock, FaVideo, FaCheckCircle, FaCheck } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import AIChatModal from '../components/AIChatModal';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +8,8 @@ import terminologyData from '../terminologyData';
 import coursesData from '../coursesData';
 import heroImage from '../assets/man-trading3.png';
 import { useNavigate } from 'react-router-dom';
+import VideoPlayer from '../components/VideoPlayer';
+import api from '../api/api';
 
 const Learn = () => {
     const { user } = useAuth();
@@ -25,6 +27,82 @@ const Learn = () => {
 
     // Add navigate for redirection
     const navigate = useNavigate();
+
+    // Add these new state variables
+    const [activeVideoModule, setActiveVideoModule] = useState(null);
+    const [userProgress, setUserProgress] = useState({
+        concept: [],
+        course: [],
+        module: []
+    });
+    
+    // Add this useEffect to fetch user progress when component mounts
+    useEffect(() => {
+        if (user) {
+            fetchUserProgress();
+        }
+    }, [user]);
+    
+    // Update the fetchUserProgress function with better debugging
+    const fetchUserProgress = async () => {
+        try {
+            const response = await api.get('/api/progress/user');
+            
+            if (response.data.success) {
+                // Initialize with empty arrays if any property is missing
+                const progress = {
+                    concept: response.data.progress.concept || [],
+                    course: response.data.progress.course || [],
+                    module: response.data.progress.module || []
+                };
+                
+                setUserProgress(progress);
+            }
+        } catch (error) {
+            console.error('Error fetching user progress:', error);
+        }
+    };
+    
+    // Add this useEffect to refresh user progress when a course is selected
+    useEffect(() => {
+        if (user && selectedCourse) {
+            fetchUserProgress();
+        }
+    }, [selectedCourse, user]);
+    
+    // Update the handleModuleComplete function to ensure it's properly updating state
+    const handleModuleComplete = (moduleId) => {
+        // Convert moduleId to number to ensure consistent comparison
+        const numericModuleId = Number(moduleId);
+        
+        // Update local state immediately for a responsive UI
+        setUserProgress(prev => {
+            // Check if the module is already in the array
+            if (prev.module && prev.module.includes(numericModuleId)) {
+                return prev;
+            }
+            
+            return {
+                ...prev,
+                module: [...(prev.module || []), numericModuleId]
+            };
+        });
+        
+        // Then refresh from the server to ensure we have the latest data
+        fetchUserProgress();
+    };
+    
+    // Add this function to handle video click
+    const handleVideoClick = (e, module) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setActiveVideoModule(module);
+    };
+    
+    // Add this function to close the video modal
+    const handleCloseVideo = () => {
+        setActiveVideoModule(null);
+    };
 
     useEffect(() => {
         // Preload the hero image
@@ -140,6 +218,55 @@ const Learn = () => {
         navigate('/login'); // Redirect to login page
     };
 
+    // Add this function to check if a course is completed
+    const isCourseCompleted = (course) => {
+        if (!userProgress.course || !course) return false;
+        return userProgress.course.includes(course.id);
+    };
+
+    // Add this function to calculate how many modules are completed in a course
+    const getCompletedModulesCount = (course) => {
+        if (!userProgress.module || !course) return 0;
+        return course.modules.filter(module => 
+            userProgress.module.includes(module.id)
+        ).length;
+    };
+
+    // Add a new function to mark a term as learned
+    const markTermAsLearned = async (termId) => {
+        try {
+            const response = await api.post('/api/progress/mark-completed', {
+                itemType: 'concept',
+                itemId: termId
+            });
+            
+            if (response.data.success) {
+                // Update local state immediately for a responsive UI
+                setUserProgress(prev => {
+                    // Check if the concept is already in the array
+                    if (prev.concept && prev.concept.includes(termId)) {
+                        return prev;
+                    }
+                    
+                    return {
+                        ...prev,
+                        concept: [...(prev.concept || []), termId]
+                    };
+                });
+                
+                // Then refresh from the server to ensure we have the latest data
+                fetchUserProgress();
+            }
+        } catch (error) {
+            console.error('Error marking term as learned:', error);
+        }
+    };
+
+    // Add a function to check if a term is already learned
+    const isTermLearned = (termId) => {
+        return userProgress.concept && userProgress.concept.includes(termId.toString());
+    };
+
     return (
         <div className="learn-container">
             <div className="learn-hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
@@ -159,7 +286,7 @@ const Learn = () => {
                     {coursesData.map((course) => (
                         <div 
                             key={course.id} 
-                            className={`course-card ${course.premium && !user ? 'locked' : ''}`}
+                            className={`course-card ${course.premium && !user ? 'locked' : ''} ${isCourseCompleted(course) ? 'completed' : ''}`}
                             onClick={() => handleCourseClick(course)}
                         >
                             <div className="course-thumbnail">
@@ -169,13 +296,30 @@ const Learn = () => {
                                         <FaLock />
                                     </div>
                                 )}
+                                {isCourseCompleted(course) && (
+                                    <div className="course-completed-badge">
+                                        <FaCheckCircle />
+                                    </div>
+                                )}
                             </div>
                             <div className="course-content">
-                                <h3>{course.title}</h3>
+                                <h3>
+                                    {course.title}
+                                    {isCourseCompleted(course) && (
+                                        <span className="course-completed-indicator">
+                                            <FaCheckCircle />
+                                        </span>
+                                    )}
+                                </h3>
                                 <p>{course.description}</p>
                                 <div className="course-meta">
                                     <span><FaClock /> {calculateCourseDuration(course)}</span>
                                     <span><FaVideo /> {course.modules.length} lessons</span>
+                                    {getCompletedModulesCount(course) > 0 && (
+                                        <span className="course-progress">
+                                            {getCompletedModulesCount(course)}/{course.modules.length} completed
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -224,40 +368,50 @@ const Learn = () => {
                 
                 {filteredTerms.length > 0 ? (
                     <div className="learn-list">
-                        {filteredTerms.map((term, index) => (
-                            <div className="term-card" key={index} onClick={() => handleCardClick(term)}>
-                                <div className="term-header">
-                                    {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
-                                    {user && (
-                                        <button 
-                                            className="ask-ai-button" 
-                                            onClick={(e) => handleAskAITutor(term, e)}
-                                            title="Ask AI Tutor about this term"
-                                        >
-                                            <FaRobot />
-                                        </button>
+                        {filteredTerms.map((term, index) => {
+                            const isLearned = isTermLearned(term.id);
+                            
+                            return (
+                                <div 
+                                    className={`term-card ${isLearned ? 'learned' : ''}`} 
+                                    key={index} 
+                                    onClick={() => handleCardClick(term)}
+                                >
+                                    <div className="term-header">
+                                        {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
+                                        <div className="term-header-actions">
+                                            {user && (
+                                                <button 
+                                                    className="ask-ai-button" 
+                                                    onClick={(e) => handleAskAITutor(term, e)}
+                                                    title="Ask AI Tutor about this term"
+                                                >
+                                                    <FaRobot />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {term.video ? (
+                                        <div className="thumbnail-container">
+                                            <img
+                                                src={term.thumbnail}
+                                                alt={`${term.name} thumbnail`}
+                                                className="thumbnail"
+                                            />
+                                            <div className="play-button"><FaPlay /></div>
+                                        </div>
+                                    ) : (
+                                        <div className="chart-container">
+                                            <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                        </div>
                                     )}
+                                    <p className="term-description">{term.shortDescription}</p>
+                                    <button className="learn-more-button">
+                                        Learn More <FaChevronRight className="button-icon" />
+                                    </button>
                                 </div>
-                                {term.video ? (
-                                    <div className="thumbnail-container">
-                                        <img
-                                            src={term.thumbnail}
-                                            alt={`${term.name} thumbnail`}
-                                            className="thumbnail"
-                                        />
-                                        <div className="play-button"><FaPlay /></div>
-                                    </div>
-                                ) : (
-                                    <div className="chart-container">
-                                        <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
-                                    </div>
-                                )}
-                                <p className="term-description">{term.shortDescription}</p>
-                                <button className="learn-more-button">
-                                    Learn More <FaChevronRight className="button-icon" />
-                                </button>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 ) : (
                     <div className="no-results">
@@ -299,73 +453,66 @@ const Learn = () => {
                         
                         <div className="course-modules">
                             <h3>Course Content</h3>
-                            {selectedCourse.modules.map((module, index) => (
-                                <div key={index} className="course-module">
-                                    <div className="module-container">
-                                        <div className="module-info">
-                                            <div className="module-header">
-                                                <h4>{module.title}</h4>
-                                                <span className="module-duration"><FaClock /> {module.duration}</span>
-                                            </div>
-                                            <p>{module.description}</p>
-                                        </div>
-                                        
-                                        {/* Video thumbnail with play button or lock */}
-                                        {module.thumbnailUrl && module.videoUrl && (
-                                            <div className="module-video-container">
-                                                <div className={`module-thumbnail ${selectedCourse.premium && !user ? 'locked' : ''}`}>
-                                                    <img src={module.thumbnailUrl} alt={`${module.title} thumbnail`} />
-                                                    
-                                                    {selectedCourse.premium && !user ? (
-                                                        // Lock icon for unauthenticated users
-                                                        <div 
-                                                            className="module-lock-overlay"
-                                                            onClick={handlePremiumContentClick}
-                                                        >
-                                                            <FaLock className="module-lock-icon" />
-                                                        </div>
-                                                    ) : (
-                                                        // Play button for authenticated users
-                                                        <a 
-                                                            href={module.videoUrl} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer"
-                                                            className="module-play-button"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <FaPlay />
-                                                        </a>
-                                                    )}
+                            {selectedCourse.modules.map((module, index) => {
+                                const isModuleCompleted = userProgress.module && 
+                                    (userProgress.module.includes(Number(module.id)) || 
+                                     userProgress.module.includes(String(module.id)));
+                                
+                                return (
+                                    <div 
+                                        key={index} 
+                                        className={`course-module ${isModuleCompleted ? 'completed' : ''}`}
+                                    >
+                                        <div className="module-container">
+                                            <div className="module-info">
+                                                <div className="module-header">
+                                                    <h4>
+                                                        {module.title}
+                                                        {isModuleCompleted && (
+                                                            <span className="module-completed-indicator">
+                                                                <FaCheckCircle />
+                                                            </span>
+                                                        )}
+                                                    </h4>
                                                 </div>
+                                                <p>{module.description}</p>
                                             </div>
-                                        )}
-                                    </div>
-                                    
-                                    {/* Watch video link - only show for authenticated users */}
-                                    {module.videoUrl && (
-                                        <div className="watch-video-link-container">
-                                            {selectedCourse.premium && !user ? (
-                                                <button 
-                                                    className="premium-content-button"
-                                                    onClick={handlePremiumContentClick}
-                                                >
-                                                    <FaLock /> Sign in to watch
-                                                </button>
-                                            ) : (
-                                                <a 
-                                                    href={module.videoUrl} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer"
-                                                    className="watch-video-link"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    <FaPlay /> Watch Video
-                                                </a>
+                                            
+                                            {/* Video thumbnail with play button or lock */}
+                                            {module.thumbnailUrl && module.videoUrl && (
+                                                <div className="module-video-container">
+                                                    <div className={`module-thumbnail ${selectedCourse.premium && !user ? 'locked' : ''}`}>
+                                                        <img src={module.thumbnailUrl} alt={`${module.title} thumbnail`} />
+                                                        
+                                                        {selectedCourse.premium && !user ? (
+                                                            // Lock icon for unauthenticated users
+                                                            <div 
+                                                                className="module-lock-overlay"
+                                                                onClick={handlePremiumContentClick}
+                                                            >
+                                                                <FaLock className="module-lock-icon" />
+                                                            </div>
+                                                        ) : (
+                                                            // Play button for authenticated users
+                                                            <button 
+                                                                className="module-play-button"
+                                                                onClick={(e) => handleVideoClick(e, module)}
+                                                            >
+                                                                <FaPlay />
+                                                            </button>
+                                                        )}
+                                                        
+                                                        {/* Add duration overlay */}
+                                                        <div className="module-duration-overlay">
+                                                            <FaClock /> {module.duration}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+                                    </div>
+                                );
+                            })}
                         </div>
                         
                         {selectedCourse.premium && !user && (
@@ -396,6 +543,11 @@ const Learn = () => {
                         
                         <div className="learn-modal-header">
                             <h2>{selectedTerm.name}</h2>
+                            {isTermLearned(selectedTerm.id) && (
+                                <span className="term-learned-badge">
+                                    <FaCheckCircle /> Learned
+                                </span>
+                            )}
                         </div>
                         
                         {selectedTerm.video ? (
@@ -420,6 +572,15 @@ const Learn = () => {
                         </div>
                         
                         <div className="learn-modal-actions">
+                            {user && !isTermLearned(selectedTerm.id) && (
+                                <button 
+                                    className="action-button mark-learned-button"
+                                    onClick={() => markTermAsLearned(selectedTerm.id)}
+                                >
+                                    <FaCheck /> Mark as Learned
+                                </button>
+                            )}
+                            
                             {user && (
                                 <button 
                                     className="action-button"
@@ -443,7 +604,34 @@ const Learn = () => {
                     onClose={handleCloseAIChatModal}
                     initialTerm={selectedTermForAI.name}
                     initialDescription={selectedTermForAI.longDescription || selectedTermForAI.shortDescription}
+                    initialMessage={`Explain this trading term: ${selectedTermForAI.name}`}
                 />
+            )}
+
+            {/* Add this new Video Player Modal */}
+            {activeVideoModule && (
+                <div className="modal" onClick={handleCloseVideo}>
+                    <div className="modal-content video-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close-button" onClick={handleCloseVideo}>
+                            <FaTimes />
+                        </button>
+                        
+                        <div className="video-modal-header">
+                            <h2>{activeVideoModule.title}</h2>
+                        </div>
+                        
+                        <VideoPlayer 
+                            videoUrl={activeVideoModule.videoUrl}
+                            moduleId={activeVideoModule.id}
+                            courseId={selectedCourse?.id}
+                            onComplete={handleModuleComplete}
+                        />
+                        
+                        <div className="video-description">
+                            <p>{activeVideoModule.description}</p>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

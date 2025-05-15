@@ -10,6 +10,7 @@ const coursesData = [
     premium: true,
     modules: [
       {
+        id: 101,
         title: "Introduction to Market Microstructure",
         duration: "3 min",
         description: "Overview of market microstructure concepts and why they matter to traders",
@@ -17,6 +18,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Introduction+to+Market+Microstructure.png"
       },
       {
+        id: 102,
         title: "Order Types and Execution",
         duration: "5 min",
         description: "Detailed exploration of market orders, limit orders, and advanced order types",
@@ -24,6 +26,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Order+Types+and+Execution.png"
       },
       {
+        id: 103,
         title: "Liquidity and Market Depth",
         duration: "5 min",
         description: "Understanding liquidity providers, market makers, and reading the order book",
@@ -31,6 +34,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Liquidity+and+Market+Depth.png"
       },
       {
+        id: 104,
         title: "Price Formation and Discovery",
         duration: "6 min",
         description: "How prices are formed through the interaction of buyers and sellers",
@@ -38,6 +42,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Price+Formation+and+Discovery.png"
       },
       {
+        id: 105,
         title: "Market Impact and Trading Costs",
         duration: "6 min",
         description: "Analyzing transaction costs, slippage, and minimizing market impact",
@@ -58,6 +63,7 @@ const coursesData = [
     premium: true,
     modules: [
       {
+        id: 201,
         title: "Options Basics: Calls and Puts",
         duration: "5 min",
         description: "Understanding the fundamental building blocks of options trading",
@@ -65,6 +71,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Options+Basics_+Calls+and+Puts.png"
       },
       {
+        id: 202,
         title: "Option Pricing and the Greeks",
         duration: "6 min",
         description: "How options are priced and the factors that influence their value",
@@ -72,6 +79,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Option+Pricing+and+the+Greeks.png"
       },
       {
+        id: 203,
         title: "Basic Options Strategies",
         duration: "6 min",
         description: "Covered calls, protective puts, and other beginner-friendly strategies",
@@ -79,6 +87,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Basic+Options+Strategies.png"
       },
       {
+        id: 204,
         title: "Implied Volatility and Time Decay",
         duration: "6 min",
         description: "Understanding how time and volatility affect option prices",
@@ -86,6 +95,7 @@ const coursesData = [
         thumbnailUrl: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Implied+Volatility+and+Time+Decay.png"
       },
       {
+        id: 205,
         title: "Risk Management for Options Traders",
         duration: "6 min",
         description: "Position sizing, hedging, and managing risk in options trading",
@@ -106,31 +116,37 @@ const coursesData = [
   //   premium: true,
   //   modules: [
   //     {
+  //       id: 301,
   //       title: "Foundations of Technical Analysis",
   //       duration: "60 min",
   //       description: "Core principles, assumptions, and the psychology behind technical analysis"
   //     },
   //     {
+  //       id: 302,
   //       title: "Chart Patterns and Price Action",
   //       duration: "90 min",
   //       description: "Identifying and trading reversal and continuation patterns"
   //     },
   //     {
+  //       id: 303,
   //       title: "Trend Analysis and Moving Averages",
   //       duration: "75 min",
   //       description: "Identifying trends and using moving averages effectively"
   //     },
   //     {
+  //       id: 304,
   //       title: "Momentum and Oscillator Indicators",
   //       duration: "75 min",
   //       description: "Using RSI, MACD, Stochastic, and other momentum indicators"
   //     },
   //     {
+  //       id: 305,
   //       title: "Volume Analysis and Market Breadth",
   //       duration: "60 min",
   //       description: "Incorporating volume and market breadth into your technical analysis"
   //     },
   //     {
+  //       id: 306,
   //       title: "Building a Technical Trading System",
   //       duration: "90 min",
   //       description: "Combining multiple techniques into a coherent trading approach"
@@ -149,26 +165,31 @@ const coursesData = [
   //   premium: true,
   //   modules: [
   //     {
+  //       id: 401,
   //       title: "Fundamental Analysis for Different Timeframes",
   //       duration: "45 min",
   //       description: "Adapting fundamental analysis for various trading horizons"
   //     },
   //     {
+  //       id: 402,
   //       title: "Economic Indicators and Market Reactions",
   //       duration: "75 min",
   //       description: "How markets typically respond to major economic data releases"
   //     },
   //     {
+  //       id: 403,
   //       title: "Earnings Season Trading Strategies",
   //       duration: "60 min",
   //       description: "Approaches for trading before, during, and after earnings announcements"
   //     },
   //     {
+  //       id: 404,
   //       title: "Sector Rotation and Industry Analysis",
   //       duration: "60 min",
   //       description: "Identifying sectors and industries poised for outperformance"
   //     },
   //     {
+  //       id: 405,
   //       title: "Integrating Technical and Fundamental Analysis",
   //       duration: "60 min",
   //       description: "Creating a holistic approach that leverages both methodologies"

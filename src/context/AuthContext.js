@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 import api from '../api/api';
 
 export const AuthContext = createContext();
@@ -7,12 +7,20 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
+  
+  // Use a ref to track if the effect has run
+  const effectRan = useRef(false);
 
   // Check if user is logged in on initial load
   useEffect(() => {
+    // In development, React will run effects twice in strict mode
+    // This check prevents the second run in development
+    if (effectRan.current === true) {
+      return;
+    }
+    
     const checkAuthStatus = async () => {
       try {
-        // Call the endpoint that uses the cookie to authenticate
         const response = await api.get('/api/auth/me');
         if (response.data.success) {
           setUser(response.data.user);
@@ -30,7 +38,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuthStatus();
-  }, []);
+    
+    // Cleanup function that runs when component unmounts
+    return () => {
+      effectRan.current = true;
+    };
+  }, []); // Empty dependency array means this runs once on mount
 
   // Check if user is authenticated
   const isAuthenticated = !!user;
