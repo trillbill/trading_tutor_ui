@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
@@ -7,12 +7,11 @@ import Learn from './pages/Learn';
 import Quiz from './pages/Quiz';
 import ChatWindow from './pages/ChatWindow';
 import Login from './pages/Login';
-import Account from './pages/Account';
+import Dashboard from './pages/Dashboard';
 import VerifyEmail from './pages/VerifyEmail';
 import VerificationRequired from './pages/VerificationRequired';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import NotFound from './pages/NotFound';
-import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/ResetPassword';
 import Home from './pages/Home';
 import RiskAppetiteQuiz from './pages/RiskAppetiteQuiz';
@@ -22,6 +21,9 @@ import CookieConsent from './components/CookieConsent';
 import Footer from './components/Footer';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Account from './pages/Account';
+import AIChatWidget from './components/AIChatWidget';
+import chatPrompts from './chatPrompts';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -29,39 +31,73 @@ import quizIcon from './assets/quiz-icon.png';
 import chatIcon from './assets/chat-icon.png';
 import homeIcon from './assets/home-icon.png';
 import pricingIcon from './assets/pricing-icon.png';
+import dashboardIcon from './assets/dashboard-icon.png';
 
-const AuthRoute = ({ children }) => {
-  const { loading } = useContext(AuthContext);
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
   
   if (loading) {
     return <div>Loading...</div>;
   }
   
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
   return children;
 };
 
-function AppRoutes() {
+// Public route component - redirects authenticated users to dashboard page
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
   
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return children;
+};
+
+// Create a new component to conditionally render the AIChatWidget
+const ConditionalAIChatWidget = ({ chatPrompts }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useContext(AuthContext);
+  
+  // Only show on dashboard and learn pages
+  const showOnPaths = ['/dashboard', '/learn'];
+  const shouldShow = isAuthenticated && showOnPaths.includes(location.pathname);
+  
+  return shouldShow ? <AIChatWidget chatPrompts={chatPrompts} /> : null;
+};
+
+function AppRoutes() {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/verification-required" element={
-        <AuthRoute>
-          <VerificationRequired />
-        </AuthRoute>
-      } />
-      <Route path="/" element={<Home />} />
-      <Route path="/learn" element={<Learn />} />
-      <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-      <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
-      <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
+      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/verification-required" element={<VerificationRequired />} />
+      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
-      <Route path="/update-email" element={<UpdateEmail />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      
+      {/* Protected routes */}
+      <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+      <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
+      <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
+      <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
+      <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />
+      
+      {/* Catch-all route */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -80,17 +116,25 @@ const App = () => {
             <header className="App-header">
                 <div className="header-column logo-column">
                     <nav>
-                        <Link to="/">                 
+                        <Link to={isAuthenticated ? "/dashboard" : "/"}>                 
                             <LogoHeader />
                         </Link>
                     </nav>
                 </div>
                 <div className="header-column nav-column">
                     <nav className="nav-options">
-                        <Link to="/learn" className="nav-item">Learn</Link>
-                        <Link to="/quiz" className="nav-item">Quiz</Link>
-                        <Link to="/chat" className="nav-item">Chat</Link>
-                        <Link to="/pricing" className="nav-item">Pricing</Link>
+                        {isAuthenticated ? (
+                            <>
+                                <Link to="/dashboard" className="nav-item">Dashboard</Link>
+                                <Link to="/learn" className="nav-item">Learn</Link>
+                                <Link to="/pricing" className="nav-item">Pricing</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/" className="nav-item">Home</Link>
+                                <Link to="/pricing" className="nav-item">Pricing</Link>
+                            </>
+                        )}
                     </nav>
                 </div>
                 <div className="header-column login-column">
@@ -107,15 +151,19 @@ const App = () => {
             {isMenuOpen && (
                 <div className="hamburger-menu">
                     <nav className="nav-options">
-                        <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={homeIcon} className="hamburger-icon" alt="Home" />Home</Link>
-                        <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
-                        <Link to="/quiz" className="hamburger-item" onClick={toggleMenu}><img src={quizIcon} className="hamburger-icon" alt="Quiz" />Quiz</Link>
-                        <Link to="/chat" className="hamburger-item" onClick={toggleMenu}><img src={chatIcon} className="hamburger-icon" alt="Chat" />Chat</Link>
-                        <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
                         {isAuthenticated ? (
-                            <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Account" />Account</Link>
+                            <>
+                                <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}><img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard</Link>
+                                <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
+                                <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
+                                <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Account" />Account</Link>
+                            </>
                         ) : (
-                            <Link to="/login" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Login" />Login</Link>
+                            <>
+                                <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={homeIcon} className="hamburger-icon" alt="Home" />Home</Link>
+                                <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
+                                <Link to="/login" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Login" />Login</Link>
+                            </>
                         )}
                     </nav>
                 </div>
@@ -126,6 +174,9 @@ const App = () => {
             
             <Footer />
             <CookieConsent />
+            
+            {/* Use the conditional widget component instead of the direct component */}
+            <ConditionalAIChatWidget chatPrompts={chatPrompts} />
         </div>
     );
 };

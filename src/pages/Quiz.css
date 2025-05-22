@@ -1,10 +1,5 @@
 .quiz-container {
     width: 100%; /* Allow it to be responsive */
-    margin: 0 auto; /* Center the container horizontally */
-    padding: 20px; /* Add some padding */
-    background-color: #302e2e; /* Optional: Background color for the container */
-    border-radius: 8px; /* Optional: Rounded corners */
-    text-align: center;
 }
 
 .quiz-question {
@@ -191,10 +186,6 @@
     font-size: 1.4rem;
     color: white;
     margin-bottom: 15px;
-}
-
-.quiz-container {
-    padding: 20px;
 }
 
 /* Hero Section */

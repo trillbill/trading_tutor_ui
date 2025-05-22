@@ -51,7 +51,7 @@ function Login() {
         if (result.success) {
           // Successful login
           setMessage('Login successful!');
-          navigate('/account');
+          navigate('/dashboard');
         } else if (result.needsVerification) {
           // Email needs verification
           setMessage('Please verify your email before logging in. Check your inbox for a verification link.');

@@ -276,6 +276,7 @@
 }
 
 .thumbnail {
+    margin-top: 20px;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -929,16 +930,17 @@
 
 .module-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 5px;
 }
 
 .module-header h4 {
+    display: flex;
+    align-items: center;
     margin: 0;
     font-size: 1.1rem;
-    color: white;
+    font-weight: 600;
 }
 
 .module-duration {
@@ -985,21 +987,22 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 1rem;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
     transition: all 0.2s ease;
-    z-index: 2;
 }
 
 .module-play-button:hover {
-    background-color: #4b937b;
+    background: rgba(0, 0, 0, 0.9);
     transform: translate(-50%, -50%) scale(1.1);
 }
 
@@ -1008,18 +1011,21 @@
 }
 
 .watch-video-link {
-    color: #4b937b;
-    text-decoration: none;
-    font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: color 0.2s ease;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 
 .watch-video-link:hover {
-    color: #5daf93;
-    text-decoration: underline;
+    background: #2980b9;
 }
 
 .premium-module-lock {
@@ -1275,4 +1281,429 @@
 
 .premium-content-button:hover {
     background-color: rgba(75, 147, 123, 0.1);
+}
+
+/* Video modal styles */
+.video-modal-content {
+    max-width: 900px;
+    width: 90%;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Limit height to 90% of viewport height */
+}
+
+.video-modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-description {
+    padding: 15px 20px;
+    max-height: 20vh; /* Limit description height */
+    overflow-y: auto; /* Add scrolling if needed */
+}
+
+/* Module completion indicator */
+.course-module.completed {
+    background: rgba(76, 175, 80, 0.05);
+    border-left: 3px solid #4CAF50;
+}
+
+.module-completed-indicator {
+    color: #4CAF50;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+/* Change the play button to be a real button instead of an anchor */
+.module-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.module-play-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.watch-video-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.watch-video-link:hover {
+    background: #2980b9;
+}
+
+.course-card.completed {
+    border-color: #4CAF50;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.course-completed-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.course-completed-indicator {
+    color: #4CAF50;
+    margin-left: 10px;
+    font-size: 0.8em;
+}
+
+.course-progress {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+/* Make sure the module completion indicator is properly styled */
+.module-completed-indicator {
+    color: #4CAF50;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Term card learned indicator */
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.term-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.term-learned-indicator {
+    color: #4CAF50;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Term modal learned badge */
+.learn-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.term-learned-badge {
+    background: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Modal action buttons */
+.learn-modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-button.mark-learned-button {
+    background-color:  #4b937b;
+}
+
+.action-button.mark-learned-button:hover {
+    background-color: #3a7261
+}
+
+/* Update these styles in Learn.css */
+
+/* Term card styles for learned terms */
+.term-card.learned {
+  background: linear-gradient(to right, rgba(75, 147, 123, 0.1), rgba(75, 147, 123, 0.05));
+  border-left: 3px solid #4CAF50;
+}
+
+/* Term header actions */
+.term-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Mark as learned button */
+.mark-learned-button {
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mark-learned-button:hover {
+  background-color: #3a7261;
+  transform: scale(1.05);
+}
+
+/* Learned badge in term list */
+.term-learned-badge {
+  background-color: #4b937b;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Term modal learned badge */
+.learn-modal-header .term-learned-badge {
+  background: #4b937b;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Modal action buttons */
+.learn-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.action-button.mark-learned-button {
+  background-color: #4b937b;
+}
+
+.action-button.mark-learned-button:hover {
+  background-color: #3a7261;
+}
+
+/* Update the learn button styles */
+.modal-footer .learn-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-footer .learn-button:hover:not(:disabled) {
+  background-color: #3a7c67;
+  transform: translateY(-2px);
+}
+
+.modal-footer .learn-button.learned {
+  background-color: #e0e0e0;
+  color: #4b937b;
+  cursor: default;
+  border: 1px solid #4b937b;
+}
+
+.modal-footer .learn-button.learned svg {
+  color: #4b937b;
+}
+
+.modal-footer .learn-button:disabled {
+  cursor: default;
+}
+
+.modal-footer .learn-button.login-prompt {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.modal-footer .learn-button.login-prompt:hover {
+  background-color: #e0e0e0;
+}
+
+/* Update the modal footer layout */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-top: 1px solid #eee;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-footer .learn-button,
+  .modal-footer .ask-ai-button-large {
+    width: 100%;
+  }
+}
+
+.expand-list-container {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  margin: 20px 0;
+}
+
+.expand-list-button {
+  background: linear-gradient(135deg, #4b937b 0%, #3a7561 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(75, 147, 123, 0.2);
+}
+
+.expand-list-button:hover {
+  background: linear-gradient(135deg, #3a7561 0%, #2d5a4b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(75, 147, 123, 0.3);
+}
+
+.expand-list-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(75, 147, 123, 0.2);
+}
+
+.expand-icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.expand-list-button:hover .expand-icon {
+  transform: translateY(2px);
+}
+
+/* When showing less, animate the icon differently */
+.expand-list-button:hover .fa-chevron-up {
+  transform: translateY(-2px);
+}
+
+/* Quiz section toggle button */
+.quiz-toggle-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.quiz-section-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(74, 74, 74, 0.2);
+    border-radius: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Make sure the expand button styling is consistent */
+.expand-list-button {
+    background: linear-gradient(135deg, #4b937b 0%, #3a7561 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(75, 147, 123, 0.2);
+}
+
+.expand-list-button:hover {
+    background: linear-gradient(135deg, #3a7561 0%, #2d5a4b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(75, 147, 123, 0.3);
+}
+
+.expand-list-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(75, 147, 123, 0.2);
+}
+
+.expand-icon {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.expand-list-button:hover .expand-icon {
+    transform: translateY(2px);
+}
+
+/* When showing less, animate the icon differently */
+.expand-list-button:hover .fa-chevron-up {
+    transform: translateY(-2px);
 }

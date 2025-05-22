@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaBook, FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaChartLine } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
+// Import Recharts components
+import { 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
+  ResponsiveContainer, ReferenceLine, Area, AreaChart 
+} from 'recharts';
+import AIChatModal from './AIChatModal'; // Import the AIChatModal directly
+import SolanaWalletConnect from './SolanaWalletConnect';
+import { useAuth } from '../context/AuthContext';
 
 function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
@@ -55,6 +63,41 @@ function TradingJournal({ onStatsUpdate }) {
     totalProfit: 0
   });
 
+  // Use refs to track if the effects have run
+  const journalEntriesEffectRan = useRef(false);
+  const journalSummaryEffectRan = useRef(false);
+
+  // Add state for PNL chart data
+  const [pnlChartData, setPnlChartData] = useState([]);
+
+  // Add state for AI chat modal
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [chatTerm, setChatTerm] = useState('');
+  const [chatDescription, setChatDescription] = useState('');
+  const [initialMessage, setInitialMessage] = useState('');
+
+  // Add state to track window width
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  // Add effect to update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  // Determine if we're on mobile
+  const isMobile = windowWidth <= 768;
+
+  // Add state for wallet address
+  const [walletAddress, setWalletAddress] = useState('');
+  const { user } = useAuth();
+
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
     // Calculate win rate
@@ -74,9 +117,172 @@ function TradingJournal({ onStatsUpdate }) {
     };
   }, [journalEntries]);
 
+  // Define the fetchJournalEntries function
+  const fetchJournalEntries = async (page = pagination.currentPage) => {
+    try {
+      setLoading(true);
+      const response = await api.get('/api/journal', {
+        params: {
+          page,
+          limit: pagination.limit
+        }
+      });
+      
+      if (response.data.success) {
+        setJournalEntries(response.data.entries);
+        setPagination(response.data.pagination);
+      }
+    } catch (error) {
+      console.error('Error fetching journal entries:', error);
+      setJournalError('Failed to load journal entries');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch journal entries when component mounts or pagination changes
   useEffect(() => {
-    fetchJournalEntries(pagination.currentPage);
-  }, [pagination.currentPage]);
+    // In development, React will run effects twice in strict mode
+    // This check prevents the second run in development for the initial page load
+    if (pagination.currentPage === 1 && journalEntriesEffectRan.current === true) {
+      return;
+    }
+    
+    fetchJournalEntries();
+    
+    // Cleanup function that runs when component unmounts or dependencies change
+    return () => {
+      if (pagination.currentPage === 1) {
+        journalEntriesEffectRan.current = true;
+      }
+    };
+  }, [pagination.currentPage, pagination.limit]); // Dependencies: pagination page and limit
+
+  // Format currency for tooltip and display
+  const formatCurrency = (value) => {
+    if (!value) return '-';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(value);
+  };
+  
+  // Process the recent trades data for the chart with cumulative P/L
+  const processTradesForChart = (trades) => {
+    if (!trades || !trades.length) return [];
+    
+    // Sort trades by date (oldest first)
+    const sortedTrades = [...trades].sort((a, b) => 
+      new Date(a.trade_date) - new Date(b.trade_date)
+    );
+    
+    let cumulativePnl = 0;
+    
+    // Map trades to chart data format with cumulative P/L
+    return sortedTrades.map(trade => {
+      const tradePnl = parseFloat(trade.profit_loss) || 0;
+      cumulativePnl += tradePnl;
+      
+      return {
+        date: trade.trade_date.split('T')[0],
+        individualPnl: tradePnl,
+        cumulativePnl: cumulativePnl,
+        symbol: trade.symbol
+      };
+    });
+  };
+
+  // Add a function to format dates nicely
+  const formatDateForTooltip = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  // Custom tooltip for the chart with better error handling
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) {
+      return null;
+    }
+    
+    // Safely extract values with fallbacks
+    const individualPnl = payload[0] && payload[0].value !== undefined ? payload[0].value : 0;
+    const cumulativePnl = payload.length > 1 && payload[1] && payload[1].value !== undefined ? payload[1].value : individualPnl;
+    
+    return (
+      <div className="pnl-chart-tooltip">
+        <p className="tooltip-date">{label}</p>
+        <p className="tooltip-pnl">
+          Trade P/L: <span className={individualPnl >= 0 ? 'positive' : 'negative'}>
+            {formatCurrency(individualPnl)}
+          </span>
+        </p>
+        <p className="tooltip-cumulative">
+          Total P/L: <span className={cumulativePnl >= 0 ? 'positive' : 'negative'}>
+            {formatCurrency(cumulativePnl)}
+          </span>
+        </p>
+      </div>
+    );
+  };
+
+  // Fetch journal summary when component mounts or entries change
+  useEffect(() => {
+    // In development, React will run effects twice in strict mode
+    // This check prevents the second run in development
+    if (journalSummaryEffectRan.current === true && !entriesChanged) {
+      return;
+    }
+    
+    const fetchSummary = async () => {
+      try {
+        const response = await api.get('/api/journal/summary');
+        if (response.data.success) {
+          const stats = {
+            total: response.data.summary.stats.total_trades || 0,
+            winRate: response.data.summary.stats.winning_trades && response.data.summary.stats.total_trades 
+              ? Math.round((response.data.summary.stats.winning_trades / response.data.summary.stats.total_trades) * 100) 
+              : 0,
+            totalProfit: response.data.summary.stats.total_pnl || 0
+          };
+          
+          setTotalStats(stats);
+          
+          // Process recent trades for the PNL chart
+          if (response.data.summary.recentTrades) {
+            const chartData = processTradesForChart(response.data.summary.recentTrades);
+            setPnlChartData(chartData);
+          }
+          
+          // If onStatsUpdate is provided, call it with the stats
+          if (onStatsUpdate) {
+            onStatsUpdate(stats);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching journal summary:', error);
+      }
+    };
+
+    fetchSummary();
+    
+    // Cleanup function that runs when component unmounts or dependencies change
+    return () => {
+      if (!entriesChanged) {
+        journalSummaryEffectRan.current = true;
+      } else {
+        // Reset the flag when entries change so we fetch fresh data
+        journalSummaryEffectRan.current = false;
+      }
+    };
+  }, [entriesChanged, onStatsUpdate]); // Dependencies: entriesChanged and onStatsUpdate
 
   // Clear error message after a delay
   useEffect(() => {
@@ -100,28 +306,6 @@ function TradingJournal({ onStatsUpdate }) {
       }
     };
   }, [journalError]); // Run this effect whenever journalError changes
-
-  const fetchJournalEntries = async (page = 1) => {
-    try {
-      setLoading(true);
-      const response = await api.get('/api/journal', {
-        params: {
-          page,
-          limit: pagination.limit
-        }
-      });
-      
-      if (response.data.success) {
-        setJournalEntries(response.data.entries);
-        setPagination(response.data.pagination);
-      }
-    } catch (error) {
-      console.error('Error fetching journal entries:', error);
-      setJournalError('Failed to load journal entries');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleJournalFormChange = (e) => {
     const { name, value } = e.target;
@@ -215,14 +399,6 @@ function TradingJournal({ onStatsUpdate }) {
     resetForm();
   };
 
-  const formatCurrency = (value) => {
-    if (!value) return '-';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(value);
-  };
-
   const formatDateTime = (dateString) => {
     const options = { 
       year: 'numeric', 
@@ -288,7 +464,7 @@ function TradingJournal({ onStatsUpdate }) {
       const stats = calculateStats();
       onStatsUpdate(stats);
     }
-  }, [calculateStats, onStatsUpdate]);
+  }, [entriesChanged, calculateStats, onStatsUpdate]);
 
   const sortedEntries = getSortedEntries();
 
@@ -302,51 +478,158 @@ function TradingJournal({ onStatsUpdate }) {
     }
   };
 
-  // Add a function to fetch summary stats
-  const fetchJournalSummary = async () => {
-    try {
-      const response = await api.get('/api/journal/summary');
-      if (response.data.success) {
-        const stats = {
-          total: response.data.summary.stats.total_trades || 0,
-          winRate: response.data.summary.stats.winning_trades && response.data.summary.stats.total_trades 
-            ? Math.round((response.data.summary.stats.winning_trades / response.data.summary.stats.total_trades) * 100) 
-            : 0,
-          totalProfit: response.data.summary.stats.total_pnl || 0
-        };
-        
-        setTotalStats(stats);
-        
-        // Update parent component if needed
-        if (onStatsUpdate) {
-          onStatsUpdate(stats);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching journal summary:', error);
-    }
+  // Update the discussTradeWithAI function to use the local state
+  const discussTradeWithAI = (entry) => {
+    // Format the trade data as a message to the AI
+    const tradeMessage = `
+I want to discuss this trade from my journal:
+
+Symbol: ${entry.symbol.toUpperCase()}
+Date: ${formatDateTime(entry.trade_date)}
+Type: ${entry.trade_type === 'buy' ? 'Buy' : 'Sell'}
+Entry Price: ${formatCurrency(entry.entry_price)}
+Exit Price: ${entry.exit_price ? formatCurrency(entry.exit_price) : 'N/A'}
+Quantity: ${entry.quantity}
+P/L: ${formatCurrency(entry.profit_loss)}
+Outcome: ${entry.outcome.charAt(0).toUpperCase() + entry.outcome.slice(1)}
+Strategy: ${entry.strategy || 'None'}
+Notes: ${entry.notes || 'None'}
+
+Can you analyze this trade and provide feedback on what I did well and what I could improve? Also, are there any patterns or strategies you notice based on this trade?
+`;
+
+    // Set the chat term to the symbol
+    setChatTerm(`${entry.symbol.toUpperCase()} Trade Analysis`);
+    
+    // Set a brief description for context
+    setChatDescription(`Analysis of ${entry.trade_type === 'buy' ? 'Buy' : 'Sell'} trade for ${entry.symbol.toUpperCase()} on ${formatDateTime(entry.trade_date)}`);
+    
+    // Set the initial message
+    setInitialMessage(tradeMessage);
+    
+    // Open the AI chat modal
+    setIsAIChatOpen(true);
   };
 
-  // Update the useEffect that fetches journal summary
+  // Fetch user's wallet address on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserWallet = async () => {
       try {
-        await fetchJournalSummary();
+        const response = await api.get('/api/account/profile');
+        if (response.data.solanaAddress) {
+          setWalletAddress(response.data.solanaAddress);
+        }
       } catch (error) {
-        console.error('Error fetching journal summary:', error);
+        console.error('Error fetching user wallet:', error);
       }
     };
-
-    fetchData();
-  }, [entriesChanged]); // Keep entriesChanged as a dependency
+    
+    if (user) {
+      fetchUserWallet();
+    }
+  }, [user]);
+  
+  // Handle wallet update
+  const handleWalletUpdate = (address) => {
+    setWalletAddress(address);
+  };
+  
+  // Handle imported trades
+  const handleTradesImported = (trades) => {
+    // Refresh journal entries after import
+    fetchJournalEntries();
+    setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+  };
 
   return (
     <div className="journal-container">
-      <div className="journal-header">
-        <h2>Trading Journal</h2>
-        <button className="action-button primary" onClick={() => openJournalModal()}>
-          <FaPlus /> Add Trade
-        </button>
+      {/* Conditionally render header based on screen size */}
+      {isMobile ? (
+        // Mobile layout - stacked vertically
+        <div className="journal-title-row-mobile">
+          <h2 className="journal-title">
+            <FaBook className="card-icon" /> Trading Journal
+          </h2>
+          <button className="action-button primary" onClick={() => openJournalModal()}>
+            <FaPlus /> Add Trade
+          </button>
+        </div>
+      ) : (
+        // Desktop layout - side by side
+        <div className="journal-title-row">
+          <h2 className="journal-title">
+            <FaBook className="card-icon" /> Trading Journal
+          </h2>
+          <button className="action-button primary" onClick={() => openJournalModal()}>
+            <FaPlus /> Add Trade
+          </button>
+        </div>
+      )}
+      
+      {/* Add Solana Wallet Connect Component */}
+      {/* <SolanaWalletConnect 
+        onTradesImported={handleTradesImported}
+        currentWalletAddress={walletAddress}
+        onWalletUpdate={handleWalletUpdate}
+      /> */}
+      
+      {/* PNL Chart Section */}
+      <div className="journal-pnl-chart">
+        {/* <h3 className="chart-title">
+          <FaChartLine className="chart-icon" /> P/L Overview
+        </h3> */}
+        <div className="pnl-chart-container">
+          {pnlChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart
+                data={pnlChartData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 12 }} 
+                  tickFormatter={(tick) => {
+                    try {
+                      const date = new Date(tick);
+                      return `${date.getMonth() + 1}/${date.getDate()}`;
+                    } catch (e) {
+                      return tick;
+                    }
+                  }}
+                  tickMargin={10}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(tick) => formatCurrency(tick).replace('.00', '')}
+                  tickMargin={10}
+                />
+                <Tooltip 
+                  formatter={(value, name) => {
+                    const formattedValue = formatCurrency(value);
+                    const label = name === 'individualPnl' ? 'Trade P/L' : 'Total P/L';
+                    return [formattedValue, label];
+                  }}
+                  labelFormatter={(label) => `Date: ${formatDateForTooltip(label)}`}
+                />
+                <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
+                <Line 
+                  type="monotone" 
+                  dataKey="cumulativePnl" 
+                  stroke="#4b937b" 
+                  strokeWidth={2}
+                  dot={{ r: 3, fill: '#4b937b', stroke: '#4b937b' }}
+                  activeDot={{ r: 6, stroke: '#4b937b', strokeWidth: 2, fill: '#fff' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="empty-chart-message">
+              <p>No trading data available yet</p>
+              <p className="empty-chart-subtext">Start adding trades to see your performance chart</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {journalError && (
@@ -632,6 +915,13 @@ function TradingJournal({ onStatsUpdate }) {
                     >
                       <FaTrash />
                     </button>
+                    <button 
+                      className="icon-button ai-discuss" 
+                      onClick={() => discussTradeWithAI(entry)}
+                      title="Discuss with AI"
+                    >
+                      <FaRobot />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -663,6 +953,15 @@ function TradingJournal({ onStatsUpdate }) {
           <FaChevronRight />
         </button>
       </div>
+
+      {/* Add the AI Chat Modal at the end of the component */}
+      <AIChatModal 
+        isOpen={isAIChatOpen} 
+        onClose={() => setIsAIChatOpen(false)}
+        initialTerm={chatTerm}
+        initialDescription={chatDescription}
+        initialMessage={initialMessage}
+      />
     </div>
   );
 }

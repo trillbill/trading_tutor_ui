@@ -1,6 +1,7 @@
 const terminologyData = [
   // Price Levels
   {
+    id: 1,
     name: "Support",
     category: "Charts",
     value:
@@ -29,6 +30,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 2,
     name: "Resistance",
     category: "Charts",
     value:
@@ -56,6 +58,7 @@ const terminologyData = [
 
   // Chart Patterns
   {
+    id: 3,
     name: "Head and Shoulders Pattern",
     category: "Charts",
     value:
@@ -85,6 +88,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 4,
     name: "Inverse Head and Shoulders",
     category: "Charts",
     value:
@@ -115,6 +119,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 5,
     name: "Double Top",
     category: "Charts",
     value:
@@ -150,6 +155,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 6,
     name: "Double Bottom",
     category: "Charts",
     value:
@@ -186,6 +192,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 7,
     name: "Ascending Triangle",
     category: "Charts",
     value:
@@ -214,6 +221,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 8,
     name: "Descending Triangle",
     category: "Charts",
     value:
@@ -241,6 +249,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 9,
     name: "Rising Wedge",
     category: "Charts",
     value:
@@ -265,6 +274,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 10,
     name: "Falling Wedge",
     category: "Charts",
     value:
@@ -287,6 +297,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 11,
     name: "Cup and Handle",
     category: "Charts",
     value:
@@ -318,6 +329,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 12,
     name: "Flag Pattern",
     category: "Charts",
     value:
@@ -342,6 +354,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 13,
     name: "Pennant Pattern",
     category: "Charts",
     value:
@@ -367,6 +380,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 14,
     name: "Swing Failure Pattern (SFP)",
     category: "Charts",
     value:
@@ -390,6 +404,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 15,
     name: "Break of Structure",
     category: "Charts",
     value:
@@ -413,10 +428,12 @@ const terminologyData = [
     ],
   },
   {
+    id: 16,
     name: "Three Drives Pattern",
     category: "Charts",
     shortDescription: "A harmonic pattern consisting of three consecutive price movements (drives) of similar length that indicate a potential reversal point.",
-    value: "The Three Drives pattern is a reversal pattern that consists of three consecutive price movements or 'drives' in the same direction, each typically of similar length. The pattern follows specific Fibonacci measurements, with each drive often reaching a 127.2% or 161.8% extension of the previous correction. After the completion of the third drive, the market is expected to reverse direction.\n\nKey characteristics include:\n\n1. Three consecutive price movements in the same direction (either all up or all down)\n2. Each drive should reach similar Fibonacci extension levels\n3. The time taken to complete each drive is often symmetrical\n4. Volume typically decreases with each successive drive\n\nTraders look for the completion of the third drive to enter a counter-trend position, with a stop loss placed beyond the extreme of the third drive. This pattern works well in all timeframes and across different markets, making it a versatile tool for identifying potential reversal points.",
+    value: 
+      "The Three Drives pattern is a reversal pattern that consists of three consecutive price movements or 'drives' in the same direction, each typically of similar length. The pattern follows specific Fibonacci measurements, with each drive often reaching a 127.2% or 161.8% extension of the previous correction. After the completion of the third drive, the market is expected to reverse direction.\n\nKey characteristics include:\n\n1. Three consecutive price movements in the same direction (either all up or all down)\n2. Each drive should reach similar Fibonacci extension levels\n3. The time taken to complete each drive is often symmetrical\n4. Volume typically decreases with each successive drive\n\nTraders look for the completion of the third drive to enter a counter-trend position, with a stop loss placed beyond the extreme of the third drive. This pattern works well in all timeframes and across different markets, making it a versatile tool for identifying potential reversal points.",
     chartType: "threeDrives",
     data: [
       { time: '2025-01-01', value: 50 },
@@ -434,6 +451,7 @@ const terminologyData = [
     lineColor: "red"
   },
   {
+    id: 17,
     name: "Doji",
     category: "Charts",
     value:
@@ -446,6 +464,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 18,
     name: "Engulfing Pattern",
     category: "Charts",
     value:
@@ -459,6 +478,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 19,
     name: "Morning Star",
     category: "Charts",
     value:
@@ -473,6 +493,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 20,
     name: "Bullish Hammer",
     category: "Charts",
     value:
@@ -486,6 +507,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 21,
     name: "Piercing Line",
     category: "Charts",
     value:
@@ -499,6 +521,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 22,
     name: "Evening Star",
     category: "Charts",
     value:
@@ -513,6 +536,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 23,
     name: "Three White Soldiers",
     category: "Charts",
     value:
@@ -527,6 +551,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 24,
     name: "Spinning Top",
     category: "Charts",
     value:
@@ -539,6 +564,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 25,
     name: "Three Black Crows",
     category: "Charts",
     value:
@@ -553,6 +579,7 @@ const terminologyData = [
     ],
   },
   {
+    id: 26,
     name: "Exponential Moving Average (EMA)",
     category: "Tools",
     value:
@@ -562,6 +589,7 @@ const terminologyData = [
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+EMA.png",
   },
   {
+    id: 27,
     name: "Simple Moving Average (SMA)",
     category: "Tools",
     value:
@@ -573,6 +601,7 @@ const terminologyData = [
 
   // Momentum Indicators
   {
+    id: 28,
     name: "Relative Strength Index (RSI)",
     category: "Tools",
     value:
@@ -582,8 +611,9 @@ const terminologyData = [
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+RSI.png",
   },
   {
-    name: "Moving Average Convergence Divergence (MACD)",
-    longName: true,
+    id: 29,
+    name: 
+      "Moving Average Convergence Divergence (MACD)",
     category: "Tools",
     value:
       "The Moving Average Convergence Divergence (MACD) is a trend-following momentum indicator that shows the relationship between two moving averages of an asset's price. It is calculated by subtracting the 26-period EMA from the 12-period EMA. The result is the MACD line, which is then plotted alongside the signal line (the 9-period EMA of the MACD line). Traders use the MACD to identify potential buy and sell signals, as well as to gauge the strength of a trend.",
@@ -592,6 +622,7 @@ const terminologyData = [
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+MACD.png",
   },
   {
+    id: 30,
     name: "Bollinger Bands",
     category: "Tools",
     value:
@@ -601,6 +632,7 @@ const terminologyData = [
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Bollinger+Bands.png",
   },
   {
+    id: 31,
     name: "Average True Range (ATR)",
     category: "Tools",
     value:
@@ -612,6 +644,7 @@ const terminologyData = [
 
   // Technical Analysis Tools
   {
+    id: 32,
     name: "Fibonacci Retracement",
     category: "Tools",
     value:
@@ -621,36 +654,39 @@ const terminologyData = [
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Fibonacci+Retracement.png",
   },
   {
+    id: 33,
     name: "Elliott Wave Theory",
     category: "Theory",
-    value: "This theory posits that market prices move in predictable cycles, reflecting the emotions and behaviors of market participants. According to this theory, these cycles are influenced by the psychology of traders and investors, leading to patterns that can be identified and used for forecasting future price movements. The theory is based on the idea that market trends follow a specific structure of waves, which can be classified into impulse waves and corrective waves.",
     shortDescription: "A theory suggesting market prices move in predictable cycles driven by market participants' emotions and behaviors.",
     video: "https://www.youtube.com/embed/WGExLtdKdSg?si=Iz92Xo0xbSp2PXgB",
     thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Elliott+Wave+Theory.png",
   },
   {
-      name: "Momentum Trading",
-      category: "Theory",
-      value: "A strategy that aims to capitalize on the continuation of existing trends in the market. Traders who employ this strategy believe that assets that have been rising steadily will continue to rise, while those that have been falling will continue to fall. This approach often involves using technical indicators to identify the strength of a trend and making trades based on the momentum of price movements. Traders typically look for stocks that are moving significantly in one direction on high volume.",
-      shortDescription: "A strategy focused on capitalizing on the continuation of trends by trading based on price momentum.",
-      video: "https://www.youtube.com/embed/2_ZAxSfM6Ss?si=WKC5V_vVwsu2E6Fq",
-      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Momentum+Trading.png",
+    id: 34,
+    name: "Momentum Trading",
+    category: "Theory",
+    value: "A strategy that aims to capitalize on the continuation of existing trends in the market. Traders who employ this strategy believe that assets that have been rising steadily will continue to rise, while those that have been falling will continue to fall. This approach often involves using technical indicators to identify the strength of a trend and making trades based on the momentum of price movements. Traders typically look for stocks that are moving significantly in one direction on high volume.",
+    shortDescription: "A strategy focused on capitalizing on the continuation of trends by trading based on price momentum.",
+    video: "https://www.youtube.com/embed/2_ZAxSfM6Ss?si=WKC5V_vVwsu2E6Fq",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Momentum+Trading.png",
   },
   {
-      name: "Dow Theory",
-      category: "Theory",
-      value: "This theory is a framework for understanding market trends and movements. It asserts that the stock market moves in trends, which can be identified and followed. The theory emphasizes the importance of confirming trends through various market indices. This theory also introduces concepts such as primary trends, secondary trends, and minor trends.",
-      shortDescription: "A framework for understanding market trends that emphasizes the identification and confirmation of trends.",
-      video: "https://www.youtube.com/embed/DenOjcBAX0M?si=GljKhiV8mXAp3Z-E",
-      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Dow+Theory.png",
+    id: 35,
+    name: "Dow Theory",
+    category: "Theory",
+    value: "This theory is a framework for understanding market trends and movements. It asserts that the stock market moves in trends, which can be identified and followed. The theory emphasizes the importance of confirming trends through various market indices. This theory also introduces concepts such as primary trends, secondary trends, and minor trends.",
+    shortDescription: "A framework for understanding market trends that emphasizes the identification and confirmation of trends.",
+    video: "https://www.youtube.com/embed/DenOjcBAX0M?si=GljKhiV8mXAp3Z-E",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+Dow+Theory.png",
   },
   {
-      name: "Gann Theory",
-      category: "Theory",
-      value: "This theory involves a method of technical analysis that uses angles and time cycles to predict price movements. It asserts that the market moves in predictable patterns and that these patterns can be analyzed using geometric angles and time intervals. The theory incorporates various tools, such as angles, fans, and time cycles, to help traders identify potential support and resistance levels, as well as entry and exit points.",
-      shortDescription: "A method of technical analysis using angles and time cycles to predict market price movements.",
-      video: "https://www.youtube.com/embed/OpL-h9WPPF8?si=HTZAqUVElaobM6bl",
-      thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+GannTheory.png",
+    id: 36,
+    name: "Gann Theory",
+    category: "Theory",
+    value: "This theory involves a method of technical analysis that uses angles and time cycles to predict price movements. It asserts that the market moves in predictable patterns and that these patterns can be analyzed using geometric angles and time intervals. The theory incorporates various tools, such as angles, fans, and time cycles, to help traders identify potential support and resistance levels, as well as entry and exit points.",
+    shortDescription: "A method of technical analysis using angles and time cycles to predict market price movements.",
+    video: "https://www.youtube.com/embed/OpL-h9WPPF8?si=HTZAqUVElaobM6bl",
+    thumbnail: "https://d23vnzhpxwsomk.cloudfront.net/trading-tutor/Understanding_+GannTheory.png",
   },
 ];
 

@@ -5,7 +5,7 @@ import rehypeSanitize from 'rehype-sanitize';
 import api from '../api/api';
 import './AIChatModal.css';
 
-const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription }) => {
+const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initialMessage }) => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,16 +18,16 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription }) => {
       setMessages([]);
       
       // Create initial user message about the term
-      const initialMessage = {
-        text: `Explain this trading term: ${initialTerm}`,
+      const initialUserMessage = {
+        text: initialMessage || initialTerm, // Use initialMessage if provided, otherwise just use the term
         sender: 'user',
       };
       
       // Add the message and send to API
-      setMessages([initialMessage]);
-      sendMessageToAPI(initialMessage.text, initialDescription);
+      setMessages([initialUserMessage]);
+      sendMessageToAPI(initialUserMessage.text, initialDescription);
     }
-  }, [isOpen, initialTerm, initialDescription]);
+  }, [isOpen, initialTerm, initialDescription, initialMessage]);
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -203,6 +203,12 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription }) => {
       </div>
     </div>
   );
+};
+
+// Set default props
+AIChatModal.defaultProps = {
+  initialMessage: '',
+  initialDescription: ''
 };
 
 export default AIChatModal;
