@@ -1,5 +1,5 @@
 const chatPrompts = [
-  "Analyze my last 3 trades and suggest improvements",
+  // "Analyze my last 3 trades and suggest improvements",
   "What's a good risk management strategy for day trading?",
   "Explain the concept of support and resistance",
   "What are the key indicators for trend reversal?",

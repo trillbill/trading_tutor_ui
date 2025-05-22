@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
@@ -22,6 +22,8 @@ import Footer from './components/Footer';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Account from './pages/Account';
+import AIChatWidget from './components/AIChatWidget';
+import chatPrompts from './chatPrompts';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -59,6 +61,18 @@ const PublicRoute = ({ children }) => {
   }
   
   return children;
+};
+
+// Create a new component to conditionally render the AIChatWidget
+const ConditionalAIChatWidget = ({ chatPrompts }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useContext(AuthContext);
+  
+  // Only show on dashboard and learn pages
+  const showOnPaths = ['/dashboard', '/learn'];
+  const shouldShow = isAuthenticated && showOnPaths.includes(location.pathname);
+  
+  return shouldShow ? <AIChatWidget chatPrompts={chatPrompts} /> : null;
 };
 
 function AppRoutes() {
@@ -160,6 +174,9 @@ const App = () => {
             
             <Footer />
             <CookieConsent />
+            
+            {/* Use the conditional widget component instead of the direct component */}
+            <ConditionalAIChatWidget chatPrompts={chatPrompts} />
         </div>
     );
 };

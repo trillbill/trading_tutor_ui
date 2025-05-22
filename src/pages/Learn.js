@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot, FaChevronDown, FaLock, FaClock, FaVideo, FaCheckCircle, FaCheck } from 'react-icons/fa';
+import { FaPlay, FaTimes, FaSearch, FaChevronRight, FaRobot, FaChevronDown, FaLock, FaClock, FaVideo, FaCheckCircle, FaCheck, FaChevronUp } from 'react-icons/fa';
 import ChartDisplay from '../components/ChartDisplay';
 import AIChatModal from '../components/AIChatModal';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +10,7 @@ import heroImage from '../assets/man-trading3.png';
 import { useNavigate } from 'react-router-dom';
 import VideoPlayer from '../components/VideoPlayer';
 import api from '../api/api';
+import QuizComponent from '../components/QuizComponent';
 
 const Learn = () => {
     const { user } = useAuth();
@@ -36,15 +37,31 @@ const Learn = () => {
         module: []
     });
     
-    // Add this useEffect to fetch user progress when component mounts
+    // Add a ref to track if we've already fetched the progress
+    const progressFetchedRef = useRef(false);
+
+    // Update the useEffect to use the ref
     useEffect(() => {
-        if (user) {
+        if (user && !progressFetchedRef.current) {
             fetchUserProgress();
+            progressFetchedRef.current = true;
         }
     }, [user]);
+
+    // Reset the ref when user changes
+    useEffect(() => {
+        return () => {
+            progressFetchedRef.current = false;
+        };
+    }, []);
     
-    // Update the fetchUserProgress function with better debugging
+    // Update the fetchUserProgress function with a guard
     const fetchUserProgress = async () => {
+        // Add a guard to prevent duplicate calls
+        if (progressFetchedRef.current) {
+            return;
+        }
+        
         try {
             const response = await api.get('/api/progress/user');
             
@@ -63,33 +80,37 @@ const Learn = () => {
         }
     };
     
-    // Add this useEffect to refresh user progress when a course is selected
-    useEffect(() => {
-        if (user && selectedCourse) {
-            fetchUserProgress();
-        }
-    }, [selectedCourse, user]);
-    
-    // Update the handleModuleComplete function to ensure it's properly updating state
-    const handleModuleComplete = (moduleId) => {
+    // Update the handleModuleComplete function to update local state first
+    const handleModuleComplete = async (moduleId) => {
         // Convert moduleId to number to ensure consistent comparison
         const numericModuleId = Number(moduleId);
         
-        // Update local state immediately for a responsive UI
-        setUserProgress(prev => {
-            // Check if the module is already in the array
-            if (prev.module && prev.module.includes(numericModuleId)) {
-                return prev;
-            }
-            
-            return {
+        // Check if the module is already marked as completed
+        if (userProgress.module && userProgress.module.includes(numericModuleId)) {
+            return; // Already completed, no need to update
+        }
+        
+        try {
+            // Update local state immediately for a responsive UI
+            setUserProgress(prev => ({
                 ...prev,
                 module: [...(prev.module || []), numericModuleId]
-            };
-        });
-        
-        // Then refresh from the server to ensure we have the latest data
-        fetchUserProgress();
+            }));
+            
+            // Then update the server
+            const response = await api.post('/api/progress/mark-completed', {
+                itemType: 'module',
+                itemId: moduleId
+            });
+            
+            if (!response.data.success) {
+                console.error('Failed to mark module as completed on server');
+                // Optionally revert the local state change if server update fails
+            }
+        } catch (error) {
+            console.error('Error marking module as completed:', error);
+            // Optionally revert the local state change if there's an error
+        }
     };
     
     // Add this function to handle video click
@@ -232,33 +253,33 @@ const Learn = () => {
         ).length;
     };
 
-    // Add a new function to mark a term as learned
+    // Similarly update the markTermAsLearned function
     const markTermAsLearned = async (termId) => {
+        // Check if already learned
+        if (isTermLearned(termId)) {
+            return; // Already learned, no need to update
+        }
+        
         try {
+            // Update local state immediately
+            setUserProgress(prev => ({
+                ...prev,
+                concept: [...(prev.concept || []), termId.toString()]
+            }));
+            
+            // Then update the server
             const response = await api.post('/api/progress/mark-completed', {
                 itemType: 'concept',
                 itemId: termId
             });
             
-            if (response.data.success) {
-                // Update local state immediately for a responsive UI
-                setUserProgress(prev => {
-                    // Check if the concept is already in the array
-                    if (prev.concept && prev.concept.includes(termId)) {
-                        return prev;
-                    }
-                    
-                    return {
-                        ...prev,
-                        concept: [...(prev.concept || []), termId]
-                    };
-                });
-                
-                // Then refresh from the server to ensure we have the latest data
-                fetchUserProgress();
+            if (!response.data.success) {
+                console.error('Failed to mark term as learned on server');
+                // Optionally revert the local state change
             }
         } catch (error) {
             console.error('Error marking term as learned:', error);
+            // Optionally revert the local state change
         }
     };
 
@@ -267,6 +288,9 @@ const Learn = () => {
         return userProgress.concept && userProgress.concept.includes(termId.toString());
     };
 
+    // New state variable for expanding the term list
+    const [showAllTerms, setShowAllTerms] = useState(false);
+    
     return (
         <div className="learn-container">
             <div className="learn-hero-section" style={{ backgroundImage: `url(${heroImage})`, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}>
@@ -368,7 +392,7 @@ const Learn = () => {
                 
                 {filteredTerms.length > 0 ? (
                     <div className="learn-list">
-                        {filteredTerms.map((term, index) => {
+                        {filteredTerms.slice(0, showAllTerms ? filteredTerms.length : 4).map((term, index) => {
                             const isLearned = isTermLearned(term.id);
                             
                             return (
@@ -412,6 +436,27 @@ const Learn = () => {
                                 </div>
                             );
                         })}
+                        
+                        {filteredTerms.length > 4 && (
+                            <div className="expand-list-container">
+                                <button 
+                                    className="expand-list-button"
+                                    onClick={() => setShowAllTerms(!showAllTerms)}
+                                >
+                                    {showAllTerms ? (
+                                        <>
+                                            <span>Show Less</span>
+                                            <FaChevronUp className="expand-icon" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Show All</span>
+                                            <FaChevronDown className="expand-icon" />
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="no-results">
@@ -421,6 +466,11 @@ const Learn = () => {
                         </button>
                     </div>
                 )}
+            </div>
+            
+            <div className="quiz-section-container">
+                <h2 className="section-title">Test Your Knowledge</h2>
+                <QuizComponent />
             </div>
 
             {/* Course Modal */}
@@ -541,53 +591,85 @@ const Learn = () => {
                             <FaTimes />
                         </button>
                         
-                        <div className="learn-modal-header">
+                        <div className="modal-header">
                             <h2>{selectedTerm.name}</h2>
-                            {isTermLearned(selectedTerm.id) && (
-                                <span className="term-learned-badge">
-                                    <FaCheckCircle /> Learned
-                                </span>
+                            {selectedTerm.longName && <h3>{selectedTerm.longName}</h3>}
+                        </div>
+                        
+                        <div className="modal-body">
+                            {selectedTerm.video ? (
+                                <div className="video-container">
+                                    <iframe
+                                        src={selectedTerm.video}
+                                        title={selectedTerm.name}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            ) : (
+                                <div className="chart-container-large">
+                                    <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
+                                </div>
                             )}
+                            
+                            <div className="term-description-full">
+                                <p>{selectedTerm.fullDescription || selectedTerm.shortDescription}</p>
+                                
+                                {selectedTerm.examples && (
+                                    <div className="term-examples">
+                                        <h4>Examples:</h4>
+                                        <ul>
+                                            {selectedTerm.examples.map((example, index) => (
+                                                <li key={index}>{example}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                
+                                {selectedTerm.tips && (
+                                    <div className="term-tips">
+                                        <h4>Trading Tips:</h4>
+                                        <ul>
+                                            {selectedTerm.tips.map((tip, index) => (
+                                                <li key={index}>{tip}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         
-                        {selectedTerm.video ? (
-                            <div className="video-container">
-                                <iframe
-                                    width="100%"
-                                    height="400"
-                                    src={selectedTerm.video}
-                                    title={selectedTerm.name}
-                                    frameBorder="0"
-                                    allowFullScreen
-                                ></iframe>
-                            </div>
-                        ) : (
-                            <div className="modal-chart">
-                                <ChartDisplay chartType={selectedTerm.chartType} data={selectedTerm.data} lineColor={selectedTerm.lineColor} />
-                            </div>
-                        )}
-                        
-                        <div className="modal-description">
-                            <p>{selectedTerm.value || selectedTerm.shortDescription}</p>
-                        </div>
-                        
-                        <div className="learn-modal-actions">
-                            {user && !isTermLearned(selectedTerm.id) && (
+                        <div className="modal-footer">
+                            {user ? (
                                 <button 
-                                    className="action-button mark-learned-button"
+                                    className={`learn-button ${isTermLearned(selectedTerm.id) ? 'learned' : ''}`}
                                     onClick={() => markTermAsLearned(selectedTerm.id)}
+                                    disabled={isTermLearned(selectedTerm.id)}
                                 >
-                                    <FaCheck /> Mark as Learned
+                                    {isTermLearned(selectedTerm.id) ? (
+                                        <>
+                                            <FaCheckCircle /> Learned
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaCheck /> Mark as Learned
+                                        </>
+                                    )}
+                                </button>
+                            ) : (
+                                <button 
+                                    className="learn-button login-prompt"
+                                    onClick={() => navigate('/login')}
+                                >
+                                    <FaLock /> Log in to track progress
                                 </button>
                             )}
                             
                             {user && (
                                 <button 
-                                    className="action-button"
-                                    onClick={() => {
-                                        handleCloseModal();
-                                        handleAskAITutor(selectedTerm, { stopPropagation: () => {} });
-                                    }}
+                                    className="learn-button" 
+                                    onClick={(e) => handleAskAITutor(selectedTerm, e)}
                                 >
                                     <FaRobot /> Ask AI Tutor
                                 </button>

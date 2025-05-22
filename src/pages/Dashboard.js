@@ -3,12 +3,12 @@ import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import { FaSignOutAlt, FaEnvelope, FaLightbulb, FaRobot, FaChartLine, FaBook, FaArrowRight, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import accountIcon from '../assets/account-icon-large.png';
 import { useAuth } from '../context/AuthContext';
 import TradingJournal from '../components/TradingJournal';
 import AIChatModal from '../components/AIChatModal';
 import tips from '../dashboardTips';
 import chatPrompts from '../chatPrompts';
+import UserPerformanceStats from '../components/UserPerformanceStats';
 
 function Dashboard() {
   const [profileData, setProfileData] = useState(null);
@@ -34,7 +34,7 @@ function Dashboard() {
     category: '',
     isLoading: true
   });
-  const [showTip, setShowTip] = useState(false);
+  const [showTip, setShowTip] = useState(true);
   
   // Quick chat input state
   const [quickChatInput, setQuickChatInput] = useState('');
@@ -105,25 +105,32 @@ function Dashboard() {
     }
     
     const fetchProfileData = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const response = await api.get('/api/account/profile');
-        if (response.data.success) {
-          setProfileData(response.data.profile);
-        } else {
-          setError('Failed to load profile data');
-        }
+        console.log('Profile data:', response.data); // Debug log
+        setProfileData(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
-        setError(error.response?.data?.error || 'An error occurred while loading your profile');
+        // Set default profile data structure
+        setProfileData({
+          profile: {
+            performance: {
+              skillLevel: 'beginner',
+              total: 0,
+              average: 0
+            },
+            quizResults: []
+          }
+        });
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Fetch both profile data and tip of the day simultaneously
+    // Fetch profile data and set a random tip
     fetchProfileData();
-    fetchTipOfTheDay();
+    getRandomTip();
     
     // Cleanup function that runs when component unmounts
     return () => {
@@ -131,34 +138,16 @@ function Dashboard() {
     };
   }, []); // Empty dependency array means this runs once on mount
 
-  // Fetch tip of the day
-  const fetchTipOfTheDay = async () => {
-    try {
-      // Simulate API delay - but make it shorter to reduce staggered appearance
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Select a random tip
-      const randomTip = tips[Math.floor(Math.random() * tips.length)];
-      
-      setTipOfTheDay({
-        tip: randomTip.tip,
-        category: randomTip.category,
-        isLoading: false
-      });
-      
-      // Show the tip after a very short delay to ensure smooth rendering
-      setTimeout(() => {
-        setShowTip(true);
-      }, 50);
-    } catch (error) {
-      console.error('Error fetching tip of the day:', error);
-      setTipOfTheDay({
-        tip: "Focus on consistent strategy rather than chasing quick profits.",
-        category: "Trading Basics",
-        isLoading: false
-      });
-      setShowTip(true);
-    }
+  // Get a random tip from the local tips array
+  const getRandomTip = () => {
+    const randomIndex = Math.floor(Math.random() * tips.length);
+    const randomTip = tips[randomIndex];
+    
+    setTipOfTheDay({
+      tip: randomTip.tip,
+      category: randomTip.category,
+      isLoading: false
+    });
   };
 
   // Handle quick chat submit
@@ -216,96 +205,18 @@ function Dashboard() {
                   </button>
                 </div>
                 <p className="tip-popup-text">{tipOfTheDay.tip}</p>
-                <button className="tip-popup-refresh" onClick={fetchTipOfTheDay}>
+                <button className="tip-popup-refresh" onClick={getRandomTip}>
                   Get Another Tip
                 </button>
               </div>
             </div>
           )}
           
-          {/* AI Tutor Card */}
-          <div className="dashboard-card ai-chat-card">
-            <h2 className="card-title">
-              <FaRobot className="card-icon" /> AI Tutor
-            </h2>
-            <div className="quick-chat-container">
-              <form onSubmit={handleQuickChatSubmit} className="quick-chat-form">
-                <input
-                  type="text"
-                  value={quickChatInput}
-                  onChange={(e) => setQuickChatInput(e.target.value)}
-                  placeholder="Ask anything about trading..."
-                  className="quick-chat-input"
-                />
-                <button 
-                  type="submit" 
-                  className="quick-chat-button"
-                  disabled={!quickChatInput.trim()}
-                >
-                  <FaArrowRight />
-                </button>
-              </form>
-              
-              <div className="chat-prompts">
-                <h3>Quick Prompts</h3>
-                <div className="prompt-carousel">
-                  <button 
-                    className="carousel-nav prev"
-                    onClick={() => navigateCarousel('prev')}
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                  >
-                    <FaChevronLeft />
-                  </button>
-                  
-                  <div 
-                    className="prompt-slide"
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                  >
-                    <button
-                      className="prompt-button carousel-prompt"
-                      onClick={handlePromptClick}
-                    >
-                      {chatPrompts[currentPromptIndex]}
-                    </button>
-                  </div>
-                  
-                  <button 
-                    className="carousel-nav next"
-                    onClick={() => navigateCarousel('next')}
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                  >
-                    <FaChevronRight />
-                  </button>
-                </div>
-                
-                <div className="carousel-indicators">
-                  {chatPrompts.map((_, index) => (
-                    <span 
-                      key={index} 
-                      className={`carousel-dot ${index === currentPromptIndex ? 'active' : ''}`}
-                      onClick={() => {
-                        setCurrentPromptIndex(index);
-                        setIsPaused(true);
-                        clearTimeout(carouselIntervalRef.current);
-                        carouselIntervalRef.current = setTimeout(() => {
-                          setIsPaused(false);
-                        }, 5000);
-                      }}
-                    ></span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* User Performance Stats */}
+          <UserPerformanceStats profileData={profileData} />
           
           {/* Trading Journal Card */}
           <div className="dashboard-card journal-card">
-            <h2 className="card-title">
-              <FaBook className="card-icon" /> Trading Journal
-            </h2>
             <TradingJournal 
               onStatsUpdate={handleStatsUpdate} 
             />

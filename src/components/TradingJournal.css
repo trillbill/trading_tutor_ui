@@ -836,3 +836,94 @@
     font-size: 14px;
   }
 }
+
+/* Add this to your TradingJournal.css file */
+
+.journal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.journal-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.journal-title .card-icon {
+  margin-right: 10px;
+  color: #4b937b;
+}
+
+/* You can remove this if it's no longer needed */
+.journal-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+/* Make sure the action button styling is consistent */
+.action-button.primary {
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.action-button.primary:hover {
+  background-color: #3a7261;
+}
+
+/* Desktop journal title row */
+.journal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Mobile journal title row */
+.journal-title-row-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.journal-title-row-mobile .journal-title {
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.journal-title-row-mobile .action-button.primary {
+  width: 80%;
+  max-width: 200px;
+}
+
+.journal-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.journal-title .card-icon {
+  margin-right: 10px;
+  color: #4b937b;
+}

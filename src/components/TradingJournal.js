@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSortUp, FaSortDown, FaInfoCircle, FaSort, FaChevronLeft, FaChevronRight, FaChartLine, FaRobot } from 'react-icons/fa';
+import { FaBook, FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaChartLine } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 // Import Recharts components
@@ -8,6 +8,8 @@ import {
   ResponsiveContainer, ReferenceLine, Area, AreaChart 
 } from 'recharts';
 import AIChatModal from './AIChatModal'; // Import the AIChatModal directly
+import SolanaWalletConnect from './SolanaWalletConnect';
+import { useAuth } from '../context/AuthContext';
 
 function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
@@ -73,6 +75,28 @@ function TradingJournal({ onStatsUpdate }) {
   const [chatTerm, setChatTerm] = useState('');
   const [chatDescription, setChatDescription] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
+
+  // Add state to track window width
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  // Add effect to update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  // Determine if we're on mobile
+  const isMobile = windowWidth <= 768;
+
+  // Add state for wallet address
+  const [walletAddress, setWalletAddress] = useState('');
+  const { user } = useAuth();
 
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
@@ -487,13 +511,73 @@ Can you analyze this trade and provide feedback on what I did well and what I co
     setIsAIChatOpen(true);
   };
 
+  // Fetch user's wallet address on component mount
+  useEffect(() => {
+    const fetchUserWallet = async () => {
+      try {
+        const response = await api.get('/api/account/profile');
+        if (response.data.solanaAddress) {
+          setWalletAddress(response.data.solanaAddress);
+        }
+      } catch (error) {
+        console.error('Error fetching user wallet:', error);
+      }
+    };
+    
+    if (user) {
+      fetchUserWallet();
+    }
+  }, [user]);
+  
+  // Handle wallet update
+  const handleWalletUpdate = (address) => {
+    setWalletAddress(address);
+  };
+  
+  // Handle imported trades
+  const handleTradesImported = (trades) => {
+    // Refresh journal entries after import
+    fetchJournalEntries();
+    setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+  };
+
   return (
     <div className="journal-container">
+      {/* Conditionally render header based on screen size */}
+      {isMobile ? (
+        // Mobile layout - stacked vertically
+        <div className="journal-title-row-mobile">
+          <h2 className="journal-title">
+            <FaBook className="card-icon" /> Trading Journal
+          </h2>
+          <button className="action-button primary" onClick={() => openJournalModal()}>
+            <FaPlus /> Add Trade
+          </button>
+        </div>
+      ) : (
+        // Desktop layout - side by side
+        <div className="journal-title-row">
+          <h2 className="journal-title">
+            <FaBook className="card-icon" /> Trading Journal
+          </h2>
+          <button className="action-button primary" onClick={() => openJournalModal()}>
+            <FaPlus /> Add Trade
+          </button>
+        </div>
+      )}
+      
+      {/* Add Solana Wallet Connect Component */}
+      {/* <SolanaWalletConnect 
+        onTradesImported={handleTradesImported}
+        currentWalletAddress={walletAddress}
+        onWalletUpdate={handleWalletUpdate}
+      /> */}
+      
       {/* PNL Chart Section */}
       <div className="journal-pnl-chart">
-        <h3 className="chart-title">
+        {/* <h3 className="chart-title">
           <FaChartLine className="chart-icon" /> P/L Overview
-        </h3>
+        </h3> */}
         <div className="pnl-chart-container">
           {pnlChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
@@ -569,12 +653,6 @@ Can you analyze this trade and provide feedback on what I did well and what I co
           </span>
           <span className="stat-label">Total P/L</span>
         </div>
-      </div>
-
-      <div className="journal-header">
-        <button className="action-button primary" onClick={() => openJournalModal()}>
-          <FaPlus /> Add Trade
-        </button>
       </div>
 
       {showJournalModal && (

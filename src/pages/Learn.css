@@ -1527,3 +1527,183 @@
 .action-button.mark-learned-button:hover {
   background-color: #3a7261;
 }
+
+/* Update the learn button styles */
+.modal-footer .learn-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-footer .learn-button:hover:not(:disabled) {
+  background-color: #3a7c67;
+  transform: translateY(-2px);
+}
+
+.modal-footer .learn-button.learned {
+  background-color: #e0e0e0;
+  color: #4b937b;
+  cursor: default;
+  border: 1px solid #4b937b;
+}
+
+.modal-footer .learn-button.learned svg {
+  color: #4b937b;
+}
+
+.modal-footer .learn-button:disabled {
+  cursor: default;
+}
+
+.modal-footer .learn-button.login-prompt {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.modal-footer .learn-button.login-prompt:hover {
+  background-color: #e0e0e0;
+}
+
+/* Update the modal footer layout */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-top: 1px solid #eee;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-footer .learn-button,
+  .modal-footer .ask-ai-button-large {
+    width: 100%;
+  }
+}
+
+.expand-list-container {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  margin: 20px 0;
+}
+
+.expand-list-button {
+  background: linear-gradient(135deg, #4b937b 0%, #3a7561 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(75, 147, 123, 0.2);
+}
+
+.expand-list-button:hover {
+  background: linear-gradient(135deg, #3a7561 0%, #2d5a4b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(75, 147, 123, 0.3);
+}
+
+.expand-list-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(75, 147, 123, 0.2);
+}
+
+.expand-icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.expand-list-button:hover .expand-icon {
+  transform: translateY(2px);
+}
+
+/* When showing less, animate the icon differently */
+.expand-list-button:hover .fa-chevron-up {
+  transform: translateY(-2px);
+}
+
+/* Quiz section toggle button */
+.quiz-toggle-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.quiz-section-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(74, 74, 74, 0.2);
+    border-radius: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Make sure the expand button styling is consistent */
+.expand-list-button {
+    background: linear-gradient(135deg, #4b937b 0%, #3a7561 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(75, 147, 123, 0.2);
+}
+
+.expand-list-button:hover {
+    background: linear-gradient(135deg, #3a7561 0%, #2d5a4b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(75, 147, 123, 0.3);
+}
+
+.expand-list-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(75, 147, 123, 0.2);
+}
+
+.expand-icon {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.expand-list-button:hover .expand-icon {
+    transform: translateY(2px);
+}
+
+/* When showing less, animate the icon differently */
+.expand-list-button:hover .fa-chevron-up {
+    transform: translateY(-2px);
+}
