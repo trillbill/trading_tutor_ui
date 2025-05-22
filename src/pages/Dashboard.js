@@ -68,28 +68,6 @@ function Dashboard() {
       }
     };
   }, [isPaused, chatPrompts.length]);
-  
-  // Handle manual navigation of carousel
-  const navigateCarousel = (direction) => {
-    // Pause automatic rotation temporarily when manually navigating
-    setIsPaused(true);
-    
-    if (direction === 'prev') {
-      setCurrentPromptIndex(prevIndex => 
-        prevIndex === 0 ? chatPrompts.length - 1 : prevIndex - 1
-      );
-    } else {
-      setCurrentPromptIndex(prevIndex => 
-        prevIndex === chatPrompts.length - 1 ? 0 : prevIndex + 1
-      );
-    }
-    
-    // Resume automatic rotation after a delay
-    clearTimeout(carouselIntervalRef.current);
-    carouselIntervalRef.current = setTimeout(() => {
-      setIsPaused(false);
-    }, 5000); // Resume after 5 seconds of inactivity
-  };
 
   // Memoize the onStatsUpdate callback to prevent it from changing on every render
   const handleStatsUpdate = useCallback((stats) => {
@@ -108,7 +86,6 @@ function Dashboard() {
       setIsLoading(true);
       try {
         const response = await api.get('/api/account/profile');
-        console.log('Profile data:', response.data); // Debug log
         setProfileData(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
