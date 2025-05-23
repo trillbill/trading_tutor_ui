@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaBook, FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaChartLine } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 // Import Recharts components
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
-  ResponsiveContainer, ReferenceLine, Area, AreaChart 
+  ResponsiveContainer, ReferenceLine 
 } from 'recharts';
 import AIChatModal from './AIChatModal'; // Import the AIChatModal directly
 import SolanaWalletConnect from './SolanaWalletConnect';
@@ -75,24 +75,6 @@ function TradingJournal({ onStatsUpdate }) {
   const [chatTerm, setChatTerm] = useState('');
   const [chatDescription, setChatDescription] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
-
-  // Add state to track window width
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
-  // Add effect to update window width on resize
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  
-  // Determine if we're on mobile
-  const isMobile = windowWidth <= 768;
 
   // Add state for wallet address
   const [walletAddress, setWalletAddress] = useState('');
@@ -167,29 +149,50 @@ function TradingJournal({ onStatsUpdate }) {
     }).format(value);
   };
   
-  // Process the recent trades data for the chart with cumulative P/L
+  // Update the processTradesForChart function to add a $0 starting point
   const processTradesForChart = (trades) => {
-    if (!trades || !trades.length) return [];
-    
     // Sort trades by date (oldest first)
     const sortedTrades = [...trades].sort((a, b) => 
       new Date(a.trade_date) - new Date(b.trade_date)
     );
     
-    let cumulativePnl = 0;
+    // If no trades, return empty array
+    if (sortedTrades.length === 0) return [];
     
-    // Map trades to chart data format with cumulative P/L
-    return sortedTrades.map(trade => {
-      const tradePnl = parseFloat(trade.profit_loss) || 0;
-      cumulativePnl += tradePnl;
+    // Calculate cumulative PnL
+    let cumulativePnL = 0;
+    
+    // Create result array with initial $0 point
+    // Use the date of the first trade minus 1 day as the starting point
+    const firstTradeDate = new Date(sortedTrades[0].trade_date);
+    const startDate = new Date(firstTradeDate);
+    startDate.setDate(startDate.getDate() - 1); // One day before first trade
+    
+    const result = [{
+      date: startDate.toISOString().split('T')[0],
+      individualPnl: 0,
+      cumulativePnl: 0
+    }];
+    
+    // Add all trades with cumulative PnL
+    sortedTrades.forEach(trade => {
+      const tradeDate = new Date(trade.trade_date);
+      const formattedDate = tradeDate.toISOString().split('T')[0]; // YYYY-MM-DD format
       
-      return {
-        date: trade.trade_date.split('T')[0],
-        individualPnl: tradePnl,
-        cumulativePnl: cumulativePnl,
-        symbol: trade.symbol
-      };
+      // Get PnL value, defaulting to 0 if not available
+      const individualPnl = parseFloat(trade.profit_loss) || 0;
+      
+      // Add to running total
+      cumulativePnL += individualPnl;
+      
+      result.push({
+        date: formattedDate,
+        individualPnl: individualPnl,
+        cumulativePnl: cumulativePnL
+      });
     });
+    
+    return result;
   };
 
   // Add a function to format dates nicely
@@ -204,33 +207,6 @@ function TradingJournal({ onStatsUpdate }) {
     } catch (e) {
       return dateString;
     }
-  };
-
-  // Custom tooltip for the chart with better error handling
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (!active || !payload || !payload.length) {
-      return null;
-    }
-    
-    // Safely extract values with fallbacks
-    const individualPnl = payload[0] && payload[0].value !== undefined ? payload[0].value : 0;
-    const cumulativePnl = payload.length > 1 && payload[1] && payload[1].value !== undefined ? payload[1].value : individualPnl;
-    
-    return (
-      <div className="pnl-chart-tooltip">
-        <p className="tooltip-date">{label}</p>
-        <p className="tooltip-pnl">
-          Trade P/L: <span className={individualPnl >= 0 ? 'positive' : 'negative'}>
-            {formatCurrency(individualPnl)}
-          </span>
-        </p>
-        <p className="tooltip-cumulative">
-          Total P/L: <span className={cumulativePnl >= 0 ? 'positive' : 'negative'}>
-            {formatCurrency(cumulativePnl)}
-          </span>
-        </p>
-      </div>
-    );
   };
 
   // Fetch journal summary when component mounts or entries change
@@ -257,8 +233,9 @@ function TradingJournal({ onStatsUpdate }) {
           
           // Process recent trades for the PNL chart
           if (response.data.summary.recentTrades) {
-            const chartData = processTradesForChart(response.data.summary.recentTrades);
-            setPnlChartData(chartData);
+            const rawChartData = processTradesForChart(response.data.summary.recentTrades);
+            const optimizedChartData = optimizeChartData(rawChartData);
+            setPnlChartData(optimizedChartData);
           }
           
           // If onStatsUpdate is provided, call it with the stats
@@ -541,30 +518,46 @@ Can you analyze this trade and provide feedback on what I did well and what I co
     setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
   };
 
+  // Add this function to optimize data for large datasets
+  const optimizeChartData = (data) => {
+    // If we have fewer than 100 points, return the original data
+    if (data.length < 100) return data;
+    
+    // For larger datasets, aggregate by week
+    const weeklyData = {};
+    
+    data.forEach(item => {
+      const date = new Date(item.date);
+      // Get the week number (approximate by dividing days by 7)
+      const weekNum = Math.floor(date.getTime() / (7 * 24 * 60 * 60 * 1000));
+      const weekStart = new Date(weekNum * 7 * 24 * 60 * 60 * 1000);
+      const weekKey = weekStart.toISOString().split('T')[0];
+      
+      // For each week, store the last trade's cumulative PnL
+      weeklyData[weekKey] = {
+        date: weekKey,
+        individualPnl: item.individualPnl,
+        cumulativePnl: item.cumulativePnl
+      };
+    });
+    
+    // Convert back to array and sort by date
+    return Object.values(weeklyData).sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    );
+  };
+
   return (
     <div className="journal-container">
       {/* Conditionally render header based on screen size */}
-      {isMobile ? (
-        // Mobile layout - stacked vertically
-        <div className="journal-title-row-mobile">
-          <h2 className="journal-title">
-            <FaBook className="card-icon" /> Trading Journal
-          </h2>
-          <button className="action-button primary" onClick={() => openJournalModal()}>
-            <FaPlus /> Add Trade
-          </button>
-        </div>
-      ) : (
-        // Desktop layout - side by side
-        <div className="journal-title-row">
-          <h2 className="journal-title">
-            <FaBook className="card-icon" /> Trading Journal
-          </h2>
-          <button className="action-button primary" onClick={() => openJournalModal()}>
-            <FaPlus /> Add Trade
-          </button>
-        </div>
-      )}
+      <div className="journal-title-row">
+        <h2 className="journal-title styled-header">
+          Trading Journal
+        </h2>
+        <button className="action-button primary" onClick={() => openJournalModal()}>
+          <FaPlus /> <span className="button-text">Add Trade</span>
+        </button>
+      </div>
       
       {/* Add Solana Wallet Connect Component */}
       {/* <SolanaWalletConnect 
