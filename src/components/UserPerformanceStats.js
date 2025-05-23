@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTrophy, FaChartLine, FaGraduationCap, FaCheckCircle } from 'react-icons/fa';
+import { FaTrophy, FaChartLine, FaGraduationCap, FaCheckCircle, FaBook, FaRobot, FaChartBar } from 'react-icons/fa';
 import './UserPerformanceStats.css';
 
 const UserPerformanceStats = ({ profileData }) => {
@@ -7,9 +7,6 @@ const UserPerformanceStats = ({ profileData }) => {
   if (!profileData) {
     return (
       <div className="user-performance-container">
-        <div className="performance-header">
-          <h3>Learning Progress</h3>
-        </div>
         <div className="loading-stats">Loading your stats...</div>
       </div>
     );
@@ -68,16 +65,37 @@ const UserPerformanceStats = ({ profileData }) => {
       count: categories[category]
     })).sort((a, b) => b.count - a.count);
   };
-  
-  const recentCategories = getRecentCategories();
-  
+    
   return (
     <div className="user-performance-container">
-      {/* <div className="performance-header">
-        <h3>Learning Progress</h3>
-      </div> */}
-      
       <div className="performance-stats">
+        {/* Dashboard Introduction Section - now directly in performance-stats */}
+        <div className="dashboard-intro">
+          <h2>Dashboard</h2>
+          <p className="dashboard-description">
+            Welcome to your personal trading hub! Here you can track your learning progress, log and analyze your trades, 
+            chat with your AI tutor for personalized guidance, and monitor your overall performance.
+          </p>
+          <div className="dashboard-features">
+            <div className="feature">
+              <FaChartBar className="feature-icon" />
+              <span>Track Trades</span>
+            </div>
+            <div className="feature">
+              <FaRobot className="feature-icon" />
+              <span>AI Guidance</span>
+            </div>
+            <div className="feature">
+              <FaBook className="feature-icon" />
+              <span>Learning Progress</span>
+            </div>
+            <div className="feature">
+              <FaChartLine className="feature-icon" />
+              <span>Performance Analysis</span>
+            </div>
+          </div>
+        </div>
+        
         <div className="skill-level-card" style={{ borderColor: skillLevelInfo.color }}>
           <div className="skill-badge" style={{ backgroundColor: skillLevelInfo.color }}>
             {skillLevelInfo.icon}

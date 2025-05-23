@@ -21,24 +21,22 @@ const Learn = () => {
     const [showAIChatModal, setShowAIChatModal] = useState(false);
     const [selectedTermForAI, setSelectedTermForAI] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    
-    // New state for courses
     const [selectedCourse, setSelectedCourse] = useState(null);
-
-    // Add navigate for redirection
-    const navigate = useNavigate();
-
-    // Add these new state variables
     const [activeVideoModule, setActiveVideoModule] = useState(null);
+    const [selectedTopic, setSelectedTopic] = useState('All');
+    const [showAllTerms, setShowAllTerms] = useState(false);
     const [userProgress, setUserProgress] = useState({
         concept: [],
         course: [],
         module: []
     });
-    
-    // Add a ref to track if we've already fetched the progress
+
+
+    const dropdownRef = useRef(null);
     const progressFetchedRef = useRef(false);
+    
+    // Add navigate for redirection
+    const navigate = useNavigate();
 
     // Update the useEffect to use the ref
     useEffect(() => {
@@ -162,9 +160,6 @@ const Learn = () => {
         },
     };
 
-    // Set the default selected topic to All
-    const [selectedTopic, setSelectedTopic] = useState('All');
-
     // Filtered terms based on the selected topic
     const filteredTerms = terminologyData
         .filter(term => {
@@ -287,9 +282,6 @@ const Learn = () => {
     const isTermLearned = (termId) => {
         return userProgress.concept && userProgress.concept.includes(termId.toString());
     };
-
-    // New state variable for expanding the term list
-    const [showAllTerms, setShowAllTerms] = useState(false);
     
     return (
         <div className="learn-container">
@@ -306,6 +298,9 @@ const Learn = () => {
             {/* Courses Section */}
             <div className="courses-section">
                 <h2 className="section-title">Courses</h2>
+                <p className="quiz-section-description">
+                    Discover our comprehensive courses designed to help you get started.
+                </p>
                 <div className="courses-grid">
                     {coursesData.map((course) => (
                         <div 
@@ -354,6 +349,9 @@ const Learn = () => {
             {/* Terminology Section */}
             <div className="content-section">
                 <h2 className="section-title">Concepts</h2>
+                <p className="quiz-section-description">
+                    Explore the charts patterns, tools and theories that are used in trading.
+                </p>
                 <div className="section-header">
                     <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
                         <FaSearch className="search-icon" />
@@ -450,7 +448,7 @@ const Learn = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <span>Show All</span>
+                                            <span>Show More</span>
                                             <FaChevronDown className="expand-icon" />
                                         </>
                                     )}
@@ -468,10 +466,7 @@ const Learn = () => {
                 )}
             </div>
             
-            <div className="quiz-section-container">
-                <h2 className="section-title">Test Your Knowledge</h2>
-                <QuizComponent />
-            </div>
+            <QuizComponent />
 
             {/* Course Modal */}
             {selectedCourse && (
@@ -690,7 +685,7 @@ const Learn = () => {
                 />
             )}
 
-            {/* Add this new Video Player Modal */}
+            {/*Video Player Modal */}
             {activeVideoModule && (
                 <div className="modal" onClick={handleCloseVideo}>
                     <div className="modal-content video-modal-content" onClick={(e) => e.stopPropagation()}>

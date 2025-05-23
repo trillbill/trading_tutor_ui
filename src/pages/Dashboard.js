@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../api/api';
-import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
-import { FaSignOutAlt, FaEnvelope, FaLightbulb, FaRobot, FaChartLine, FaBook, FaArrowRight, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { useAuth } from '../context/AuthContext';
+import { FaLightbulb, FaTimes } from 'react-icons/fa';
 import TradingJournal from '../components/TradingJournal';
 import AIChatModal from '../components/AIChatModal';
 import tips from '../dashboardTips';
-import chatPrompts from '../chatPrompts';
 import UserPerformanceStats from '../components/UserPerformanceStats';
 
 function Dashboard() {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('journal');
   const [error, setError] = useState(null);
   const [journalStats, setJournalStats] = useState({
     total: 0,
@@ -25,8 +21,6 @@ function Dashboard() {
   
   // AI Chat Modal state
   const [showChatModal, setShowChatModal] = useState(false);
-  const [chatTerm, setChatTerm] = useState('');
-  const [chatDescription, setChatDescription] = useState('');
   
   // Tip of the day state
   const [tipOfTheDay, setTipOfTheDay] = useState({
@@ -35,39 +29,9 @@ function Dashboard() {
     isLoading: true
   });
   const [showTip, setShowTip] = useState(true);
-  
-  // Quick chat input state
-  const [quickChatInput, setQuickChatInput] = useState('');
-  
-  // Carousel state
-  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const carouselIntervalRef = useRef(null);
-
-  const navigate = useNavigate();
-  const { logout } = useAuth();
 
   // Use a ref to track if the effect has run
   const effectRan = useRef(false);
-
-  // Setup carousel rotation
-  useEffect(() => {
-    // Start the carousel rotation
-    carouselIntervalRef.current = setInterval(() => {
-      if (!isPaused) {
-        setCurrentPromptIndex(prevIndex => 
-          prevIndex === chatPrompts.length - 1 ? 0 : prevIndex + 1
-        );
-      }
-    }, 3000); // Rotate every 3 seconds
-    
-    // Cleanup interval on component unmount
-    return () => {
-      if (carouselIntervalRef.current) {
-        clearInterval(carouselIntervalRef.current);
-      }
-    };
-  }, [isPaused, chatPrompts.length]);
 
   // Memoize the onStatsUpdate callback to prevent it from changing on every render
   const handleStatsUpdate = useCallback((stats) => {
@@ -88,6 +52,7 @@ function Dashboard() {
         const response = await api.get('/api/account/profile');
         setProfileData(response.data);
       } catch (error) {
+        setError('Error fetching profile data');
         console.error('Error fetching profile data:', error);
         // Set default profile data structure
         setProfileData({
@@ -125,24 +90,6 @@ function Dashboard() {
       category: randomTip.category,
       isLoading: false
     });
-  };
-
-  // Handle quick chat submit
-  const handleQuickChatSubmit = (e) => {
-    e.preventDefault();
-    if (quickChatInput.trim()) {
-      setChatTerm(quickChatInput);
-      setChatDescription('');
-      setShowChatModal(true);
-      setQuickChatInput('');
-    }
-  };
-
-  // Handle prompt click - use the current carousel prompt
-  const handlePromptClick = () => {
-    setChatTerm(chatPrompts[currentPromptIndex]);
-    setChatDescription('');
-    setShowChatModal(true);
   };
 
   // Close chat modal
@@ -192,19 +139,14 @@ function Dashboard() {
           {/* User Performance Stats */}
           <UserPerformanceStats profileData={profileData} />
           
-          {/* Trading Journal Card */}
-          <div className="dashboard-card journal-card">
-            <TradingJournal 
-              onStatsUpdate={handleStatsUpdate} 
-            />
-          </div>
+          <TradingJournal 
+            onStatsUpdate={handleStatsUpdate} 
+          />
           
           {/* AI Chat Modal */}
           <AIChatModal
             isOpen={showChatModal}
             onClose={closeChatModal}
-            initialTerm={chatTerm}
-            initialDescription={chatDescription}
           />
         </>
       )}

@@ -860,12 +860,7 @@
   color: #4b937b;
 }
 
-/* You can remove this if it's no longer needed */
-.journal-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
+
 
 /* Make sure the action button styling is consistent */
 .action-button.primary {
@@ -926,4 +921,149 @@
 .journal-title .card-icon {
   margin-right: 10px;
   color: #4b937b;
+}
+
+/* Enhanced Typography for Journal Header */
+.journal-title h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  
+  /* Create a gradient text effect */
+  background: linear-gradient(90deg, #ffffff 0%, #4b937b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* Add a subtle text shadow for better readability */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  
+  /* Improve font rendering */
+  -webkit-font-smoothing: antialiased;
+  
+  /* Add a subtle animation on page load */
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Add a custom font for the header */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+
+.journal-title h2 {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Adjust icon in styled header */
+.styled-header .card-icon {
+  margin-right: 8px;
+  color: #4b937b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .styled-header {
+    font-size: 24px;
+  }
+}
+
+/* Replace the existing styled-header CSS with this to use white text */
+.styled-header {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+  
+  /* Remove gradient effect and use solid white color */
+  /* background: linear-gradient(90deg, #ffffff 0%, #4b937b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  
+  /* Add a subtle text shadow for better readability */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  
+  /* Improve font rendering */
+  -webkit-font-smoothing: antialiased;
+  
+  /* Add a subtle animation on page load */
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Import the Poppins font if not already imported elsewhere */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+
+/* Desktop and mobile journal title row */
+.journal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Style for the journal title */
+.journal-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 28px;
+  color: #fff;
+}
+
+/* Mobile-specific overrides */
+@media (max-width: 768px) {
+  /* Ensure the title has priority for space */
+  .journal-title-row {
+    position: relative; /* For absolute positioning of the button */
+  }
+  
+  .journal-title.styled-header {
+    font-size: 20px;
+    max-width: 70%; /* Limit width to prevent overlap */
+  }
+  
+  /* Position the button absolutely to the right */
+  .journal-title-row .action-button.primary {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px;
+    min-width: 80px;
+    width: auto;
+    gap: unset;
+    justify-content: center;
+    
+    /* Show only the icon */
+    font-size: 0; /* Hide text */
+  }
+  
+  .journal-title-row .action-button.primary svg {
+    font-size: 16px;
+    margin: 0;
+  }
 }

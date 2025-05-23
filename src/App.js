@@ -4,7 +4,6 @@ import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
 import Learn from './pages/Learn';
-import Quiz from './pages/Quiz';
 import ChatWindow from './pages/ChatWindow';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -27,8 +26,6 @@ import chatPrompts from './chatPrompts';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
-import quizIcon from './assets/quiz-icon.png';
-import chatIcon from './assets/chat-icon.png';
 import homeIcon from './assets/home-icon.png';
 import pricingIcon from './assets/pricing-icon.png';
 import dashboardIcon from './assets/dashboard-icon.png';
@@ -92,7 +89,6 @@ function AppRoutes() {
       <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-      <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
       <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
       <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
       <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />

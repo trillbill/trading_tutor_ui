@@ -538,19 +538,19 @@
 
 /* Section styles */
 .quiz-section {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: rgba(74, 74, 74, 0.3);
-    border-radius: 15px;
+    margin-bottom: 30px;
 }
 
 .section-title {
-    font-size: 24px;
-    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
     color: white;
     text-align: left;
     border-bottom: 2px solid #4b937b;
     padding-bottom: 10px;
+    animation: fadeUpAnimation 0.5s ease-out forwards;
 }
 
 .quiz-section-description {
@@ -823,5 +823,92 @@
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .section-title,
+    .quiz-hero-section h2,
+    .quiz-hero-content h2,
+    .quiz-section .section-title {
+        font-size: 20px;
+        padding-bottom: 8px;
+    }
+}
+
+/* Define the fade-up animation if not already defined */
+@keyframes fadeUpAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply animation to section titles */
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: white;
+    text-align: left;
+    border-bottom: 2px solid #4b937b;
+    padding-bottom: 10px;
+    animation: fadeUpAnimation 0.5s ease-out forwards;
+}
+
+/* Apply animation to quiz hero section h2 */
+.quiz-hero-section h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    text-align: left;
+    animation: fadeUpAnimation 0.5s ease-out forwards;
+}
+
+/* Apply animation to quiz hero content h2 */
+.quiz-hero-content h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    text-align: left;
+    animation: fadeUpAnimation 0.5s ease-out forwards;
+}
+
+/* Apply animation to quiz section title */
+.quiz-section .section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: white;
+    text-align: left;
+    border-bottom: 2px solid #4b937b;
+    padding-bottom: 10px;
+    animation: fadeUpAnimation 0.5s ease-out forwards;
+}
+
+/* Apply animation to topic section title */
+.topic-section .section-title {
+    animation: fadeUpAnimation 0.5s ease-out forwards;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .section-title,
+    .quiz-hero-section h2,
+    .quiz-hero-content h2,
+    .quiz-section .section-title {
+        font-size: 20px;
+        padding-bottom: 8px;
+    }
 }
 
