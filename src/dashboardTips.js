@@ -7,7 +7,7 @@ const tips = [
   { tip: "Develop a trading plan and stick to it, avoiding impulsive decisions.", category: "Trading Discipline" },
   { tip: "Trade with the trend: the trend is your friend until it ends.", category: "Technical Analysis" },
   { tip: "Be patient waiting for high-probability setups rather than forcing trades.", category: "Trading Psychology" },
-  { tip: "Use multiple timeframes (1m, 5m, 15m, 30m, 1h, 4h, 1d) to confirm your trading decisions.", category: "Technical Analysis" },
+  { tip: "Use multiple timeframes (30m, 1h, 4h, 12h, 1d, 1w, etc.) to confirm your trading decisions.", category: "Technical Analysis" },
   { tip: "Consider the risk-to-reward ratio before entering any trade and aim for at least 1:2.", category: "Risk Management" },
   { tip: "Avoid overtrading, sometimes the best trade is no trade.", category: "Trading Discipline" },
   { tip: "Pay attention to market volume - price moves with conviction need volume confirmation.", category: "Technical Analysis" },

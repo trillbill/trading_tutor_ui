@@ -23,6 +23,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Account from './pages/Account';
 import AIChatWidget from './components/AIChatWidget';
 import chatPrompts from './chatPrompts';
+import { AIChatProvider, useAIChat } from './context/AIChatContext';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
@@ -35,7 +36,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
   
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner" />;
   }
   
   if (!isAuthenticated) {
@@ -50,7 +51,7 @@ const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
   
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner" />;
   }
   
   if (isAuthenticated) {
@@ -64,10 +65,13 @@ const PublicRoute = ({ children }) => {
 const ConditionalAIChatWidget = ({ chatPrompts }) => {
   const location = useLocation();
   const { isAuthenticated } = useContext(AuthContext);
+  const { isAIChatModalOpen } = useAIChat();
   
-  // Only show on dashboard and learn pages
+  // Only show on dashboard and learn pages, and when no modal is open
   const showOnPaths = ['/dashboard', '/learn'];
-  const shouldShow = isAuthenticated && showOnPaths.includes(location.pathname);
+  const shouldShow = isAuthenticated && 
+                   showOnPaths.includes(location.pathname) && 
+                   !isAIChatModalOpen;
   
   return shouldShow ? <AIChatWidget chatPrompts={chatPrompts} /> : null;
 };
@@ -180,7 +184,9 @@ const App = () => {
 const AppWithAuth = () => (
     <BrowserRouter>
         <AuthProvider>
-            <App />
+            <AIChatProvider>
+                <App />
+            </AIChatProvider>
         </AuthProvider>
     </BrowserRouter>
 );

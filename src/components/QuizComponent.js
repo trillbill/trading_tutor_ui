@@ -4,19 +4,11 @@ import QuizModal from '../components/QuizModal';
 import AuthPrompt from '../components/AuthPrompt';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
-import terminologyData from '../terminologyData';
 import quizQuestions from '../quizQuestions';
 import toolsIcon from '../assets/tools-icon.png';
 import chartsIcon from '../assets/charts-icon.png';
 import theoryIcon from '../assets/theory-icon.png';
 import '../pages/Quiz.css';
-
-// import toolsIcon from '../assets/tools-icon.png';
-// import chartsIcon from '../assets/charts-icon.png';
-// import theoryIcon from '../assets/theory-icon.png';
-// import QuizModal from '../components/QuizModal';
-// import { useAuth } from '../context/AuthContext';
-// import AuthPrompt from '../components/AuthPrompt';
 
 const QuizComponent = () => {
     const [questions, setQuestions] = useState([]);
@@ -31,10 +23,39 @@ const QuizComponent = () => {
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [quizMode, setQuizMode] = useState(null); // 'video' or 'topic'
     
-    // Filter terminology data for entries with thumbnail property
+    // Add state for terminology data
+    const [terminologyData, setTerminologyData] = useState([]);
+    const [isLoadingTerminology, setIsLoadingTerminology] = useState(true);
+
+    const { isAuthenticated, isEmailVerified } = useAuth();
+    const showAuthPrompt = !isAuthenticated || !isEmailVerified;
+
+    // Fetch terminology data from backend
+    useEffect(() => {
+        const fetchTerminologyData = async () => {
+            try {
+                setIsLoadingTerminology(true);
+                const response = await api.get('/api/resources/terminology');
+                
+                if (response.data.success) {
+                    setTerminologyData(response.data.data);
+                } else {
+                    console.error('Failed to fetch terminology data');
+                }
+            } catch (error) {
+                console.error('Error fetching terminology data:', error);
+            } finally {
+                setIsLoadingTerminology(false);
+            }
+        };
+
+        fetchTerminologyData();
+    }, []);
+
+    // Filter terminology data for entries with thumbnail property (only after data is loaded)
     const videoEntries = terminologyData.filter(term => term.thumbnail && term.video);
 
-    // Group videos by category
+    // Group videos by category (only after data is loaded)
     const videosByCategory = videoEntries.reduce((acc, entry) => {
         if (!acc[entry.category]) {
             acc[entry.category] = [];
@@ -43,19 +64,23 @@ const QuizComponent = () => {
         return acc;
     }, {});
 
-    const [activeVideoCategory, setActiveVideoCategory] = useState(Object.keys(videosByCategory)[0] || 'Theory');
+    const [activeVideoCategory, setActiveVideoCategory] = useState('');
 
-    const { isAuthenticated, isEmailVerified } = useAuth();
-    const showAuthPrompt = !isAuthenticated || !isEmailVerified;
+    // Update active video category when data loads
+    useEffect(() => {
+        if (!isLoadingTerminology && Object.keys(videosByCategory).length > 0 && !activeVideoCategory) {
+            setActiveVideoCategory(Object.keys(videosByCategory)[0] || 'Theory');
+        }
+    }, [isLoadingTerminology, videosByCategory, activeVideoCategory]);
 
     // Effect to fetch questions when selectedTopic or selectedVideo changes
     useEffect(() => {
-        if (selectedTopic && quizMode === 'topic') {
+        if (selectedTopic && quizMode === 'topic' && !isLoadingTerminology) {
             fetchQuestions();
-        } else if (selectedVideo && quizMode === 'video') {
+        } else if (selectedVideo && quizMode === 'video' && !isLoadingTerminology) {
             generateVideoQuiz();
         }
-    }, [selectedTopic, selectedVideo, quizMode]);
+    }, [selectedTopic, selectedVideo, quizMode, isLoadingTerminology]);
 
     const generateChartQuestions = (entries, questionTotal) => {
         const removeSupportResistance = entries.filter(e => e.name !== 'Support' && e.name !== 'Resistance');
@@ -98,6 +123,8 @@ const QuizComponent = () => {
     };
 
     const fetchQuestions = async () => {
+        if (isLoadingTerminology) return; // Don't fetch if terminology data isn't loaded yet
+        
         setLoading(true);
         const filteredEntries = terminologyData.filter(term => term.category === selectedTopic);
         const questionTotal = selectedTopic === 'Charts' ? 4 : 8;

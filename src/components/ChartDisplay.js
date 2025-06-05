@@ -324,6 +324,12 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
         case 'bullPennant':
           addBullPennant(chart, data);
           break;
+        case 'uptrend':
+          addUptrend(chart, data);
+          break;
+        case 'downtrend':
+          addDowntrend(chart, data);
+          break;
         // Add more cases as needed.
         default:
       }
@@ -483,6 +489,32 @@ const ChartDisplay = ({ data, chartType, lineColor, height = 300 }) => {
       supportSeries.setData([
         { time: data[5].time, value: data[5].value },
         { time: data[11].time, value: data[11].value },
+      ]);
+    };
+
+    const addUptrend = (chart, data) => {
+      const supportSeries = chart.addLineSeries({
+        color: 'blue',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      supportSeries.setData([
+        { time: data[2].time, value: data[2].value },
+        { time: data[16].time, value: data[16].value },
+      ]);
+    };
+
+    const addDowntrend = (chart, data) => {
+      const supportSeries = chart.addLineSeries({
+        color: 'red',
+        lineStyle: LineStyle.Dotted,
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+      supportSeries.setData([
+        { time: data[2].time, value: data[2].value },
+        { time: data[16].time, value: data[16].value },
       ]);
     };
 

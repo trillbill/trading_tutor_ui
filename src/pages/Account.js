@@ -115,7 +115,7 @@ function Account() {
   return (
     <div className="account-container">
       {isLoading ? (
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner" />
       ) : (
         <>
           <div className="account-card">
