@@ -4,13 +4,12 @@ import ChartDisplay from '../components/ChartDisplay';
 import AIChatModal from '../components/AIChatModal';
 import { useAuth } from '../context/AuthContext';
 import './Learn.css';
-import terminologyData from '../terminologyData';
-import coursesData from '../coursesData';
 import heroImage from '../assets/man-trading3.png';
 import { useNavigate } from 'react-router-dom';
 import VideoPlayer from '../components/VideoPlayer';
 import api from '../api/api';
 import QuizComponent from '../components/QuizComponent';
+import { useAIChat } from '../context/AIChatContext';
 
 const Learn = () => {
     const { user } = useAuth();
@@ -30,13 +29,63 @@ const Learn = () => {
         course: [],
         module: []
     });
+    
+    // Add state for both terminology and courses data
+    const [terminologyData, setTerminologyData] = useState([]);
+    const [coursesData, setCoursesData] = useState([]);
+    const [isLoadingTerminology, setIsLoadingTerminology] = useState(true);
+    const [isLoadingCourses, setIsLoadingCourses] = useState(true);
 
+    const { setIsAIChatModalOpen } = useAIChat();
 
     const dropdownRef = useRef(null);
     const progressFetchedRef = useRef(false);
     
-    // Add navigate for redirection
     const navigate = useNavigate();
+
+    // Fetch terminology data from backend
+    useEffect(() => {
+        const fetchTerminologyData = async () => {
+            try {
+                setIsLoadingTerminology(true);
+                const response = await api.get('/api/resources/terminology');
+                
+                if (response.data.success) {
+                    setTerminologyData(response.data.data);
+                } else {
+                    console.error('Failed to fetch terminology data');
+                }
+            } catch (error) {
+                console.error('Error fetching terminology data:', error);
+            } finally {
+                setIsLoadingTerminology(false);
+            }
+        };
+
+        fetchTerminologyData();
+    }, []);
+
+    // Fetch courses data from backend
+    useEffect(() => {
+        const fetchCoursesData = async () => {
+            try {
+                setIsLoadingCourses(true);
+                const response = await api.get('/api/resources/courses');
+                
+                if (response.data.success) {
+                    setCoursesData(response.data.data);
+                } else {
+                    console.error('Failed to fetch courses data');
+                }
+            } catch (error) {
+                console.error('Error fetching courses data:', error);
+            } finally {
+                setIsLoadingCourses(false);
+            }
+        };
+
+        fetchCoursesData();
+    }, []);
 
     // Update the useEffect to use the ref
     useEffect(() => {
@@ -160,7 +209,7 @@ const Learn = () => {
         },
     };
 
-    // Filtered terms based on the selected topic
+    // Update the filtered terms to handle loading state
     const filteredTerms = terminologyData
         .filter(term => {
             if (selectedTopic === 'All') return true;
@@ -177,21 +226,22 @@ const Learn = () => {
     };
 
     const handleAskAITutor = (term, e) => {
-        e.stopPropagation(); // Prevent the card click event
+        e.stopPropagation();
         
         if (!user) {
-            // Show login prompt
             alert("Please log in to use the AI Tutor feature.");
             return;
         }
         
         setSelectedTermForAI(term);
         setShowAIChatModal(true);
+        setIsAIChatModalOpen(true);
     };
     
     const handleCloseAIChatModal = () => {
         setShowAIChatModal(false);
         setSelectedTermForAI(null);
+        setIsAIChatModalOpen(false);
     };
 
     const handleTopicSelect = (topic) => {
@@ -295,174 +345,192 @@ const Learn = () => {
                 </div>
             </div>
 
-            {/* Courses Section */}
+            {/* Courses Section - Add loading state */}
             <div className="courses-section">
                 <h2 className="section-title">Courses</h2>
                 <p className="quiz-section-description">
                     Discover our comprehensive courses designed to help you get started.
                 </p>
-                <div className="courses-grid">
-                    {coursesData.map((course) => (
-                        <div 
-                            key={course.id} 
-                            className={`course-card ${course.premium && !user ? 'locked' : ''} ${isCourseCompleted(course) ? 'completed' : ''}`}
-                            onClick={() => handleCourseClick(course)}
-                        >
-                            <div className="course-thumbnail">
-                                <img src={course.thumbnail} alt={course.title} />
-                                {course.premium && !user && (
-                                    <div className="course-lock">
-                                        <FaLock />
-                                    </div>
-                                )}
-                                {isCourseCompleted(course) && (
-                                    <div className="course-completed-badge">
-                                        <FaCheckCircle />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="course-content">
-                                <h3>
-                                    {course.title}
-                                    {isCourseCompleted(course) && (
-                                        <span className="course-completed-indicator">
-                                            <FaCheckCircle />
-                                        </span>
+                
+                {isLoadingCourses ? (
+                    <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <p>Loading courses...</p>
+                    </div>
+                ) : (
+                    <div className="courses-grid">
+                        {coursesData.map((course) => (
+                            <div 
+                                key={course.id} 
+                                className={`course-card ${course.premium && !user ? 'locked' : ''} ${isCourseCompleted(course) ? 'completed' : ''}`}
+                                onClick={() => handleCourseClick(course)}
+                            >
+                                <div className="course-thumbnail">
+                                    <img src={course.thumbnail} alt={course.title} />
+                                    {course.premium && !user && (
+                                        <div className="course-lock">
+                                            <FaLock />
+                                        </div>
                                     )}
-                                </h3>
-                                <p>{course.description}</p>
-                                <div className="course-meta">
-                                    <span><FaClock /> {calculateCourseDuration(course)}</span>
-                                    <span><FaVideo /> {course.modules.length} lessons</span>
-                                    {getCompletedModulesCount(course) > 0 && (
-                                        <span className="course-progress">
-                                            {getCompletedModulesCount(course)}/{course.modules.length} completed
-                                        </span>
+                                    {isCourseCompleted(course) && (
+                                        <div className="course-completed-badge">
+                                            <FaCheckCircle />
+                                        </div>
                                     )}
                                 </div>
+                                <div className="course-content">
+                                    <h3>
+                                        {course.title}
+                                        {isCourseCompleted(course) && (
+                                            <span className="course-completed-indicator">
+                                                <FaCheckCircle />
+                                            </span>
+                                        )}
+                                    </h3>
+                                    <p>{course.description}</p>
+                                    <div className="course-meta">
+                                        <span><FaClock /> {calculateCourseDuration(course)}</span>
+                                        <span><FaVideo /> {course.modules.length} lessons</span>
+                                        {getCompletedModulesCount(course) > 0 && (
+                                            <span className="course-progress">
+                                                {getCompletedModulesCount(course)}/{course.modules.length} completed
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {/* Terminology Section */}
+            {/* Terminology Section - Keep existing loading state */}
             <div className="content-section">
                 <h2 className="section-title">Concepts</h2>
                 <p className="quiz-section-description">
                     Explore the charts patterns, tools and theories that are used in trading.
                 </p>
-                <div className="section-header">
-                    <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
-                        <FaSearch className="search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Search terminology..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            onFocus={() => setIsSearchFocused(true)}
-                            onBlur={() => setIsSearchFocused(false)}
-                            className="search-input"
-                        />
-                    </div>
-                    <div className="filter-dropdown" ref={dropdownRef}>
-                        <button 
-                            className="dropdown-button" 
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        >
-                            {selectedTopic} <FaChevronDown className={`dropdown-icon ${isDropdownOpen ? 'open' : ''}`} />
-                        </button>
-                        {isDropdownOpen && (
-                            <div className="dropdown-menu">
-                                {Object.keys(topics).map(topic => (
-                                    <button
-                                        key={topic}
-                                        className={`dropdown-item ${selectedTopic === topic ? 'active' : ''}`}
-                                        onClick={() => handleTopicSelect(topic)}
-                                    >
-                                        {topic}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
                 
-                {filteredTerms.length > 0 ? (
-                    <div className="learn-list">
-                        {filteredTerms.slice(0, showAllTerms ? filteredTerms.length : 4).map((term, index) => {
-                            const isLearned = isTermLearned(term.id);
-                            
-                            return (
-                                <div 
-                                    className={`term-card ${isLearned ? 'learned' : ''}`} 
-                                    key={index} 
-                                    onClick={() => handleCardClick(term)}
-                                >
-                                    <div className="term-header">
-                                        {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
-                                        <div className="term-header-actions">
-                                            {user && (
-                                                <button 
-                                                    className="ask-ai-button" 
-                                                    onClick={(e) => handleAskAITutor(term, e)}
-                                                    title="Ask AI Tutor about this term"
-                                                >
-                                                    <FaRobot />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {term.video ? (
-                                        <div className="thumbnail-container">
-                                            <img
-                                                src={term.thumbnail}
-                                                alt={`${term.name} thumbnail`}
-                                                className="thumbnail"
-                                            />
-                                            <div className="play-button"><FaPlay /></div>
-                                        </div>
-                                    ) : (
-                                        <div className="chart-container">
-                                            <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
-                                        </div>
-                                    )}
-                                    <p className="term-description">{term.shortDescription}</p>
-                                    <button className="learn-more-button">
-                                        Learn More <FaChevronRight className="button-icon" />
-                                    </button>
-                                </div>
-                            );
-                        })}
-                        
-                        {filteredTerms.length > 4 && (
-                            <div className="expand-list-container">
-                                <button 
-                                    className="expand-list-button"
-                                    onClick={() => setShowAllTerms(!showAllTerms)}
-                                >
-                                    {showAllTerms ? (
-                                        <>
-                                            <span>Show Less</span>
-                                            <FaChevronUp className="expand-icon" />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span>Show More</span>
-                                            <FaChevronDown className="expand-icon" />
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        )}
+                {isLoadingTerminology ? (
+                    <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <p>Loading concepts...</p>
                     </div>
                 ) : (
-                    <div className="no-results">
-                        <p>No resources found for "{searchTerm}" in {selectedTopic}.</p>
-                        <button className="clear-search" onClick={() => setSearchTerm('')}>
-                            Clear Search
-                        </button>
-                    </div>
+                    <>
+                        <div className="section-header">
+                            <div className={`search-container ${isSearchFocused ? 'focused' : ''}`}>
+                                <FaSearch className="search-icon" />
+                                <input
+                                    type="text"
+                                    placeholder="Search terminology..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onFocus={() => setIsSearchFocused(true)}
+                                    onBlur={() => setIsSearchFocused(false)}
+                                    className="search-input"
+                                />
+                            </div>
+                            <div className="filter-dropdown" ref={dropdownRef}>
+                                <button 
+                                    className="dropdown-button" 
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                >
+                                    {selectedTopic} <FaChevronDown className={`dropdown-icon ${isDropdownOpen ? 'open' : ''}`} />
+                                </button>
+                                {isDropdownOpen && (
+                                    <div className="dropdown-menu">
+                                        {Object.keys(topics).map(topic => (
+                                            <button
+                                                key={topic}
+                                                className={`dropdown-item ${selectedTopic === topic ? 'active' : ''}`}
+                                                onClick={() => handleTopicSelect(topic)}
+                                            >
+                                                {topic}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {filteredTerms.length > 0 ? (
+                            <>
+                                <div className="learn-list">
+                                    {filteredTerms.slice(0, showAllTerms ? filteredTerms.length : 4).map((term, index) => {
+                                        const isLearned = isTermLearned(term.id);
+                                        
+                                        return (
+                                            <div 
+                                                className={`term-card ${isLearned ? 'learned' : ''}`} 
+                                                key={index} 
+                                                onClick={() => handleCardClick(term)}
+                                            >
+                                                <div className="term-header">
+                                                    {!term.longName ? <h3>{term.name}</h3> : <h4>{term.name}</h4>}
+                                                    <div className="term-header-actions">
+                                                        {user && (
+                                                            <button 
+                                                                className="ask-ai-button" 
+                                                                onClick={(e) => handleAskAITutor(term, e)}
+                                                                title="Ask AI Tutor about this term"
+                                                            >
+                                                                <FaRobot />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                {term.video ? (
+                                                    <div className="thumbnail-container">
+                                                        <img
+                                                            src={term.thumbnail}
+                                                            alt={`${term.name} thumbnail`}
+                                                            className="thumbnail"
+                                                        />
+                                                        <div className="play-button"><FaPlay /></div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="chart-container">
+                                                        <ChartDisplay chartType={term.chartType} data={term.data} lineColor={term.lineColor} />
+                                                    </div>
+                                                )}
+                                                <p className="term-description">{term.shortDescription}</p>
+                                                <button className="learn-more-button">
+                                                    Learn More <FaChevronRight className="button-icon" />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                
+                                {/* Move the expand button outside the grid */}
+                                {filteredTerms.length > 4 && (
+                                    <div className="expand-list-container">
+                                        <button 
+                                            className="expand-list-button"
+                                            onClick={() => setShowAllTerms(!showAllTerms)}
+                                        >
+                                            {showAllTerms ? (
+                                                <>
+                                                    <span>Show Less</span>
+                                                    <FaChevronUp className="expand-icon" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span>Show More</span>
+                                                    <FaChevronDown className="expand-icon" />
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="no-results">
+                                <p>No concepts found matching your search.</p>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
             

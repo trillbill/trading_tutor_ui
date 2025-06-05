@@ -105,7 +105,7 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       {isLoading ? (
-        <div className="loading-spinner">Loading your dashboard...</div>
+        <div className="loading-spinner" />
       ) : error ? (
         <div className="error-container">
           <div className="error-message">{error}</div>

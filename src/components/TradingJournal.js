@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaBook, FaPen, FaTimes } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
-// Import Recharts components
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, ReferenceLine 
 } from 'recharts';
 import AIChatModal from './AIChatModal'; // Import the AIChatModal directly
-import SolanaWalletConnect from './SolanaWalletConnect';
 import { useAuth } from '../context/AuthContext';
+import { useAIChat } from '../context/AIChatContext';
 
 function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [journalError, setJournalError] = useState('');
+  const [modalError, setModalError] = useState(''); // Add modal-specific error state
   const [entriesChanged, setEntriesChanged] = useState(false);
   const [journalFormData, setJournalFormData] = useState({
     trade_date: new Date().toISOString().split('T')[0],
@@ -79,6 +79,34 @@ function TradingJournal({ onStatsUpdate }) {
   // Add state for wallet address
   const [walletAddress, setWalletAddress] = useState('');
   const { user } = useAuth();
+  const { setIsAIChatModalOpen } = useAIChat();
+
+  // Add state for credit balance
+  const [creditBalance, setCreditBalance] = useState(null);
+
+  // Add state for notes modal
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [generalNotes, setGeneralNotes] = useState('');
+  const [notesLoading, setNotesLoading] = useState(false);
+
+  // Add this near the top of the component with other state variables
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Add this useEffect to detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Check on mount
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
@@ -124,17 +152,12 @@ function TradingJournal({ onStatsUpdate }) {
 
   // Fetch journal entries when component mounts or pagination changes
   useEffect(() => {
-    // In development, React will run effects twice in strict mode
-    // This check prevents the second run in development for the initial page load
-    if (pagination.currentPage === 1 && journalEntriesEffectRan.current === true) {
-      return;
-    }
-    
+    // Always fetch when pagination changes
     fetchJournalEntries();
     
-    // Cleanup function that runs when component unmounts or dependencies change
+    // Only set the flag for initial mount
     return () => {
-      if (pagination.currentPage === 1) {
+      if (!journalEntriesEffectRan.current) {
         journalEntriesEffectRan.current = true;
       }
     };
@@ -149,52 +172,6 @@ function TradingJournal({ onStatsUpdate }) {
     }).format(value);
   };
   
-  // Update the processTradesForChart function to add a $0 starting point
-  const processTradesForChart = (trades) => {
-    // Sort trades by date (oldest first)
-    const sortedTrades = [...trades].sort((a, b) => 
-      new Date(a.trade_date) - new Date(b.trade_date)
-    );
-    
-    // If no trades, return empty array
-    if (sortedTrades.length === 0) return [];
-    
-    // Calculate cumulative PnL
-    let cumulativePnL = 0;
-    
-    // Create result array with initial $0 point
-    // Use the date of the first trade minus 1 day as the starting point
-    const firstTradeDate = new Date(sortedTrades[0].trade_date);
-    const startDate = new Date(firstTradeDate);
-    startDate.setDate(startDate.getDate() - 1); // One day before first trade
-    
-    const result = [{
-      date: startDate.toISOString().split('T')[0],
-      individualPnl: 0,
-      cumulativePnl: 0
-    }];
-    
-    // Add all trades with cumulative PnL
-    sortedTrades.forEach(trade => {
-      const tradeDate = new Date(trade.trade_date);
-      const formattedDate = tradeDate.toISOString().split('T')[0]; // YYYY-MM-DD format
-      
-      // Get PnL value, defaulting to 0 if not available
-      const individualPnl = parseFloat(trade.profit_loss) || 0;
-      
-      // Add to running total
-      cumulativePnL += individualPnl;
-      
-      result.push({
-        date: formattedDate,
-        individualPnl: individualPnl,
-        cumulativePnl: cumulativePnL
-      });
-    });
-    
-    return result;
-  };
-
   // Add a function to format dates nicely
   const formatDateForTooltip = (dateString) => {
     try {
@@ -231,10 +208,9 @@ function TradingJournal({ onStatsUpdate }) {
           
           setTotalStats(stats);
           
-          // Process recent trades for the PNL chart
-          if (response.data.summary.recentTrades) {
-            const rawChartData = processTradesForChart(response.data.summary.recentTrades);
-            const optimizedChartData = optimizeChartData(rawChartData);
+          // Use the cumulative PnL data directly from the backend
+          if (response.data.summary.cumulativePnlData) {
+            const optimizedChartData = optimizeChartData(response.data.summary.cumulativePnlData);
             setPnlChartData(optimizedChartData);
           }
           
@@ -306,7 +282,7 @@ function TradingJournal({ onStatsUpdate }) {
     e.preventDefault();
     
     try {
-      setJournalError(null);
+      setModalError(''); // Clear any previous modal errors
       
       if (editingEntryId) {
         await api.put(`/api/journal/${editingEntryId}`, journalFormData);
@@ -316,11 +292,22 @@ function TradingJournal({ onStatsUpdate }) {
       
       fetchJournalEntries();
       setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
+      fetchCreditBalance(); // Refresh credit balance after successful submission
       closeJournalModal();
     } catch (error) {
       console.error('Error adding journal entry:', error);
-      setJournalError('Failed to save journal entry: ' + 
-        (error.response?.data?.error || error.message));
+      
+      // Handle insufficient credits (402 status)
+      if (error.response?.status === 402) {
+        const errorData = error.response.data;
+        setModalError(
+          `Insufficient Credits: You need ${errorData.required_credits} credit${errorData.required_credits > 1 ? 's' : ''} to log this trade, but you only have ${errorData.current_credits} credit${errorData.current_credits !== 1 ? 's' : ''} remaining. Your credits reset daily - try again tomorrow! 💳`
+        );
+      } else {
+        // Generic error handling for other errors
+        setModalError('Failed to save journal entry: ' + 
+          (error.response?.data?.error || error.message));
+      }
     }
   };
 
@@ -337,6 +324,7 @@ function TradingJournal({ onStatsUpdate }) {
   };
 
   const openJournalModal = (entry = null) => {
+    setModalError(''); // Clear any previous modal errors
     if (entry) {
       setJournalFormData({
         trade_date: entry.trade_date.split('T')[0],
@@ -373,6 +361,7 @@ function TradingJournal({ onStatsUpdate }) {
 
   const closeJournalModal = () => {
     setShowJournalModal(false);
+    setModalError(''); // Clear modal error when closing
     resetForm();
   };
 
@@ -455,7 +444,7 @@ function TradingJournal({ onStatsUpdate }) {
     }
   };
 
-  // Update the discussTradeWithAI function to use the local state
+  // Update the discussTradeWithAI function to use the context
   const discussTradeWithAI = (entry) => {
     // Format the trade data as a message to the AI
     const tradeMessage = `
@@ -484,8 +473,15 @@ Can you analyze this trade and provide feedback on what I did well and what I co
     // Set the initial message
     setInitialMessage(tradeMessage);
     
-    // Open the AI chat modal
+    // Open the AI chat modal and update global state
     setIsAIChatOpen(true);
+    setIsAIChatModalOpen(true);
+  };
+
+  // Update the AIChatModal onClose handler
+  const handleCloseAIChat = () => {
+    setIsAIChatOpen(false);
+    setIsAIChatModalOpen(false);
   };
 
   // Fetch user's wallet address on component mount
@@ -505,66 +501,185 @@ Can you analyze this trade and provide feedback on what I did well and what I co
       fetchUserWallet();
     }
   }, [user]);
-  
-  // Handle wallet update
-  const handleWalletUpdate = (address) => {
-    setWalletAddress(address);
-  };
-  
-  // Handle imported trades
-  const handleTradesImported = (trades) => {
-    // Refresh journal entries after import
-    fetchJournalEntries();
-    setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
-  };
 
   // Add this function to optimize data for large datasets
   const optimizeChartData = (data) => {
-    // If we have fewer than 100 points, return the original data
-    if (data.length < 100) return data;
+    if (!data || data.length === 0) return [];
     
-    // For larger datasets, aggregate by week
-    const weeklyData = {};
+    // Always return original data if we have fewer than 50 points
+    if (data.length < 50) return data;
+    
+    // Calculate the time span of the data
+    const firstDate = new Date(data[0].date);
+    const lastDate = new Date(data[data.length - 1].date);
+    const daySpan = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24));
+    const monthSpan = daySpan / 30;
+    const yearSpan = daySpan / 365;
+    
+    // Determine aggregation strategy based on data density
+    let aggregationType = 'none';
+    let targetPoints = 100; // Aim for around 100 chart points for optimal performance
+    
+    if (data.length >= 1000 || yearSpan >= 2) {
+      // For very large datasets or multi-year spans, aggregate by month
+      aggregationType = 'monthly';
+    } else if (data.length >= 200 || monthSpan >= 6) {
+      // For medium datasets or spans over 6 months, aggregate by week
+      aggregationType = 'weekly';
+    } else if (data.length >= 100 || daySpan >= 90) {
+      // For smaller datasets or spans over 3 months, aggregate by day
+      aggregationType = 'daily';
+    } else {
+      // Keep all data for small datasets
+      return data;
+    }
+    
+    console.log(`Optimizing ${data.length} trades over ${daySpan} days using ${aggregationType} aggregation`);
+    
+    return aggregateData(data, aggregationType);
+  };
+
+  const aggregateData = (data, type) => {
+    const aggregated = {};
     
     data.forEach(item => {
       const date = new Date(item.date);
-      // Get the week number (approximate by dividing days by 7)
-      const weekNum = Math.floor(date.getTime() / (7 * 24 * 60 * 60 * 1000));
-      const weekStart = new Date(weekNum * 7 * 24 * 60 * 60 * 1000);
-      const weekKey = weekStart.toISOString().split('T')[0];
+      let key;
       
-      // For each week, store the last trade's cumulative PnL
-      weeklyData[weekKey] = {
-        date: weekKey,
-        individualPnl: item.individualPnl,
-        cumulativePnl: item.cumulativePnl
-      };
+      switch (type) {
+        case 'daily':
+          // Group by day (YYYY-MM-DD)
+          key = item.date.split('T')[0];
+          break;
+          
+        case 'weekly':
+          // Group by week (start of week)
+          const weekStart = new Date(date);
+          weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+          key = weekStart.toISOString().split('T')[0];
+          break;
+          
+        case 'monthly':
+          // Group by month (YYYY-MM-01)
+          key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
+          break;
+          
+        default:
+          key = item.date;
+      }
+      
+      // Keep the last trade's cumulative PnL for each time period
+      // This ensures we show the final cumulative value for that period
+      if (!aggregated[key] || new Date(item.date) > new Date(aggregated[key].originalDate)) {
+        aggregated[key] = {
+          date: key,
+          originalDate: item.date, // Keep track of the original date for comparison
+          individualPnl: item.individualPnl,
+          cumulativePnl: item.cumulativePnl
+        };
+      }
     });
     
-    // Convert back to array and sort by date
-    return Object.values(weeklyData).sort((a, b) => 
-      new Date(a.date) - new Date(b.date)
-    );
+    // Remove the originalDate field and sort by date
+    return Object.values(aggregated)
+      .map(({ originalDate, ...rest }) => rest)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  };
+
+  // Add this useEffect to fetch notes when component mounts
+  useEffect(() => {
+    fetchGeneralNotes();
+    fetchCreditBalance();
+  }, []);
+
+  // Add function to fetch general notes
+  const fetchGeneralNotes = async () => {
+    try {
+      setNotesLoading(true);
+      const response = await api.get('/api/journal/notes');
+      if (response.data.success) {
+        setGeneralNotes(response.data.notes || '');
+      }
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    } finally {
+      setNotesLoading(false);
+    }
+  };
+
+  // Add function to save general notes
+  const saveGeneralNotes = async () => {
+    try {
+      setNotesLoading(true);
+      const response = await api.post('/api/journal/notes', {
+        notes: generalNotes
+      });
+      
+      if (response.data.success) {
+        setIsNotesModalOpen(false);
+        // Optionally show success message
+      }
+    } catch (error) {
+      console.error('Error saving notes:', error);
+      setJournalError('Failed to save notes. Please try again.');
+    } finally {
+      setNotesLoading(false);
+    }
+  };
+
+  // Update the clearGeneralNotes function to only clear local state
+  const clearGeneralNotes = () => {
+    setGeneralNotes('');
+  };
+
+  // Add function to fetch credit balance
+  const fetchCreditBalance = async () => {
+    try {
+      const response = await api.get('/api/credits/balance');
+      if (response.data.success) {
+        setCreditBalance(response.data.credits);
+      }
+    } catch (error) {
+      console.error('Error fetching credit balance:', error);
+    }
   };
 
   return (
     <div className="journal-container">
       {/* Conditionally render header based on screen size */}
-      <div className="journal-title-row">
-        <h2 className="journal-title styled-header">
-          Trading Journal
-        </h2>
-        <button className="action-button primary" onClick={() => openJournalModal()}>
-          <FaPlus /> <span className="button-text">Add Trade</span>
-        </button>
+      <div className={`journal-title-row ${isMobile ? 'journal-title-row-mobile' : ''}`}>
+        <div className="title-and-credits">
+          <h2 className="journal-title styled-header">
+            Trading Journal
+          </h2>
+          {creditBalance && (
+            <div className="credit-display">
+              <span className="credit-text">
+                Credits: {creditBalance.current}/{creditBalance.daily_limit}
+              </span>
+              <span className="credit-info">Resets daily</span>
+            </div>
+          )}
+        </div>
+        <div className="header-buttons">
+          <button 
+            className="action-button secondary notes-button"
+            onClick={() => {
+              fetchGeneralNotes();
+              setIsNotesModalOpen(true);
+            }}
+            title="General Notes"
+          >
+            {isMobile ? <FaPen /> : <><FaPen /> Notes</>}
+          </button>
+          <button 
+            className="action-button primary"
+            onClick={() => openJournalModal()}
+          >
+            <FaPlus /> {isMobile ? '' : 'Add Trade'}
+          </button>
+        </div>
       </div>
-      
-      {/* Add Solana Wallet Connect Component */}
-      {/* <SolanaWalletConnect 
-        onTradesImported={handleTradesImported}
-        currentWalletAddress={walletAddress}
-        onWalletUpdate={handleWalletUpdate}
-      /> */}
       
       {/* PNL Chart Section */}
       <div className="journal-pnl-chart">
@@ -790,6 +905,13 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                 />
               </div>
 
+              {/* Modal Error Display */}
+              {modalError && (
+                <div className="modal-error-message">
+                  {modalError}
+                </div>
+              )}
+
               <div className="modal-actions">
                 <button type="button" className="action-button secondary" onClick={closeJournalModal}>
                   Cancel
@@ -947,14 +1069,81 @@ Can you analyze this trade and provide feedback on what I did well and what I co
         </button>
       </div>
 
-      {/* Add the AI Chat Modal at the end of the component */}
+      {/* Update the AI Chat Modal at the end of the component */}
       <AIChatModal 
         isOpen={isAIChatOpen} 
-        onClose={() => setIsAIChatOpen(false)}
+        onClose={handleCloseAIChat}
         initialTerm={chatTerm}
         initialDescription={chatDescription}
         initialMessage={initialMessage}
       />
+
+      {/* Add Notes Modal */}
+      {isNotesModalOpen && (
+        <div className="modal" onClick={() => setIsNotesModalOpen(false)}>
+          <div className="modal-content notes-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>General Trading Notes</h2>
+              <button className="modal-close-button" onClick={() => setIsNotesModalOpen(false)}>
+                <FaTimes />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="notes-container">
+                <div className="notes-header">
+                  <label htmlFor="general-notes">
+                    <span className={`char-count ${generalNotes.length > 4000 ? 'warning' : ''} ${generalNotes.length >= 5000 ? 'limit' : ''}`}>
+                      {generalNotes.length}/5000
+                    </span>
+                  </label>
+                </div>
+                
+                <textarea
+                  id="general-notes"
+                  className="notes-textarea"
+                  value={generalNotes}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 5000) {
+                      setGeneralNotes(e.target.value);
+                    }
+                  }}
+                  placeholder="Write your notes here..."
+                  disabled={notesLoading}
+                />
+                
+                <div className="notes-info">
+                  <p>Use this space to jot down your trading thoughts, market observations, strategy notes, or any insights you want to remember.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="modal-actions">
+              <button 
+                className="cancel-button"
+                onClick={clearGeneralNotes}
+                disabled={notesLoading || !generalNotes.trim()}
+              >
+                Clear All
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={() => setIsNotesModalOpen(false)}
+                disabled={notesLoading}
+              >
+                Cancel
+              </button>
+              <button 
+                className="save-button"
+                onClick={saveGeneralNotes}
+                disabled={notesLoading}
+              >
+                {notesLoading ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

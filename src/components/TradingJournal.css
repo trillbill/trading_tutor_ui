@@ -247,25 +247,30 @@
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 10px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  margin-top: 20px;
+  padding: 20px 30px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-actions button {
-  padding: 10px 20px;
+  padding: 12px 20px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-actions .cancel-button {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.8);
+  min-width: 100px;
 }
 
 .modal-actions .cancel-button:hover {
@@ -273,10 +278,22 @@
   color: #fff;
 }
 
+.modal-actions .save-button {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #4b937b;
+  min-width: 100px;
+}
+
+.modal-actions .save-button:hover {
+  background-color: #3a7c67;
+}
+
 .modal-actions .submit-button {
   background-color: #4b937b;
   border: none;
   color: white;
+  min-width: 120px;
 }
 
 .modal-actions .submit-button:hover {
@@ -596,6 +613,20 @@
   animation: fadeIn 0.3s ease;
 }
 
+/* Modal Error Message Styling */
+.modal-error-message {
+  background-color: rgba(255, 77, 77, 0.1);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  border-left: 4px solid #ff4d4d;
+  color: #ff4d4d;
+  padding: 12px 16px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease;
+  line-height: 1.4;
+}
+
 /* Animation for error message appearance */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -841,26 +872,47 @@
 
 .journal-title-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
-  width: 100%;
+  gap: 20px;
+}
+
+.title-and-credits {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.credit-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(75, 147, 123, 0.1);
+  border: 1px solid rgba(75, 147, 123, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 120px;
+}
+
+.credit-text {
+  color: #4b937b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.credit-info {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  margin-top: 2px;
 }
 
 .journal-title {
-  display: flex;
-  align-items: center;
+  color: #ffffff;
   margin: 0;
-  font-size: 1.5rem;
-  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
 }
-
-.journal-title .card-icon {
-  margin-right: 10px;
-  color: #4b937b;
-}
-
-
 
 /* Make sure the action button styling is consistent */
 .action-button.primary {
@@ -893,21 +945,22 @@
 /* Mobile journal title row */
 .journal-title-row-mobile {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   width: 100%;
-  text-align: center;
 }
 
 .journal-title-row-mobile .journal-title {
-  margin-bottom: 15px;
-  justify-content: center;
+  margin-bottom: 0; /* Remove bottom margin */
+  justify-content: flex-start; /* Align to left */
+  flex: 1; /* Take available space */
 }
 
+/* Remove the width constraint for mobile buttons */
 .journal-title-row-mobile .action-button.primary {
-  width: 80%;
-  max-width: 200px;
+  width: auto; /* Remove fixed width */
+  max-width: none; /* Remove max-width constraint */
 }
 
 .journal-title {
@@ -1034,36 +1087,215 @@
   color: #fff;
 }
 
-/* Mobile-specific overrides */
+/* Header buttons container */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Make both buttons the same height on desktop */
+.action-button.primary,
+.action-button.secondary {
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px; /* Fixed height for consistency */
+  box-sizing: border-box;
+}
+
+/* Primary button (Add Trade) styling */
+.action-button.primary {
+  background-color: #4b937b;
+  color: white;
+  border: none;
+  min-width: 140px;
+  font-weight: 500;
+}
+
+.action-button.primary:hover {
+  background-color: #3a7c67;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(75, 147, 123, 0.4);
+}
+
+/* Secondary button (Notes) styling */
+.action-button.secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 120px;
+}
+
+.action-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop and mobile journal title row */
+.journal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Style for the journal title */
+.journal-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 28px;
+  color: #fff;
+}
+
+/* Mobile responsive adjustments */
 @media (max-width: 768px) {
-  /* Ensure the title has priority for space */
   .journal-title-row {
-    position: relative; /* For absolute positioning of the button */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Remove icon from mobile title */
+  .journal-title-row .journal-title .card-icon {
+    display: none;
   }
   
   .journal-title.styled-header {
     font-size: 20px;
-    max-width: 70%; /* Limit width to prevent overlap */
+    flex: 1;
   }
   
-  /* Position the button absolutely to the right */
-  .journal-title-row .action-button.primary {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 6px;
-    min-width: 80px;
-    width: auto;
-    gap: unset;
-    justify-content: center;
-    
-    /* Show only the icon */
-    font-size: 0; /* Hide text */
+  .header-buttons {
+    gap: 8px;
+    flex-shrink: 0;
   }
   
-  .journal-title-row .action-button.primary svg {
-    font-size: 16px;
+  /* Make mobile buttons same height and show only icons */
+  .action-button.primary,
+  .action-button.secondary {
+    padding: 8px;
+    min-width: 44px;
+    height: 44px;
+    gap: 0;
+    font-size: 14px;
+    color: white;
+  }
+  
+  .action-button.primary svg,
+  .action-button.secondary svg {
+    font-size: 18px;
     margin: 0;
+  }
+}
+
+/* Notes modal styling */
+.notes-modal-content {
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+}
+
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notes-header label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notes-textarea {
+  width: 100%;
+  min-height: 300px;
+  max-height: 400px;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #4b937b;
+  box-shadow: 0 0 0 2px rgba(75, 147, 123, 0.2);
+}
+
+.notes-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.notes-info {
+  background-color: rgba(75, 147, 123, 0.1);
+  border-left: 4px solid #4b937b;
+  padding: 12px 16px;
+  border-radius: 4px;
+}
+
+.notes-info p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .header-buttons {
+    gap: 8px;
+  }
+  
+  .title-and-credits {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .credit-display {
+    min-width: auto;
+    padding: 6px 10px;
+  }
+
+  .credit-text {
+    font-size: 13px;
+  }
+
+  .credit-info {
+    font-size: 10px;
+  }
+
+  .action-button.secondary {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  /* Modal error message mobile adjustments */
+  .modal-error-message {
+    margin: 10px 0;
+    padding: 10px 12px;
+    font-size: 13px;
   }
 }

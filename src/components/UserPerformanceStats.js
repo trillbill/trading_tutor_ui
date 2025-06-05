@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTrophy, FaChartLine, FaGraduationCap, FaCheckCircle, FaBook, FaRobot, FaChartBar } from 'react-icons/fa';
+import { FaTrophy, FaChartLine, FaGraduationCap, FaCheckCircle, FaBook, FaRobot, FaChartBar, FaArrowRight, FaBookReader, FaLightbulb, FaCheck } from 'react-icons/fa';
 import './UserPerformanceStats.css';
 
 const UserPerformanceStats = ({ profileData }) => {
@@ -7,7 +7,7 @@ const UserPerformanceStats = ({ profileData }) => {
   if (!profileData) {
     return (
       <div className="user-performance-container">
-        <div className="loading-stats">Loading your stats...</div>
+        <div className="loading-spinner"></div>
       </div>
     );
   }
@@ -16,8 +16,8 @@ const UserPerformanceStats = ({ profileData }) => {
   const quizResults = profileData?.profile?.quizResults || [];
   const performance = profileData?.profile?.performance || {
     skillLevel: 'beginner',
-    total: 0,
-    average: 0
+    quizzes: { total: 0, average: 0 },
+    trades: { total: 0 }
   };
   
   // Get the skill level and corresponding badge
@@ -47,24 +47,6 @@ const UserPerformanceStats = ({ profileData }) => {
   };
   
   const skillLevelInfo = getSkillLevelInfo(performance.skillLevel);
-  
-  // Get recent quiz categories
-  const getRecentCategories = () => {
-    if (!quizResults || quizResults.length === 0) return [];
-    
-    const categories = {};
-    quizResults.slice(0, 5).forEach(quiz => {
-      if (!categories[quiz.category]) {
-        categories[quiz.category] = 0;
-      }
-      categories[quiz.category]++;
-    });
-    
-    return Object.keys(categories).map(category => ({
-      name: category,
-      count: categories[category]
-    })).sort((a, b) => b.count - a.count);
-  };
     
   return (
     <div className="user-performance-container">
@@ -106,40 +88,77 @@ const UserPerformanceStats = ({ profileData }) => {
           </div>
         </div>
         
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FaCheckCircle />
+        {/* Next Level Requirements Card */}
+        {performance.nextLevel && (
+          <div className="next-level-card">
+            <div className="skill-info">
+              <h4>Skill Level Progress</h4>
+              <p>Complete all the requirements below to advance to {performance.nextLevel.name.charAt(0).toUpperCase() + performance.nextLevel.name.slice(1)}</p>
             </div>
-            <div className="stat-details">
-              <h5>Quizzes Completed</h5>
-              <div className="stat-value">{performance.total || 0}</div>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FaTrophy />
-            </div>
-            <div className="stat-details">
-              <h5>Average Score</h5>
-              <div className="stat-value">{performance.average || 0}%</div>
-            </div>
-          </div>
-        </div>
-        
-        {/* {recentCategories.length > 0 && (
-          <div className="recent-categories">
-            <h5>Recently Studied Topics</h5>
-            <div className="category-tags">
-              {recentCategories.map((category, index) => (
-                <div key={index} className="category-tag">
-                  {category.name}
+            <div className="requirements-grid">
+              <div className="requirement">
+                <FaBook className="requirement-icon" />
+                <div className="requirement-details">
+                  <div className="requirement-header">
+                    <span className="requirement-label">Quizzes</span>
+                    {performance.nextLevel.requirements.quizzes?.completed && <FaCheck className="check-icon" />}
+                  </div>
+                  <span className="requirement-progress">
+                    {performance.nextLevel.requirements.quizzes?.message || performance.nextLevel.requirements.quizzes}
+                  </span>
                 </div>
-              ))}
+              </div>
+              <div className="requirement">
+                <FaTrophy className="requirement-icon" />
+                <div className="requirement-details">
+                  <div className="requirement-header">
+                    <span className="requirement-label">Average Score</span>
+                    {performance.nextLevel.requirements.score?.completed && <FaCheck className="check-icon" />}
+                  </div>
+                  <span className="requirement-progress">
+                    {performance.nextLevel.requirements.score?.message || performance.nextLevel.requirements.score}
+                  </span>
+                </div>
+              </div>
+              <div className="requirement">
+                <FaChartLine className="requirement-icon" />
+                <div className="requirement-details">
+                  <div className="requirement-header">
+                    <span className="requirement-label">Trades Logged</span>
+                    {performance.nextLevel.requirements.trades?.completed && <FaCheck className="check-icon" />}
+                  </div>
+                  <span className="requirement-progress">
+                    {performance.nextLevel.requirements.trades?.message || performance.nextLevel.requirements.trades}
+                  </span>
+                </div>
+              </div>
+              <div className="requirement">
+                <FaBookReader className="requirement-icon" />
+                <div className="requirement-details">
+                  <div className="requirement-header">
+                    <span className="requirement-label">Modules Completed</span>
+                    {performance.nextLevel.requirements.modules?.completed && <FaCheck className="check-icon" />}
+                  </div>
+                  <span className="requirement-progress">
+                    {performance.nextLevel.requirements.modules?.message || performance.nextLevel.requirements.modules}
+                  </span>
+                </div>
+              </div>
+              <div className="requirement">
+                <FaLightbulb className="requirement-icon" />
+                <div className="requirement-details">
+                  <div className="requirement-header">
+                    <span className="requirement-label">Concepts Mastered</span>
+                    {performance.nextLevel.requirements.concepts?.completed && <FaCheck className="check-icon" />}
+                  </div>
+                  <span className="requirement-progress">
+                    {performance.nextLevel.requirements.concepts?.message || performance.nextLevel.requirements.concepts}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

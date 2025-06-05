@@ -261,3 +261,80 @@
     font-size: 12px;
   }
 }
+
+/* Add these new styles */
+.next-level-card {
+  background: rgba(75, 147, 123, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(75, 147, 123, 0.2);
+}
+
+.next-level-card h4 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.requirement-icon {
+  color: #4b937b;
+  font-size: 1.2rem;
+}
+
+.requirement-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.requirement-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.requirement-label {
+  color: #888;
+  font-size: 0.9rem;
+  padding-bottom: 5px;
+}
+
+.requirement-progress {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.check-icon {
+  color: #4CAF50;
+  font-size: 0.9rem;
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .requirements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .requirement {
+    padding: 8px;
+  }
+}

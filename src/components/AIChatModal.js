@@ -88,11 +88,22 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
     } catch (error) {
       console.error('Error sending message to API:', error);
       
-      // Add error message
-      const errorMessage = {
-        text: "I'm sorry, I encountered an error. Please try again later.",
-        sender: 'ai',
-      };
+      let errorMessage;
+      
+      // Handle insufficient credits (402 status)
+      if (error.response?.status === 402) {
+        const errorData = error.response.data;
+        errorMessage = {
+          text: `**Insufficient Credits** 💳\n\nYou need **${errorData.required_credits} credit${errorData.required_credits > 1 ? 's' : ''}** to send this message, but you only have **${errorData.current_credits} credit${errorData.current_credits !== 1 ? 's' : ''}** remaining.\n\n✨ **Good news!** Your credits reset daily, so you'll get 50 fresh credits tomorrow. Try again then! In the meantime, you can check out some of our free learning resources on the Learn Page.\n\n💡 **Tip:** Each chat message costs 1 credit, and logging trades costs 2 credits.`,
+          sender: 'ai',
+        };
+      } else {
+        // Generic error message for other errors
+        errorMessage = {
+          text: "I'm sorry, I encountered an error. Please try again later.",
+          sender: 'ai',
+        };
+      }
       
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
