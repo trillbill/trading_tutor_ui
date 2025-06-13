@@ -1,33 +1,63 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaTimes, FaArrowUp } from 'react-icons/fa';
+import { FaTimes, FaArrowRight, FaImage } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 import api from '../api/api';
 import './AIChatModal.css';
+import { useCredit } from '../context/CreditContext';
 
-const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initialMessage }) => {
+const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initialMessage, initialImage }) => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [lastImageAnalysis, setLastImageAnalysis] = useState(null);
+  const [currentImageId, setCurrentImageId] = useState(null);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const { refreshCredits } = useCredit();
   
   // Initialize chat with the term when the modal opens
   useEffect(() => {
     if (isOpen && initialTerm) {
-      // Clear previous messages
+      // Clear previous messages and image state
       setMessages([]);
+      setUploadedImage(null);
+      setLastImageAnalysis(null);
+      setCurrentImageId(null);
       
-      // Create initial user message about the term
-      const initialUserMessage = {
-        text: initialMessage || initialTerm, // Use initialMessage if provided, otherwise just use the term
-        sender: 'user',
-      };
-      
-      // Add the message and send to API
-      setMessages([initialUserMessage]);
-      sendMessageToAPI(initialUserMessage.text, initialDescription);
+      // If there's an initial image, set it up
+      if (initialImage) {
+        const newImageId = Date.now().toString();
+        setCurrentImageId(newImageId);
+        setUploadedImage({
+          id: newImageId,
+          data: initialImage.data,
+          name: initialImage.name
+        });
+        
+        // Create initial user message and send image for analysis
+        const initialUserMessage = {
+          text: initialMessage || "Please analyze this chart",
+          sender: 'user',
+          image: initialImage.data
+        };
+        
+        setMessages([initialUserMessage]);
+        sendImageToAPI(initialMessage || "Please analyze this chart and provide insights on potential entry/exit points, support and resistance levels, indicators, and trading suggestions based on what you see.", initialImage.data);
+      } else {
+        // Create initial user message about the term
+        const initialUserMessage = {
+          text: initialMessage || initialTerm,
+          sender: 'user',
+        };
+        
+        // Add the message and send to API
+        setMessages([initialUserMessage]);
+        sendMessageToAPI(initialUserMessage.text, initialDescription);
+      }
     }
-  }, [isOpen, initialTerm, initialDescription, initialMessage]);
+  }, [isOpen, initialTerm, initialDescription, initialMessage, initialImage]);
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -35,6 +65,45 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Handle file upload
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Clear any previous image analysis context
+    setLastImageAnalysis(null);
+    
+    // Generate a unique ID for this image
+    const newImageId = Date.now().toString();
+    setCurrentImageId(newImageId);
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setUploadedImage({
+        id: newImageId,
+        data: e.target.result,
+        name: file.name
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Handle removing uploaded image
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    setLastImageAnalysis(null);
+    
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Handle file button click
+  const handleFileButtonClick = () => {
+    fileInputRef.current.click();
+  };
   
   // Send message to API
   const sendMessageToAPI = async (text, contextDescription = null) => {
@@ -57,6 +126,25 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
           description: contextDescription
         };
       }
+
+      // Check if this is a follow-up about the most recent image
+      const isImageFollowUp = 
+        lastImageAnalysis && 
+        currentImageId === lastImageAnalysis.imageId &&
+        (text.toLowerCase().includes('chart') || 
+         text.toLowerCase().includes('image') || 
+         text.toLowerCase().includes('price') ||
+         text.toLowerCase().includes('indicator') ||
+         text.toLowerCase().includes('support') ||
+         text.toLowerCase().includes('resistance'));
+
+      if (isImageFollowUp) {
+        // Insert the image analysis as context
+        payload.messages.push({
+          role: 'assistant',
+          content: `Here's the chart analysis for reference:\n\n${lastImageAnalysis.analysis}`
+        });
+      }
       
       const response = await api.post(
         'api/chat/completions',
@@ -70,6 +158,8 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
       const aiMessage = {
         text: aiResponse,
         sender: 'ai',
+        // If this was a follow-up to an image, tag it with the image ID
+        ...(isImageFollowUp && { imageId: currentImageId })
       };
       
       // Use a callback function with the previous state to ensure we're working with the latest state
@@ -85,6 +175,8 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
           return [...prevMessages.filter(msg => msg.sender === 'user'), aiMessage];
         }
       });
+      
+      refreshCredits(); // Refresh credit balance after successful chat
     } catch (error) {
       console.error('Error sending message to API:', error);
       
@@ -110,22 +202,107 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
       setLoading(false);
     }
   };
+
+  // Send image to API for analysis
+  const sendImageToAPI = async (text, imageData) => {
+    setLoading(true);
+    
+    // Store the current image ID for this analysis
+    const imageId = currentImageId;
+
+    const defaultPrompt = text || "Please analyze this chart and provide insights on potential entry/exit points, support and resistance levels, indicators, and trading suggestions based on what you see.";
+
+    const payload = {
+      text: defaultPrompt,
+      imageUrl: imageData,
+      newImageAnalysis: true
+    };
+
+    try {
+      const response = await api.post('api/chat/image-analysis', payload);
+      
+      // Store the analysis with the image ID
+      setLastImageAnalysis({
+        imageId: imageId,
+        analysis: response.data.analysis
+      });
+      
+      // Add a hidden message with the image analysis and image ID
+      const hiddenAnalysisMessage = {
+        text: response.data.analysis,
+        sender: 'ai',
+        hidden: true,
+        imageId: imageId
+      };
+
+      // Add the visible response with the image ID
+      const aiMessage = {
+        text: response.data.response,
+        sender: 'ai',
+        imageId: imageId
+      };
+
+      setMessages((prevMessages) => [...prevMessages, hiddenAnalysisMessage, aiMessage]);
+      refreshCredits(); // Refresh credit balance after successful analysis
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      
+      let errorMessage;
+      
+      // Handle insufficient credits (402 status)
+      if (error.response?.status === 402) {
+        const errorData = error.response.data;
+        errorMessage = {
+          text: `**Insufficient Credits** 💳\n\nYou need **${errorData.required_credits} credit${errorData.required_credits > 1 ? 's' : ''}** to analyze this image, but you only have **${errorData.current_credits} credit${errorData.current_credits !== 1 ? 's' : ''}** remaining.\n\n✨ **Good news!** Your credits reset daily, so you'll get 50 fresh credits tomorrow. Try again then!`,
+          sender: 'ai',
+        };
+      } else {
+        // Generic error message for other errors
+        errorMessage = {
+          text: "Sorry, I encountered an error analyzing this image. Please try again or upload a different image.",
+          sender: 'ai',
+        };
+      }
+      
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setLoading(false);
+      setUploadedImage(null); // Clear the uploaded image after sending
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
   
   // Handle sending a message
   const handleSendMessage = () => {
-    if (inputValue.trim() === '' || loading) return;
+    if ((!inputValue.trim() && !uploadedImage) || loading) return;
     
     const newMessage = {
       text: inputValue,
       sender: 'user',
     };
+
+    // If there's an uploaded image, add it to the message
+    if (uploadedImage) {
+      newMessage.image = uploadedImage.data;
+    }
     
     // Update messages with the new user message
     setMessages((prevMessages) => [...prevMessages, newMessage]);
+    
+    // Clear the input field
+    const messageText = inputValue;
     setInputValue('');
     
-    // Send to API (without adding the message again)
-    sendMessageToAPI(inputValue);
+    // If there's an image, send it to the image analysis API
+    if (uploadedImage) {
+      sendImageToAPI(messageText, uploadedImage.data);
+    } else {
+      // Send to regular API (without adding the message again)
+      sendMessageToAPI(messageText);
+    }
   };
   
   // Handle input change
@@ -170,14 +347,25 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
         
         <div className="ai-chat-modal-messages">
           {messages.map((message, index) => (
-            <div 
-              key={index} 
-              className={`modal-message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`}
-            >
-              <div className="modal-message-content">
-                {renderMessageContent(message)}
+            !message.hidden && (
+              <div 
+                key={index} 
+                className={`modal-message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`}
+              >
+                <div className="modal-message-content">
+                  {message.image && (
+                    <div className="modal-message-image-container">
+                      <img 
+                        src={message.image} 
+                        alt="Chart uploaded by user" 
+                        className="modal-message-image" 
+                      />
+                    </div>
+                  )}
+                  {renderMessageContent(message)}
+                </div>
               </div>
-            </div>
+            )
           ))}
           
           {loading && (
@@ -194,22 +382,59 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
           
           <div ref={messagesEndRef} />
         </div>
+
+        {/* Display uploaded image preview */}
+        {uploadedImage && !loading && (
+          <div className="ai-chat-uploaded-image-preview">
+            <div className="uploaded-image-header">
+              <FaImage /> Chart ready to analyze
+              <button onClick={handleRemoveImage} className="remove-image-button">
+                <FaTimes />
+              </button>
+            </div>
+            <img src={uploadedImage.data} alt="Chart preview" className="uploaded-image-preview" />
+            <span className="uploaded-image-name">{uploadedImage.name}</span>
+          </div>
+        )}
         
         <div className="ai-chat-modal-input">
-          <textarea
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Ask a follow-up question..."
-            disabled={loading}
-          />
-          <button 
-            onClick={handleSendMessage} 
-            disabled={loading || !inputValue.trim()}
-            className="send-button"
-          >
-            <FaArrowUp />
-          </button>
+          <div className="input-container">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              placeholder={uploadedImage ? "Describe what you'd like me to analyze about this chart..." : "Ask a follow-up question..."}
+              disabled={loading}
+              className="quick-chat-input"
+            />
+            <div className="input-buttons">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+              />
+              <button 
+                type="button"
+                onClick={handleFileButtonClick} 
+                className="upload-button-widget" 
+                title="Upload chart image"
+                disabled={loading}
+              >
+                <FaImage />
+              </button>
+              <button 
+                type="submit" 
+                onClick={handleSendMessage} 
+                className="quick-chat-button"
+                disabled={loading || (!inputValue.trim() && !uploadedImage)}
+              >
+                <FaArrowRight />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -219,7 +444,8 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
 // Set default props
 AIChatModal.defaultProps = {
   initialMessage: '',
-  initialDescription: ''
+  initialDescription: '',
+  initialImage: null
 };
 
 export default AIChatModal;

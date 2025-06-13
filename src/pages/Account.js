@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { validateEmail } from '../utils/utils';
-import { FaSignOutAlt, FaEnvelope } from 'react-icons/fa';
+import { FaSignOutAlt, FaEnvelope, FaCog } from 'react-icons/fa';
 import accountIcon from '../assets/account-icon-large.png';
+import CurrencySettings from '../components/CurrencySettings';
 import './Account.css';
 
 function Account() {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showProfileUpdateSuccess, setShowProfileUpdateSuccess] = useState(false);
   
   // Add state for email update modal
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -20,7 +22,27 @@ function Account() {
   const [emailUpdateLoading, setEmailUpdateLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout } = useAuth();
+
+  // Check for profile update success message
+  useEffect(() => {
+    if (location.state?.showProfileUpdateSuccess) {
+      setShowProfileUpdateSuccess(true);
+      // Clear the location state
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, location.pathname, navigate]);
+
+  // Auto-hide success message after 5 seconds
+  useEffect(() => {
+    if (showProfileUpdateSuccess) {
+      const timer = setTimeout(() => {
+        setShowProfileUpdateSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showProfileUpdateSuccess]);
 
   // Fetch user profile data on component mount
   useEffect(() => {
@@ -50,6 +72,10 @@ function Account() {
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const handleRetakeOnboarding = () => {
+    navigate('/onboarding');
   };
 
   // Handle email update
@@ -118,6 +144,19 @@ function Account() {
         <div className="loading-spinner" />
       ) : (
         <>
+          {/* Profile Update Success Message */}
+          {showProfileUpdateSuccess && (
+            <div className="success-banner">
+              <p>✅ Your trading profile has been updated successfully!</p>
+              <button 
+                className="close-banner" 
+                onClick={() => setShowProfileUpdateSuccess(false)}
+              >
+                ×
+              </button>
+            </div>
+          )}
+          
           <div className="account-card">
             <div className="account-profile">
               <img src={accountIcon} alt="Profile" className="profile-avatar" />
@@ -132,6 +171,12 @@ function Account() {
                   <FaEnvelope /> Update Email
                 </button>
                 <button 
+                  className="action-button primary" 
+                  onClick={handleRetakeOnboarding}
+                >
+                  <FaCog /> Update Trading Profile
+                </button>
+                <button 
                   className="action-button secondary" 
                   onClick={handleSignOut}
                 >
@@ -140,6 +185,9 @@ function Account() {
               </div>
             </div>
           </div>
+          
+          {/* Currency Settings */}
+          <CurrencySettings />
           
           {/* Email Update Modal */}
           {showEmailModal && (

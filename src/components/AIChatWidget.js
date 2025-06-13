@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaRobot, FaChevronLeft, FaChevronRight, FaArrowRight, FaMinus, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaRobot, FaChevronLeft, FaChevronRight, FaArrowRight, FaMinus, FaPlus, FaTimes, FaImage } from 'react-icons/fa';
 import AIChatModal from './AIChatModal';
 import './AIChatWidget.css';
 
@@ -13,8 +13,11 @@ const AIChatWidget = ({ chatPrompts }) => {
   const [chatTerm, setChatTerm] = useState('');
   const [chatDescription, setChatDescription] = useState('');
   const [showThoughtBubble, setShowThoughtBubble] = useState(true);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [initialMessage, setInitialMessage] = useState('');
   
   const carouselIntervalRef = useRef(null);
+  const fileInputRef = useRef(null);
   
   // Setup carousel rotation
   useEffect(() => {
@@ -84,14 +87,48 @@ const AIChatWidget = ({ chatPrompts }) => {
     }, 5000); // Resume after 5 seconds of inactivity
   };
   
-  // Handle quick chat submit
+  // Handle file upload
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setUploadedImage({
+        data: e.target.result,
+        name: file.name
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Handle removing uploaded image
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Handle file button click
+  const handleFileButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  // Handle quick chat submit - modified to handle images
   const handleQuickChatSubmit = (e) => {
     e.preventDefault();
-    if (quickChatInput.trim()) {
-      setChatTerm(quickChatInput);
+    if (quickChatInput.trim() || uploadedImage) {
+      setChatTerm(quickChatInput || 'Chart Analysis');
       setChatDescription('');
+      setInitialMessage(uploadedImage ? 
+        (quickChatInput || "Please analyze this chart and provide insights on potential entry/exit points, support and resistance levels, indicators, and trading suggestions based on what you see.") : 
+        quickChatInput
+      );
       setShowChatModal(true);
       setQuickChatInput('');
+      // Don't clear uploadedImage here - let the modal handle it
     }
   };
   
@@ -102,9 +139,15 @@ const AIChatWidget = ({ chatPrompts }) => {
     setShowChatModal(true);
   };
   
-  // Close chat modal
+  // Close chat modal - modified to clear image state
   const closeChatModal = () => {
     setShowChatModal(false);
+    setUploadedImage(null);
+    setInitialMessage('');
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
   
   // Toggle widget open/closed
@@ -163,22 +206,64 @@ const AIChatWidget = ({ chatPrompts }) => {
           
           {!isMinimized && (
             <div className="widget-body">
+              {/* Image upload preview */}
+              {uploadedImage && (
+                <div className="widget-uploaded-image-preview">
+                  <div className="uploaded-image-header">
+                    <FaImage /> Chart ready to analyze
+                    <button onClick={handleRemoveImage} className="remove-image-button">
+                      <FaTimes />
+                    </button>
+                  </div>
+                  <img src={uploadedImage.data} alt="Chart preview" className="uploaded-image-preview" />
+                  <span className="uploaded-image-name">{uploadedImage.name}</span>
+                </div>
+              )}
+              
               <form onSubmit={handleQuickChatSubmit} className="quick-chat-form">
-                <input
-                  type="text"
-                  value={quickChatInput}
-                  onChange={(e) => setQuickChatInput(e.target.value)}
-                  placeholder="Ask anything about trading..."
-                  className="quick-chat-input"
-                />
-                <button 
-                  type="submit" 
-                  className="quick-chat-button"
-                  disabled={!quickChatInput.trim()}
-                >
-                  <FaArrowRight />
-                </button>
+                <div className="chat-input-container">
+                  <input
+                    type="text"
+                    value={quickChatInput}
+                    onChange={(e) => setQuickChatInput(e.target.value)}
+                    placeholder={uploadedImage ? "Describe what you'd like me to analyze about this chart..." : "Ask anything about trading..."}
+                    className="quick-chat-input"
+                  />
+                  <div className="chat-input-buttons">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                    />
+                    <button 
+                      type="button"
+                      onClick={handleFileButtonClick} 
+                      className="upload-button-widget" 
+                      title="Upload chart image"
+                    >
+                      <FaImage />
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="quick-chat-button"
+                      disabled={!quickChatInput.trim() && !uploadedImage}
+                    >
+                      <FaArrowRight />
+                    </button>
+                  </div>
+                </div>
               </form>
+              
+              <div className="chat-helper-text">
+                <p>💡 Upload an image of a chart or ask any trading question. For chart analysis:</p>
+                <ul>
+                  <li>Include only relevant price data and indicators</li>
+                  <li>Avoid charts with hover-state price labels or drawn numbers</li>
+                  <li>Clear, uncluttered charts work best</li>
+                </ul>
+              </div>
               
               <div className="chat-prompts">
                 <h4>Quick Prompts</h4>
@@ -243,6 +328,8 @@ const AIChatWidget = ({ chatPrompts }) => {
         onClose={closeChatModal}
         initialTerm={chatTerm}
         initialDescription={chatDescription}
+        initialMessage={initialMessage}
+        initialImage={uploadedImage}
       />
     </>
   );

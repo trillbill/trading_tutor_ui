@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LogoHeader from './components/LogoHeader';
 import Learn from './pages/Learn';
-import ChatWindow from './pages/ChatWindow';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import VerifyEmail from './pages/VerifyEmail';
@@ -24,27 +23,19 @@ import Account from './pages/Account';
 import AIChatWidget from './components/AIChatWidget';
 import chatPrompts from './chatPrompts';
 import { AIChatProvider, useAIChat } from './context/AIChatContext';
+import { CreditProvider } from './context/CreditContext';
+import { TradingProfileProvider, useTradingProfile } from './context/TradingProfileContext';
+import { CurrencyProvider } from './context/CurrencyContext';
+import CreditDisplay from './components/CreditDisplay';
+import OnboardingFlow from './pages/OnboardingFlow';
+import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 import accountIcon from './assets/account-icon.png';
 import learnIcon from './assets/learn-icon.png';
 import homeIcon from './assets/home-icon.png';
 import pricingIcon from './assets/pricing-icon.png';
 import dashboardIcon from './assets/dashboard-icon.png';
-
-// Protected route component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
-  
-  if (loading) {
-    return <div className="loading-spinner" />;
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return children;
-};
 
 // Public route component - redirects authenticated users to dashboard page
 const PublicRoute = ({ children }) => {
@@ -78,28 +69,31 @@ const ConditionalAIChatWidget = ({ chatPrompts }) => {
 
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/verification-required" element={<VerificationRequired />} />
-      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      
-      {/* Protected routes */}
-      <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-      <Route path="/chat" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
-      <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
-      <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />
-      
-      {/* Catch-all route */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/verification-required" element={<VerificationRequired />} />
+        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        {/* <Route path="/pricing" element={<Pricing />} /> */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        
+        {/* Protected routes */}
+        <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
+        <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute><OnboardingFlow /></ProtectedRoute>} />
+        
+        {/* Catch-all route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 
@@ -127,19 +121,24 @@ const App = () => {
                             <>
                                 <Link to="/dashboard" className="nav-item">Dashboard</Link>
                                 <Link to="/learn" className="nav-item">Learn</Link>
-                                <Link to="/pricing" className="nav-item">Pricing</Link>
+                                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
                             </>
                         ) : (
                             <>
                                 <Link to="/" className="nav-item">Home</Link>
-                                <Link to="/pricing" className="nav-item">Pricing</Link>
+                                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
                             </>
                         )}
                     </nav>
                 </div>
                 <div className="header-column login-column">
                     {isAuthenticated ? (
-                        <Link to="/account"><img src={accountIcon} className="account-icon" alt="Account" /></Link>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <CreditDisplay />
+                            <Link to="/account">
+                                <img src={accountIcon} className="account-icon" alt="Account" />
+                            </Link>
+                        </div>
                     ) : (
                         <Link to="/login" className="nav-item">Login</Link>
                     )}
@@ -153,16 +152,33 @@ const App = () => {
                     <nav className="nav-options">
                         {isAuthenticated ? (
                             <>
-                                <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}><img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard</Link>
-                                <Link to="/learn" className="hamburger-item" onClick={toggleMenu}><img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn</Link>
-                                <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
-                                <Link to="/account" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Account" />Account</Link>
+                                <div className="hamburger-credit-section">
+                                    <CreditDisplay />
+                                </div>
+                                <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard
+                                </Link>
+                                <Link to="/learn" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn
+                                </Link>
+                                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
+                                </Link> */}
+                                <Link to="/account" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={accountIcon} className="hamburger-icon" alt="Account" />Account
+                                </Link>
                             </>
                         ) : (
                             <>
-                                <Link to="/" className="hamburger-item" onClick={toggleMenu}><img src={homeIcon} className="hamburger-icon" alt="Home" />Home</Link>
-                                <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}><img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing</Link>
-                                <Link to="/login" className="hamburger-item" onClick={toggleMenu}><img src={accountIcon} className="hamburger-icon" alt="Login" />Login</Link>
+                                <Link to="/" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={homeIcon} className="hamburger-icon" alt="Home" />Home
+                                </Link>
+                                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
+                                </Link> */}
+                                <Link to="/login" className="hamburger-item" onClick={toggleMenu}>
+                                    <img src={accountIcon} className="hamburger-icon" alt="Login" />Login
+                                </Link>
                             </>
                         )}
                     </nav>
@@ -185,7 +201,13 @@ const AppWithAuth = () => (
     <BrowserRouter>
         <AuthProvider>
             <AIChatProvider>
-                <App />
+                <CreditProvider>
+                    <TradingProfileProvider>
+                        <CurrencyProvider>
+                            <App />
+                        </CurrencyProvider>
+                    </TradingProfileProvider>
+                </CreditProvider>
             </AIChatProvider>
         </AuthProvider>
     </BrowserRouter>

@@ -57,11 +57,21 @@
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
+  outline: none;
 }
 
 .answer-option:hover {
-  background: rgba(75, 147, 123, 0.2);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.answer-option:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.answer-option:active {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .question-counter {
