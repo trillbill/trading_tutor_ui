@@ -4,12 +4,13 @@ import ChartDisplay from '../components/ChartDisplay';
 import AIChatModal from '../components/AIChatModal';
 import { useAuth } from '../context/AuthContext';
 import './Learn.css';
-import heroImage from '../assets/man-trading3.png';
+import heroImage from '../assets/black-chart-trends.png';
 import { useNavigate } from 'react-router-dom';
 import VideoPlayer from '../components/VideoPlayer';
 import api from '../api/api';
 import QuizComponent from '../components/QuizComponent';
 import { useAIChat } from '../context/AIChatContext';
+import { scrollToTop } from '../utils/scrollUtils';
 
 const Learn = () => {
     const { user } = useAuth();
@@ -42,6 +43,11 @@ const Learn = () => {
     const progressFetchedRef = useRef(false);
     
     const navigate = useNavigate();
+
+    // Scroll to top when component mounts
+    useEffect(() => {
+        scrollToTop();
+    }, []);
 
     // Fetch terminology data from backend
     useEffect(() => {

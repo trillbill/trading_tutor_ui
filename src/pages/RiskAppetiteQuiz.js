@@ -4,7 +4,7 @@ import { FaChartLine, FaShieldAlt, FaBalanceScale } from 'react-icons/fa';
 import api from '../api/api';
 import './RiskAppetiteQuiz.css';
 
-const RiskAppetiteQuiz = () => {
+const RiskAppetiteQuiz = ({ onComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +36,7 @@ const RiskAppetiteQuiz = () => {
       options: [
         { text: "I avoid risky trades altogether and prefer to stick to the safest options available", score: 1 },
         { text: "I prefer low-risk trades and prioritize preserving my capital, even if it means lower potential returns", score: 4 },
-        { text: "I’m willing to take moderate risks, seeking a balance between potential reward and protecting my capital", score: 7 },
+        { text: "I'm willing to take moderate risks, seeking a balance between potential reward and protecting my capital", score: 7 },
         { text: "I prefer to take high risks for the potential of large rewards, even if it means large losses", score: 10 }
       ],
       icon: <FaShieldAlt />
@@ -45,9 +45,9 @@ const RiskAppetiteQuiz = () => {
       question: "How do you feel about losing money on a trade?",
       options: [
         { text: "I find losing money very uncomfortable and will take steps to avoid it, even if it means missing out on potential gains", score: 1 },
-        { text: "I don’t mind small losses, but large losses make me anxious, and I’ll act quickly to limit them", score: 4 },
+        { text: "I don't mind small losses, but large losses make me anxious, and I'll act quickly to limit them", score: 4 },
         { text: "I can tolerate losses as part of trading, but I try to keep them within a manageable range", score: 7 },
-        { text: "I’m willing to take significant losses if I believe the trade has long-term potential", score: 10 }
+        { text: "I'm willing to take significant losses if I believe the trade has long-term potential", score: 10 }
       ],
       icon: <FaChartLine />
     },
@@ -88,12 +88,19 @@ const RiskAppetiteQuiz = () => {
     
     try {
       await api.post('/api/account/risk-appetite', { riskAppetite });
+      
+      if (onComplete) {
+        // If onComplete prop is provided, call it instead of navigating
+        onComplete(riskAppetite);
+      } else {
+        // Default behavior - navigate to account page
       navigate('/account', { 
         state: { 
           showRiskResult: true, 
           riskAppetite 
         } 
       });
+      }
     } catch (error) {
       console.error('Error submitting risk appetite:', error);
       // Handle error

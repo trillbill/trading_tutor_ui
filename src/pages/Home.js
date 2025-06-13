@@ -73,7 +73,7 @@ const Home = () => {
                             <FaRobot className="feature-card-icon" />
                         </div>
                         <h3>AI Trading Assistant</h3>
-                        <p>Discuss your trades with our AI tutor, get personalized feedback, and learn from your trading decisions.</p>
+                        <p>Discuss your trades with our AI tutor, get personalized feedback, and analyze your charts for expert technical analysis insights.</p>
                     </div>
                 </div>
             </div>
@@ -101,6 +101,11 @@ const Home = () => {
                         <div className="step-icon"><FaRobot /></div>
                         <h3>AI Assistant</h3>
                         <p>Get instant answers to your questions and personalized explanations from our AI tutor while you learn.</p>
+                    </div>
+                    <div className="path-step">
+                        <div className="step-icon"><FaChartLine /></div>
+                        <h3>Chart Analysis</h3>
+                        <p>Upload your trading charts and get instant AI-powered technical analysis, including support/resistance levels, patterns, and trading suggestions.</p>
                     </div>
                 </div>
             </div>

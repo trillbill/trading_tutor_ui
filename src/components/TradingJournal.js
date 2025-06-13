@@ -9,6 +9,8 @@ import {
 import AIChatModal from './AIChatModal'; // Import the AIChatModal directly
 import { useAuth } from '../context/AuthContext';
 import { useAIChat } from '../context/AIChatContext';
+import { useCredit } from '../context/CreditContext';
+import { useCurrency } from '../context/CurrencyContext';
 
 function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
@@ -22,7 +24,7 @@ function TradingJournal({ onStatsUpdate }) {
     trade_type: 'buy',
     entry_price: '',
     exit_price: '',
-    quantity: '',
+    position_size: '',
     strategy: '',
     notes: '',
     outcome: 'open',
@@ -81,9 +83,6 @@ function TradingJournal({ onStatsUpdate }) {
   const { user } = useAuth();
   const { setIsAIChatModalOpen } = useAIChat();
 
-  // Add state for credit balance
-  const [creditBalance, setCreditBalance] = useState(null);
-
   // Add state for notes modal
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [generalNotes, setGeneralNotes] = useState('');
@@ -107,6 +106,10 @@ function TradingJournal({ onStatsUpdate }) {
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Add this after other hooks (around line 85):
+  const { creditBalance, refreshCredits } = useCredit();
+  const { formatCurrency: formatCurrencyFromContext, currencySymbol } = useCurrency();
 
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
@@ -166,10 +169,7 @@ function TradingJournal({ onStatsUpdate }) {
   // Format currency for tooltip and display
   const formatCurrency = (value) => {
     if (!value) return '-';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(value);
+    return formatCurrencyFromContext(value);
   };
   
   // Add a function to format dates nicely
@@ -260,6 +260,32 @@ function TradingJournal({ onStatsUpdate }) {
     };
   }, [journalError]); // Run this effect whenever journalError changes
 
+  // Function to calculate PnL based on position size and prices
+  const calculatePnL = (positionSize, entryPrice, exitPrice, tradeType) => {
+    if (!positionSize || !entryPrice || !exitPrice) return '';
+    
+    const size = parseFloat(positionSize);
+    const entry = parseFloat(entryPrice);
+    const exit = parseFloat(exitPrice);
+    
+    if (isNaN(size) || isNaN(entry) || isNaN(exit) || entry === 0) return '';
+    
+    // Calculate number of shares/units based on position size and entry price
+    const shares = size / entry;
+    
+    // Calculate PnL based on trade type
+    let pnl;
+    if (tradeType === 'buy') {
+      // Long position: profit when exit > entry
+      pnl = shares * (exit - entry);
+    } else {
+      // Short position: profit when entry > exit
+      pnl = shares * (entry - exit);
+    }
+    
+    return pnl.toFixed(2);
+  };
+
   const handleJournalFormChange = (e) => {
     const { name, value } = e.target;
     
@@ -271,11 +297,35 @@ function TradingJournal({ onStatsUpdate }) {
     if (name === 'notes' && value.length > MAX_NOTES_LENGTH) {
       return; // Don't update if exceeding limit
     }
-    
-    setJournalFormData({
+
+    const updatedFormData = {
       ...journalFormData,
       [name]: value
-    });
+    };
+
+    // Auto-calculate PnL when position_size, entry_price, exit_price, or trade_type changes
+    if (['position_size', 'entry_price', 'exit_price', 'trade_type'].includes(name)) {
+      const calculatedPnL = calculatePnL(
+        updatedFormData.position_size,
+        updatedFormData.entry_price,
+        updatedFormData.exit_price,
+        updatedFormData.trade_type
+      );
+      
+      // Only update PnL if it was calculated and the field is currently empty or auto-calculated
+      if (calculatedPnL !== '' && 
+          (journalFormData.profit_loss === '' || 
+           journalFormData.profit_loss === calculatePnL(
+             journalFormData.position_size,
+             journalFormData.entry_price,
+             journalFormData.exit_price,
+             journalFormData.trade_type
+           ))) {
+        updatedFormData.profit_loss = calculatedPnL;
+      }
+    }
+    
+    setJournalFormData(updatedFormData);
   };
 
   const handleJournalSubmit = async (e) => {
@@ -284,15 +334,23 @@ function TradingJournal({ onStatsUpdate }) {
     try {
       setModalError(''); // Clear any previous modal errors
       
+      // Map position_size to quantity for backend compatibility
+      const submitData = {
+        ...journalFormData,
+        quantity: journalFormData.position_size
+      };
+      // Remove position_size from the data sent to backend
+      delete submitData.position_size;
+      
       if (editingEntryId) {
-        await api.put(`/api/journal/${editingEntryId}`, journalFormData);
+        await api.put(`/api/journal/${editingEntryId}`, submitData);
       } else {
-        await api.post('/api/journal', journalFormData);
+        await api.post('/api/journal', submitData);
       }
       
       fetchJournalEntries();
       setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
-      fetchCreditBalance(); // Refresh credit balance after successful submission
+      refreshCredits(); // Refresh credit balance after successful submission
       closeJournalModal();
     } catch (error) {
       console.error('Error adding journal entry:', error);
@@ -301,12 +359,23 @@ function TradingJournal({ onStatsUpdate }) {
       if (error.response?.status === 402) {
         const errorData = error.response.data;
         setModalError(
-          `Insufficient Credits: You need ${errorData.required_credits} credit${errorData.required_credits > 1 ? 's' : ''} to log this trade, but you only have ${errorData.current_credits} credit${errorData.current_credits !== 1 ? 's' : ''} remaining. Your credits reset daily - try again tomorrow! 💳`
+          `💳 **Insufficient Credits**: You need ${errorData.required_credits} credit${errorData.required_credits > 1 ? 's' : ''} to log this trade, but you only have ${errorData.current_credits} credit${errorData.current_credits !== 1 ? 's' : ''} remaining. Your credits reset daily - try again tomorrow!`
         );
+      } else if (error.response?.status === 400) {
+        // Bad request - validation errors
+        const errorMessage = error.response.data?.error || 'Invalid data provided';
+        setModalError(`⚠️ **Validation Error**: ${errorMessage}`);
+      } else if (error.response?.status >= 500) {
+        // Server errors - our improved backend messages
+        const errorMessage = error.response.data?.error || 'Server error occurred';
+        setModalError(`🚫 **Save Error**: ${errorMessage}`);
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        // Network connectivity issues
+        setModalError('📡 **Connection Error**: Unable to connect to server. Please check your internet connection and try again.');
       } else {
         // Generic error handling for other errors
-        setModalError('Failed to save journal entry: ' + 
-          (error.response?.data?.error || error.message));
+        const errorMessage = error.response?.data?.error || error.message || 'An unexpected error occurred';
+        setModalError(`❌ **Error**: ${errorMessage}`);
       }
     }
   };
@@ -318,7 +387,22 @@ function TradingJournal({ onStatsUpdate }) {
         fetchJournalEntries();
         setEntriesChanged(prev => !prev); // Toggle to trigger the useEffect
       } catch (error) {
-        setJournalError('Failed to delete entry');
+        console.error('Error deleting journal entry:', error);
+        
+        // Provide more specific error messages
+        let errorMessage = 'Failed to delete entry';
+        
+        if (error.response?.status === 404) {
+          errorMessage = 'Entry not found or already deleted';
+        } else if (error.response?.status === 403) {
+          errorMessage = 'You do not have permission to delete this entry';
+        } else if (error.response?.status >= 500) {
+          errorMessage = error.response.data?.error || 'Server error occurred while deleting';
+        } else if (!error.response) {
+          errorMessage = 'Connection error - unable to delete entry. Please try again.';
+        }
+        
+        setJournalError(errorMessage);
       }
     }
   };
@@ -332,7 +416,7 @@ function TradingJournal({ onStatsUpdate }) {
         trade_type: entry.trade_type,
         entry_price: entry.entry_price,
         exit_price: entry.exit_price || '',
-        quantity: entry.quantity,
+        position_size: entry.quantity,
         strategy: entry.strategy || '',
         notes: entry.notes || '',
         outcome: entry.outcome,
@@ -350,7 +434,7 @@ function TradingJournal({ onStatsUpdate }) {
       trade_type: 'buy',
       entry_price: '',
       exit_price: '',
-      quantity: '',
+      position_size: '',
       strategy: '',
       notes: '',
       outcome: 'open',
@@ -396,7 +480,7 @@ function TradingJournal({ onStatsUpdate }) {
         let bValue = b[sortField];
         
         // Handle numeric fields
-        if (['entry_price', 'exit_price', 'quantity', 'profit_loss'].includes(sortField)) {
+        if (['entry_price', 'exit_price', 'position_size', 'profit_loss'].includes(sortField)) {
           aValue = parseFloat(aValue) || 0;
           bValue = parseFloat(bValue) || 0;
         }
@@ -448,18 +532,14 @@ function TradingJournal({ onStatsUpdate }) {
   const discussTradeWithAI = (entry) => {
     // Format the trade data as a message to the AI
     const tradeMessage = `
-I want to discuss this trade from my journal:
-
+Trade Details:
 Symbol: ${entry.symbol.toUpperCase()}
-Date: ${formatDateTime(entry.trade_date)}
-Type: ${entry.trade_type === 'buy' ? 'Buy' : 'Sell'}
+Type: ${entry.trade_type.charAt(0).toUpperCase() + entry.trade_type.slice(1)}
 Entry Price: ${formatCurrency(entry.entry_price)}
 Exit Price: ${entry.exit_price ? formatCurrency(entry.exit_price) : 'N/A'}
-Quantity: ${entry.quantity}
+Position Size: ${formatCurrency(entry.quantity)}
 P/L: ${formatCurrency(entry.profit_loss)}
 Outcome: ${entry.outcome.charAt(0).toUpperCase() + entry.outcome.slice(1)}
-Strategy: ${entry.strategy || 'None'}
-Notes: ${entry.notes || 'None'}
 
 Can you analyze this trade and provide feedback on what I did well and what I could improve? Also, are there any patterns or strategies you notice based on this trade?
 `;
@@ -533,9 +613,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
       // Keep all data for small datasets
       return data;
     }
-    
-    console.log(`Optimizing ${data.length} trades over ${daySpan} days using ${aggregationType} aggregation`);
-    
+        
     return aggregateData(data, aggregationType);
   };
 
@@ -589,7 +667,6 @@ Can you analyze this trade and provide feedback on what I did well and what I co
   // Add this useEffect to fetch notes when component mounts
   useEffect(() => {
     fetchGeneralNotes();
-    fetchCreditBalance();
   }, []);
 
   // Add function to fetch general notes
@@ -632,18 +709,6 @@ Can you analyze this trade and provide feedback on what I did well and what I co
     setGeneralNotes('');
   };
 
-  // Add function to fetch credit balance
-  const fetchCreditBalance = async () => {
-    try {
-      const response = await api.get('/api/credits/balance');
-      if (response.data.success) {
-        setCreditBalance(response.data.credits);
-      }
-    } catch (error) {
-      console.error('Error fetching credit balance:', error);
-    }
-  };
-
   return (
     <div className="journal-container">
       {/* Conditionally render header based on screen size */}
@@ -652,14 +717,6 @@ Can you analyze this trade and provide feedback on what I did well and what I co
           <h2 className="journal-title styled-header">
             Trading Journal
           </h2>
-          {creditBalance && (
-            <div className="credit-display">
-              <span className="credit-text">
-                Credits: {creditBalance.current}/{creditBalance.daily_limit}
-              </span>
-              <span className="credit-info">Resets daily</span>
-            </div>
-          )}
         </div>
         <div className="header-buttons">
           <button 
@@ -811,13 +868,15 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   </select>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="quantity">Quantity</label>
+                  <label htmlFor="position_size">Position Size ({currencySymbol})</label>
                   <input
                     type="number"
-                    id="quantity"
-                    name="quantity"
-                    value={journalFormData.quantity}
+                    step="0.01"
+                    id="position_size"
+                    name="position_size"
+                    value={journalFormData.position_size}
                     onChange={handleJournalFormChange}
+                    placeholder="e.g. 1000.00"
                     required
                   />
                 </div>
@@ -880,7 +939,9 @@ Can you analyze this trade and provide feedback on what I did well and what I co
               </div>
 
               <div className="form-group">
-                <label htmlFor="profit_loss">Profit/Loss</label>
+                <label htmlFor="profit_loss">
+                  Profit/Loss ({currencySymbol})
+                </label>
                 <input
                   type="number"
                   step="0.01"
@@ -888,6 +949,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   name="profit_loss"
                   value={journalFormData.profit_loss}
                   onChange={handleJournalFormChange}
+                  placeholder="Auto-calculated or enter manually"
                 />
               </div>
 
@@ -968,7 +1030,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
               <th>Type</th>
               <th>Entry</th>
               <th>Exit</th>
-              <th>Qty</th>
+              <th>Size</th>
               <th>Strategy/Notes</th>
               <th>Outcome</th>
               <th>P/L</th>
@@ -985,7 +1047,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                 </td>
                 <td>{formatCurrency(entry.entry_price)}</td>
                 <td>{entry.exit_price ? formatCurrency(entry.exit_price) : '-'}</td>
-                <td>{entry.quantity}</td>
+                <td>{formatCurrency(entry.quantity)}</td>
                 <td className="strategy-notes-cell">
                   <div className="tooltip-container">
                     <FaInfoCircle 
@@ -1120,7 +1182,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
             
             <div className="modal-actions">
               <button 
-                className="cancel-button"
+                className="clear-button"
                 onClick={clearGeneralNotes}
                 disabled={notesLoading || !generalNotes.trim()}
               >

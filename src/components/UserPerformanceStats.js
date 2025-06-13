@@ -56,7 +56,7 @@ const UserPerformanceStats = ({ profileData }) => {
           <h2>Dashboard</h2>
           <p className="dashboard-description">
             Welcome to your personal trading hub! Here you can track your learning progress, log and analyze your trades, 
-            chat with your AI tutor for personalized guidance, and monitor your overall performance.
+            chat with your AI tutor for personalized guidance, get expert chart analysis, and monitor your overall performance.
           </p>
           <div className="dashboard-features">
             <div className="feature">
@@ -68,12 +68,16 @@ const UserPerformanceStats = ({ profileData }) => {
               <span>AI Guidance</span>
             </div>
             <div className="feature">
+              <FaChartLine className="feature-icon" />
+              <span>Chart Analysis</span>
+            </div>
+            <div className="feature">
               <FaBook className="feature-icon" />
               <span>Learning Progress</span>
             </div>
             <div className="feature">
               <FaChartLine className="feature-icon" />
-              <span>Performance Analysis</span>
+              <span>Performance Stats</span>
             </div>
           </div>
         </div>

@@ -1,0 +1,85 @@
+.header-credit-display {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.credit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(75, 147, 123, 0.1);
+  border: 1px solid rgba(75, 147, 123, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-width: 60px;
+}
+
+.credit-count {
+  color: #4b937b;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.credit-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .header-credit-display {
+    margin-right: 10px;
+  }
+  
+  .credit-container {
+    padding: 4px 8px;
+    min-width: 50px;
+  }
+  
+  .credit-count {
+    font-size: 12px;
+  }
+  
+  .credit-label {
+    font-size: 9px;
+  }
+}
+
+/* Hamburger credit section styling */
+.hamburger-credit-section {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: stretch;
+  margin-bottom: 5px;
+}
+
+.hamburger-credit-section .header-credit-display {
+  margin-right: 0; /* Remove right margin in hamburger menu */
+  width: 100%; /* Make it take full width */
+}
+
+.hamburger-credit-section .credit-container {
+  background: rgba(75, 147, 123, 0.15);
+  border: 1px solid rgba(75, 147, 123, 0.4);
+  padding: 8px 12px;
+  width: 100%; /* Make it take full width */
+  min-width: unset; /* Remove min-width constraint */
+  flex-direction: row; /* Change to row layout for full width */
+  justify-content: space-between; /* Space out the content */
+}
+
+.hamburger-credit-section .credit-count {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hamburger-credit-section .credit-label {
+  font-size: 11px;
+  margin-top: 0; /* Remove top margin since we're in row layout */
+  margin-left: 8px; /* Add left margin for spacing */
+}
