@@ -14,7 +14,6 @@ const Pricing = () => {
 
     const handleSubscribe = (plan) => {
         // This will be connected to Stripe later
-        console.log(`Selected plan: ${plan}`);
         // For now, just redirect to login if not authenticated
         if (!isAuthenticated) {
             navigate('/login');

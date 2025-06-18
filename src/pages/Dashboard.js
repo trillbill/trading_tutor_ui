@@ -11,6 +11,7 @@ function Dashboard() {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [journalStats, setJournalStats] = useState({
     total: 0,
     profitable: 0,
@@ -30,9 +31,6 @@ function Dashboard() {
   });
   const [showTip, setShowTip] = useState(true);
 
-  // Use a ref to track if the effect has run
-  const effectRan = useRef(false);
-
   // Memoize the onStatsUpdate callback to prevent it from changing on every render
   const handleStatsUpdate = useCallback((stats) => {
     setJournalStats(stats);
@@ -40,11 +38,7 @@ function Dashboard() {
 
   // Fetch user profile data on component mount
   useEffect(() => {
-    // In development, React will run effects twice in strict mode
-    // This check prevents the second run in development
-    if (effectRan.current === true) {
-      return;
-    }
+    if (hasInitialized) return;
     
     const fetchProfileData = async () => {
       setIsLoading(true);
@@ -67,18 +61,14 @@ function Dashboard() {
         });
       } finally {
         setIsLoading(false);
+        setHasInitialized(true);
       }
     };
 
     // Fetch profile data and set a random tip
     fetchProfileData();
     getRandomTip();
-    
-    // Cleanup function that runs when component unmounts
-    return () => {
-      effectRan.current = true;
-    };
-  }, []); // Empty dependency array means this runs once on mount
+  }, [hasInitialized]); // Only depend on hasInitialized
 
   // Get a random tip from the local tips array
   const getRandomTip = () => {

@@ -871,7 +871,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   <label htmlFor="position_size">Position Size ({currencySymbol})</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="any"
                     id="position_size"
                     name="position_size"
                     value={journalFormData.position_size}
@@ -887,7 +887,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   <label htmlFor="entry_price">Entry Price</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="any"
                     id="entry_price"
                     name="entry_price"
                     value={journalFormData.entry_price}
@@ -899,7 +899,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   <label htmlFor="exit_price">Exit Price</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="any"
                     id="exit_price"
                     name="exit_price"
                     value={journalFormData.exit_price}
@@ -944,7 +944,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                 </label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="any"
                   id="profit_loss"
                   name="profit_loss"
                   value={journalFormData.profit_loss}

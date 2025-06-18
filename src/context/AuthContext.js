@@ -10,6 +10,60 @@ export const AuthProvider = ({ children }) => {
   
   // Use a ref to track if the effect has run
   const effectRan = useRef(false);
+  const tokenCheckInterval = useRef(null);
+
+  // Check token status and refresh if needed
+  const checkTokenStatus = async () => {
+    try {
+      const response = await api.get('/api/auth/token-status');
+      const { valid, expired, shouldRefresh } = response.data;
+      
+      if (expired) {
+        // Token is expired, log user out
+        setUser(null);
+        return false;
+      }
+      
+      if (valid && shouldRefresh) {
+        // Token is valid but should be refreshed
+        try {
+          await api.post('/api/auth/refresh-token');
+        } catch (refreshError) {
+          console.error('Proactive token refresh failed:', refreshError);
+          // Don't log out here, let the token expire naturally
+        }
+      }
+      
+      return valid;
+    } catch (error) {
+      console.error('Token status check failed:', error);
+      // If the token status check fails, assume token is invalid but don't loop
+      return false;
+    }
+  };
+
+  // Set up periodic token checking
+  const startTokenMonitoring = () => {
+    // Clear existing interval
+    if (tokenCheckInterval.current) {
+      clearInterval(tokenCheckInterval.current);
+    }
+    
+    // Check token status every 2 hours (much less frequent to prevent loops)
+    tokenCheckInterval.current = setInterval(() => {
+      if (user) {
+        checkTokenStatus();
+      }
+    }, 2 * 60 * 60 * 1000); // 2 hours
+  };
+
+  // Stop token monitoring
+  const stopTokenMonitoring = () => {
+    if (tokenCheckInterval.current) {
+      clearInterval(tokenCheckInterval.current);
+      tokenCheckInterval.current = null;
+    }
+  };
 
   // Check if user is logged in on initial load
   useEffect(() => {
@@ -24,6 +78,7 @@ export const AuthProvider = ({ children }) => {
         const response = await api.get('/api/auth/me');
         if (response.data.success) {
           setUser(response.data.user);
+          startTokenMonitoring();
         } else {
           setUser(null);
         }
@@ -44,6 +99,42 @@ export const AuthProvider = ({ children }) => {
       effectRan.current = true;
     };
   }, []); // Empty dependency array means this runs once on mount
+
+  // Set up event listeners for auth events
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setUser(null);
+      stopTokenMonitoring();
+    };
+
+    const handleTokenRefreshed = () => {
+      // Optionally refresh user data here if needed
+    };
+
+    const handleAuthError = (event) => {
+      console.log('Authentication error:', event.detail?.error);
+      // Handle other auth errors as needed
+    };
+
+    // Add event listeners
+    window.addEventListener('authExpired', handleAuthExpired);
+    window.addEventListener('tokenRefreshed', handleTokenRefreshed);
+    window.addEventListener('authError', handleAuthError);
+
+    // Cleanup event listeners
+    return () => {
+      window.removeEventListener('authExpired', handleAuthExpired);
+      window.removeEventListener('tokenRefreshed', handleTokenRefreshed);
+      window.removeEventListener('authError', handleAuthError);
+    };
+  }, []);
+
+  // Cleanup token monitoring on unmount
+  useEffect(() => {
+    return () => {
+      stopTokenMonitoring();
+    };
+  }, []);
 
   // Check if user is authenticated
   const isAuthenticated = !!user;
@@ -73,6 +164,7 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.success) {
         setUser(response.data.user);
+        startTokenMonitoring(); // Start monitoring tokens after successful login
         return { success: true };
       } else if (response.data.needsVerification) {
         return { success: false, needsVerification: true };
@@ -93,8 +185,12 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post('/api/auth/logout');
       setUser(null);
+      stopTokenMonitoring(); // Stop monitoring tokens after logout
     } catch (error) {
       console.error('Logout error:', error);
+      // Even if logout API fails, clear user state
+      setUser(null);
+      stopTokenMonitoring();
     }
   };
 
@@ -128,22 +224,42 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Manual token refresh function
+  const refreshToken = async () => {
+    try {
+      await api.post('/api/auth/refresh-token');
+      return true;
+    } catch (error) {
+      console.error('Manual token refresh failed:', error);
+      return false;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    initialized,
+    isAuthenticated,
+    isEmailVerified,
+    login,
+    logout,
+    register,
+    checkEmailVerification,
+    refreshToken,
+    checkTokenStatus
+  };
+
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      initialized,
-      isAuthenticated,
-      isEmailVerified,
-      checkEmailVerification,
-      login, 
-      logout, 
-      register 
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook for using auth context
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FaRobot, FaChevronLeft, FaChevronRight, FaArrowRight, FaMinus, FaPlus, FaTimes, FaImage } from 'react-icons/fa';
 import AIChatModal from './AIChatModal';
 import './AIChatWidget.css';
+import heic2any from 'heic2any';
 
 const AIChatWidget = ({ chatPrompts }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -87,19 +88,57 @@ const AIChatWidget = ({ chatPrompts }) => {
     }, 5000); // Resume after 5 seconds of inactivity
   };
   
-  // Handle file upload
-  const handleFileUpload = (event) => {
+  // Handle file upload with HEIC support
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setUploadedImage({
-        data: e.target.result,
-        name: file.name
-      });
-    };
-    reader.readAsDataURL(file);
+    try {
+      let fileToProcess = file;
+      
+      // Check if it's a HEIC file (by extension or MIME type)
+      const isHEIC = file.type === 'image/heic' || 
+                     file.type === 'image/heif' ||
+                     file.name.toLowerCase().endsWith('.heic') ||
+                     file.name.toLowerCase().endsWith('.heif');
+      
+      if (isHEIC) {
+        
+        try {
+          // Convert HEIC to JPEG
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8
+          });
+          
+          // Create a new file from the converted blob
+          const convertedFileName = file.name.replace(/\.(heic|heif)$/i, '.jpg');
+          fileToProcess = new File([convertedBlob], convertedFileName, {
+            type: 'image/jpeg'
+          });
+          
+        } catch (conversionError) {
+          console.error('HEIC conversion failed:', conversionError);
+          alert("Sorry, I couldn't process this HEIC image. Please try converting it to JPEG first, or change your iPhone camera settings to 'Most Compatible' mode in Settings → Camera → Formats.");
+          return;
+        }
+      }
+      
+      // Process the file (original or converted)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage({
+          data: e.target.result,
+          name: fileToProcess.name
+        });
+      };
+      reader.readAsDataURL(fileToProcess);
+      
+    } catch (error) {
+      console.error('Error processing file:', error);
+      alert("Sorry, I encountered an error processing this image. Please try a different image or format.");
+    }
   };
 
   // Handle removing uploaded image
@@ -232,7 +271,7 @@ const AIChatWidget = ({ chatPrompts }) => {
                   <div className="chat-input-buttons">
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.heic,.heif"
                       onChange={handleFileUpload}
                       ref={fileInputRef}
                       style={{ display: 'none' }}
@@ -259,6 +298,7 @@ const AIChatWidget = ({ chatPrompts }) => {
               <div className="chat-helper-text">
                 <p>💡 Upload an image of a chart or ask any trading question. For chart analysis:</p>
                 <ul>
+                  <li>iPhone screenshots (HEIC format) are automatically converted</li>
                   <li>Include only relevant price data and indicators</li>
                   <li>Avoid charts with hover-state price labels or drawn numbers</li>
                   <li>Clear, uncluttered charts work best</li>

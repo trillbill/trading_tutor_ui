@@ -16,11 +16,12 @@ export const TradingProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { isAuthenticated, user } = useAuth();
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Fetch trading profile
   const fetchProfile = async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || loading) return;
     
     try {
       setLoading(true);
@@ -132,12 +133,14 @@ export const TradingProfileProvider = ({ children }) => {
 
   // Fetch profile when user is authenticated
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && !hasInitialized && !loading) {
+      setHasInitialized(true);
       fetchProfile();
-    } else {
+    } else if (!isAuthenticated) {
       setProfile(null);
+      setHasInitialized(false);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, hasInitialized, loading]);
 
   const value = {
     profile,

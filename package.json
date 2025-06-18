@@ -12,6 +12,7 @@
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "font-awesome": "^4.7.0",
+    "heic2any": "^0.0.4",
     "lightweight-charts": "^4.2.3",
     "react": "^19.0.0",
     "react-confetti": "^6.4.0",
