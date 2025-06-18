@@ -5,6 +5,7 @@ import rehypeSanitize from 'rehype-sanitize';
 import api from '../api/api';
 import './AIChatModal.css';
 import { useCredit } from '../context/CreditContext';
+import heic2any from 'heic2any';
 
 const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initialMessage, initialImage }) => {
   const [messages, setMessages] = useState([]);
@@ -66,8 +67,8 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
     }
   }, [messages]);
 
-  // Handle file upload
-  const handleFileUpload = (event) => {
+  // Handle file upload with HEIC support
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -78,15 +79,72 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
     const newImageId = Date.now().toString();
     setCurrentImageId(newImageId);
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setUploadedImage({
-        id: newImageId,
-        data: e.target.result,
-        name: file.name
-      });
-    };
-    reader.readAsDataURL(file);
+    try {
+      let fileToProcess = file;
+      
+      // Check if it's a HEIC file (by extension or MIME type)
+      const isHEIC = file.type === 'image/heic' || 
+                     file.type === 'image/heif' ||
+                     file.name.toLowerCase().endsWith('.heic') ||
+                     file.name.toLowerCase().endsWith('.heif');
+      
+      if (isHEIC) {
+        
+        // Show a loading state or message
+        setLoading(true);
+        
+        try {
+          // Convert HEIC to JPEG
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8
+          });
+          
+          // Create a new file from the converted blob
+          const convertedFileName = file.name.replace(/\.(heic|heif)$/i, '.jpg');
+          fileToProcess = new File([convertedBlob], convertedFileName, {
+            type: 'image/jpeg'
+          });
+          
+        } catch (conversionError) {
+          console.error('HEIC conversion failed:', conversionError);
+          
+          // Add error message to chat
+          const errorMessage = {
+            text: "Sorry, I couldn't process this HEIC image. Please try converting it to JPEG first, or change your iPhone camera settings to 'Most Compatible' mode in Settings → Camera → Formats.",
+            sender: 'ai',
+          };
+          setMessages((prevMessages) => [...prevMessages, errorMessage]);
+          setLoading(false);
+          return;
+        } finally {
+          setLoading(false);
+        }
+      }
+      
+      // Process the file (original or converted)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage({
+          id: newImageId,
+          data: e.target.result,
+          name: fileToProcess.name
+        });
+      };
+      reader.readAsDataURL(fileToProcess);
+      
+    } catch (error) {
+      console.error('Error processing file:', error);
+      
+      // Add error message to chat
+      const errorMessage = {
+        text: "Sorry, I encountered an error processing this image. Please try a different image or format.",
+        sender: 'ai',
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      setLoading(false);
+    }
   };
 
   // Handle removing uploaded image

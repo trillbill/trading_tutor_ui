@@ -227,7 +227,6 @@ const QuizModal = ({
         try {
             const userId = localStorage.getItem('userId');
             if (!userId) {
-                console.log('User not logged in, skipping result save');
                 setSavingResults(false);
                 return;
             }

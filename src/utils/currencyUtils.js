@@ -29,23 +29,50 @@ export const formatCurrency = (value, currencyCode = 'USD', options = {}) => {
   const currency = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.USD;
   const symbol = currency.symbol;
   
-  // Default formatting options
+  // Convert to number if it's a string
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  const absValue = Math.abs(numValue);
+  
+  // Determine appropriate decimal places based on value size
+  let decimalPlaces = 2; // default for normal amounts
+  
+  if (absValue > 0) {
+    if (absValue < 0.01) {
+      // For very small amounts (< $0.01), use up to 8 decimal places
+      // but remove trailing zeros
+      decimalPlaces = 8;
+    } else if (absValue < 1) {
+      // For amounts between $0.01 and $1, use up to 6 decimal places
+      decimalPlaces = 6;
+    } else if (absValue < 100) {
+      // For amounts between $1 and $100, use up to 4 decimal places
+      decimalPlaces = 4;
+    }
+    // For amounts >= $100, stick with 2 decimal places
+  }
+  
+  // Default formatting options with intelligent decimal places
   const defaultOptions = {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: absValue >= 1 ? 2 : 0, // Only force 2 decimals for amounts >= $1
+    maximumFractionDigits: decimalPlaces,
     ...options
   };
   
   // Format the number
-  const formattedNumber = new Intl.NumberFormat('en-US', defaultOptions).format(Math.abs(value));
+  let formattedNumber = new Intl.NumberFormat('en-US', defaultOptions).format(absValue);
+  
+  // For very small numbers, remove trailing zeros after the decimal point
+  if (absValue < 1 && formattedNumber.includes('.')) {
+    formattedNumber = formattedNumber.replace(/\.?0+$/, '');
+  }
   
   // Handle negative values
-  const isNegative = value < 0;
+  const isNegative = numValue < 0;
   const prefix = isNegative ? '-' : '';
   
   // For currencies like JPY that typically don't use decimals
   if (currencyCode === 'JPY' || currencyCode === 'CNY') {
-    const wholeNumber = Math.round(Math.abs(value));
+    const wholeNumber = Math.round(absValue);
     return `${prefix}${symbol}${new Intl.NumberFormat('en-US').format(wholeNumber)}`;
   }
   

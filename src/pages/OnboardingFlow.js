@@ -70,7 +70,6 @@ const OnboardingFlow = () => {
         // If user has completed onboarding, they're updating their profile
         // Load their existing data instead of redirecting them away
         if (response.data.onboarding_completed) {
-          console.log('User is updating their trading profile');
           setIsProfileUpdate(true);
           await loadExistingProfile();
         }
@@ -236,6 +235,7 @@ const OnboardingFlow = () => {
             { value: 'advanced', label: 'Advanced (3+ years)' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="trading_experience"
@@ -243,7 +243,6 @@ const OnboardingFlow = () => {
                 checked={basicInfo.trading_experience === option.value}
                 onChange={(e) => setBasicInfo(prev => ({ ...prev, trading_experience: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -260,6 +259,7 @@ const OnboardingFlow = () => {
             { value: '100k+', label: '$100,000+' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="account_size_range"
@@ -267,7 +267,6 @@ const OnboardingFlow = () => {
                 checked={basicInfo.account_size_range === option.value}
                 onChange={(e) => setBasicInfo(prev => ({ ...prev, account_size_range: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -284,12 +283,12 @@ const OnboardingFlow = () => {
             { value: 'options', label: 'Options' }
           ].map(option => (
             <label key={option.value} className="checkbox-option">
+              <span className="checkbox-option-text">{option.label}</span>
               <input
                 type="checkbox"
                 checked={basicInfo.markets_interested.includes(option.value)}
                 onChange={() => handleArrayToggle('markets_interested', option.value, setBasicInfo)}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -305,6 +304,7 @@ const OnboardingFlow = () => {
             { value: 'aggressive_growth', label: 'Aggressive growth and wealth building' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="primary_goal"
@@ -312,7 +312,6 @@ const OnboardingFlow = () => {
                 checked={basicInfo.primary_goal === option.value}
                 onChange={(e) => setBasicInfo(prev => ({ ...prev, primary_goal: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -323,6 +322,7 @@ const OnboardingFlow = () => {
         <div className="radio-group">
           {getCurrencyOptions().map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="preferred_currency"
@@ -330,7 +330,6 @@ const OnboardingFlow = () => {
                 checked={basicInfo.preferred_currency === option.value}
                 onChange={(e) => setBasicInfo(prev => ({ ...prev, preferred_currency: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -360,6 +359,7 @@ const OnboardingFlow = () => {
             { value: 'position_trading', label: 'Position Trading (weeks to months)' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="trading_style"
@@ -367,7 +367,6 @@ const OnboardingFlow = () => {
                 checked={tradingStyle.trading_style === option.value}
                 onChange={(e) => setTradingStyle(prev => ({ ...prev, trading_style: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -386,12 +385,12 @@ const OnboardingFlow = () => {
             { value: '1w', label: '1 week' }
           ].map(option => (
             <label key={option.value} className="checkbox-option">
+              <span className="checkbox-option-text">{option.label}</span>
               <input
                 type="checkbox"
                 checked={tradingStyle.preferred_timeframes.includes(option.value)}
                 onChange={() => handleArrayToggle('preferred_timeframes', option.value, setTradingStyle)}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -408,6 +407,7 @@ const OnboardingFlow = () => {
             { value: 'monthly', label: 'Once per month or less' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="trading_frequency"
@@ -415,7 +415,6 @@ const OnboardingFlow = () => {
                 checked={tradingStyle.trading_frequency === option.value}
                 onChange={(e) => setTradingStyle(prev => ({ ...prev, trading_frequency: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -431,6 +430,7 @@ const OnboardingFlow = () => {
             { value: 'sentiment', label: 'Market Sentiment' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="analysis_approach"
@@ -438,7 +438,6 @@ const OnboardingFlow = () => {
                 checked={tradingStyle.analysis_approach === option.value}
                 onChange={(e) => setTradingStyle(prev => ({ ...prev, analysis_approach: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -454,6 +453,7 @@ const OnboardingFlow = () => {
             { value: 'mentorship', label: 'Mentorship and guidance' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="learning_preference"
@@ -461,7 +461,6 @@ const OnboardingFlow = () => {
                 checked={tradingStyle.learning_preference === option.value}
                 onChange={(e) => setTradingStyle(prev => ({ ...prev, learning_preference: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>
@@ -566,6 +565,7 @@ const OnboardingFlow = () => {
             { value: 'buy_more', label: 'Buy more (average down)' }
           ].map(option => (
             <label key={option.value} className="radio-option">
+              <span className="radio-option-text">{option.label}</span>
               <input
                 type="radio"
                 name="previous_losses_reaction"
@@ -573,7 +573,6 @@ const OnboardingFlow = () => {
                 checked={riskManagement.previous_losses_reaction === option.value}
                 onChange={(e) => setRiskManagement(prev => ({ ...prev, previous_losses_reaction: e.target.value }))}
               />
-              {option.label}
             </label>
           ))}
         </div>

@@ -8,7 +8,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import VerifyEmail from './pages/VerifyEmail';
 import VerificationRequired from './pages/VerificationRequired';
-import { AuthContext, AuthProvider } from './context/AuthContext';
+import { AuthContext, AuthProvider, useAuth } from './context/AuthContext';
 import NotFound from './pages/NotFound';
 import ResetPassword from './pages/ResetPassword';
 import Home from './pages/Home';
@@ -97,120 +97,134 @@ function AppRoutes() {
   );
 }
 
-const App = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isAuthenticated } = useContext(AuthContext);
+function AppContent() {
+  const { loading, initialized, isAuthenticated } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
+  // Show loading while initializing
+  if (loading || !initialized) {
     return (
-        <div className="app-layout">
-            <header className="App-header">
-                <div className="header-column logo-column">
-                    <nav>
-                        <Link to={isAuthenticated ? "/dashboard" : "/"}>                 
-                            <LogoHeader />
-                        </Link>
-                    </nav>
-                </div>
-                <div className="header-column nav-column">
-                    <nav className="nav-options">
-                        {isAuthenticated ? (
-                            <>
-                                <Link to="/dashboard" className="nav-item">Dashboard</Link>
-                                <Link to="/learn" className="nav-item">Learn</Link>
-                                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/" className="nav-item">Home</Link>
-                                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
-                            </>
-                        )}
-                    </nav>
-                </div>
-                <div className="header-column login-column">
-                    {isAuthenticated ? (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <CreditDisplay />
-                            <Link to="/account">
-                                <img src={accountIcon} className="account-icon" alt="Account" />
-                            </Link>
-                        </div>
-                    ) : (
-                        <Link to="/login" className="nav-item">Login</Link>
-                    )}
-                </div>
-                <button className="hamburger-button" onClick={toggleMenu}>
-                    &#9776;
-                </button>
-            </header>
-            {isMenuOpen && (
-                <div className="hamburger-menu">
-                    <nav className="nav-options">
-                        {isAuthenticated ? (
-                            <>
-                                <div className="hamburger-credit-section">
-                                    <CreditDisplay />
-                                </div>
-                                <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard
-                                </Link>
-                                <Link to="/learn" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn
-                                </Link>
-                                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
-                                </Link> */}
-                                <Link to="/account" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={accountIcon} className="hamburger-icon" alt="Account" />Account
-                                </Link>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={homeIcon} className="hamburger-icon" alt="Home" />Home
-                                </Link>
-                                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
-                                </Link> */}
-                                <Link to="/login" className="hamburger-item" onClick={toggleMenu}>
-                                    <img src={accountIcon} className="hamburger-icon" alt="Login" />Login
-                                </Link>
-                            </>
-                        )}
-                    </nav>
-                </div>
-            )}
-            <div className="content" onClick={() => setIsMenuOpen(false)}>
-                <AppRoutes />
-            </div>
-            
-            <Footer />
-            <CookieConsent />
-            
-            {/* Use the conditional widget component instead of the direct component */}
-            <ConditionalAIChatWidget chatPrompts={chatPrompts} />
-        </div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
     );
-};
+  }
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  return (
+    <div className="app-layout">
+      <header className="App-header">
+        <div className="header-column logo-column">
+          <nav>
+            <Link to={isAuthenticated ? "/dashboard" : "/"}>                 
+              <LogoHeader />
+            </Link>
+          </nav>
+        </div>
+        <div className="header-column nav-column">
+          <nav className="nav-options">
+            {isAuthenticated ? (
+              <>
+                <Link to="/dashboard" className="nav-item">Dashboard</Link>
+                <Link to="/learn" className="nav-item">Learn</Link>
+                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
+              </>
+            ) : (
+              <>
+                <Link to="/" className="nav-item">Home</Link>
+                {/* <Link to="/pricing" className="nav-item">Pricing</Link> */}
+              </>
+            )}
+          </nav>
+        </div>
+        <div className="header-column login-column">
+          {isAuthenticated ? (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <CreditDisplay />
+              <Link to="/account">
+                <img src={accountIcon} className="account-icon" alt="Account" />
+              </Link>
+            </div>
+          ) : (
+            <Link to="/login" className="nav-item">Login</Link>
+          )}
+        </div>
+        <button className="hamburger-button" onClick={toggleMenu}>
+          &#9776;
+        </button>
+      </header>
+      {isMenuOpen && (
+        <div className="hamburger-menu">
+          <nav className="nav-options">
+            {isAuthenticated ? (
+              <>
+                <div className="hamburger-credit-section">
+                  <CreditDisplay />
+                </div>
+                <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard
+                </Link>
+                <Link to="/learn" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={learnIcon} className="hamburger-icon" alt="Learn" />Learn
+                </Link>
+                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
+                </Link> */}
+                <Link to="/account" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={accountIcon} className="hamburger-icon" alt="Account" />Account
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={homeIcon} className="hamburger-icon" alt="Home" />Home
+                </Link>
+                {/* <Link to="/pricing" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={pricingIcon} className="hamburger-icon" alt="Pricing" />Pricing
+                </Link> */}
+                <Link to="/login" className="hamburger-item" onClick={toggleMenu}>
+                  <img src={accountIcon} className="hamburger-icon" alt="Login" />Login
+                </Link>
+              </>
+            )}
+          </nav>
+        </div>
+      )}
+      <div className="content" onClick={() => setIsMenuOpen(false)}>
+        <AppRoutes />
+      </div>
+      
+      <Footer />
+      <CookieConsent />
+      
+      {/* Use the conditional widget component instead of the direct component */}
+      <ConditionalAIChatWidget chatPrompts={chatPrompts} />
+    </div>
+  );
+}
+
+function App() {
+  return <AppContent />;
+}
 
 const AppWithAuth = () => (
-    <BrowserRouter>
-        <AuthProvider>
-            <AIChatProvider>
-                <CreditProvider>
-                    <TradingProfileProvider>
-                        <CurrencyProvider>
-                            <App />
-                        </CurrencyProvider>
-                    </TradingProfileProvider>
-                </CreditProvider>
-            </AIChatProvider>
-        </AuthProvider>
-    </BrowserRouter>
+  <BrowserRouter>
+    <AuthProvider>
+      <AIChatProvider>
+        <CreditProvider>
+          <TradingProfileProvider>
+            <CurrencyProvider>
+              <App />
+            </CurrencyProvider>
+          </TradingProfileProvider>
+        </CreditProvider>
+      </AIChatProvider>
+    </AuthProvider>
+  </BrowserRouter>
 );
 
 export default AppWithAuth;
