@@ -1,0 +1,40 @@
+.subscript-price {
+  display: inline-flex;
+  align-items: baseline;
+  position: relative;
+}
+
+.price-prefix {
+  /* The main price text like "$0.0" */
+}
+
+.price-subscript {
+  font-size: 0.7em;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1;
+  align-self: flex-end;
+  margin-bottom: 0.1em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+}
+
+.price-digits {
+  /* The significant digits after the subscript */
+  font-weight: 500;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .price-subscript {
+    color: #fff;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .price-subscript {
+    font-size: 0.7em;
+    margin-bottom: 0.05em;
+  }
+} 
