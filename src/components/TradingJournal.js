@@ -11,6 +11,8 @@ import { useAuth } from '../context/AuthContext';
 import { useAIChat } from '../context/AIChatContext';
 import { useCredit } from '../context/CreditContext';
 import { useCurrency } from '../context/CurrencyContext';
+import SubscriptPrice from './SubscriptPrice';
+import { formatCurrencyForInput } from '../utils/currencyUtils';
 
 function TradingJournal({ onStatsUpdate }) {
   const [journalEntries, setJournalEntries] = useState([]);
@@ -90,6 +92,7 @@ function TradingJournal({ onStatsUpdate }) {
 
   // Add this near the top of the component with other state variables
   const [isMobile, setIsMobile] = useState(false);
+  const [isManualPnL, setIsManualPnL] = useState(false);
 
   // Add this useEffect to detect mobile devices
   useEffect(() => {
@@ -109,7 +112,7 @@ function TradingJournal({ onStatsUpdate }) {
 
   // Add this after other hooks (around line 85):
   const { creditBalance, refreshCredits } = useCredit();
-  const { formatCurrency: formatCurrencyFromContext, currencySymbol } = useCurrency();
+  const { formatCurrency: formatCurrencyFromContext, currencySymbol, currencyCode } = useCurrency();
 
   // Create a memoized function to calculate stats
   const calculateStats = useCallback(() => {
@@ -170,6 +173,12 @@ function TradingJournal({ onStatsUpdate }) {
   const formatCurrency = (value) => {
     if (!value) return '-';
     return formatCurrencyFromContext(value);
+  };
+
+  // Format currency for modal inputs (full precision, no subscript)
+  const formatCurrencyForModal = (value) => {
+    if (!value) return '-';
+    return formatCurrencyForInput(value, currencyCode);
   };
   
   // Add a function to format dates nicely
@@ -303,8 +312,14 @@ function TradingJournal({ onStatsUpdate }) {
       [name]: value
     };
 
+    // If user manually edits P/L field, mark it as manual
+    if (name === 'profit_loss') {
+      setIsManualPnL(true);
+    }
+
     // Auto-calculate PnL when position_size, entry_price, exit_price, or trade_type changes
-    if (['position_size', 'entry_price', 'exit_price', 'trade_type'].includes(name)) {
+    // but only if user hasn't manually overridden it
+    if (['position_size', 'entry_price', 'exit_price', 'trade_type'].includes(name) && !isManualPnL) {
       const calculatedPnL = calculatePnL(
         updatedFormData.position_size,
         updatedFormData.entry_price,
@@ -312,15 +327,8 @@ function TradingJournal({ onStatsUpdate }) {
         updatedFormData.trade_type
       );
       
-      // Only update PnL if it was calculated and the field is currently empty or auto-calculated
-      if (calculatedPnL !== '' && 
-          (journalFormData.profit_loss === '' || 
-           journalFormData.profit_loss === calculatePnL(
-             journalFormData.position_size,
-             journalFormData.entry_price,
-             journalFormData.exit_price,
-             journalFormData.trade_type
-           ))) {
+      // Always update PnL when it can be calculated
+      if (calculatedPnL !== '') {
         updatedFormData.profit_loss = calculatedPnL;
       }
     }
@@ -409,6 +417,7 @@ function TradingJournal({ onStatsUpdate }) {
 
   const openJournalModal = (entry = null) => {
     setModalError(''); // Clear any previous modal errors
+    setIsManualPnL(false); // Reset manual P/L flag
     if (entry) {
       setJournalFormData({
         trade_date: entry.trade_date.split('T')[0],
@@ -441,6 +450,7 @@ function TradingJournal({ onStatsUpdate }) {
       profit_loss: ''
     });
     setEditingEntryId(null);
+    setIsManualPnL(false); // Reset manual P/L flag
   };
 
   const closeJournalModal = () => {
@@ -994,11 +1004,11 @@ Can you analyze this trade and provide feedback on what I did well and what I co
             value={filterOutcome}
             onChange={(e) => setFilterOutcome(e.target.value)}
           >
-            <option value="all">All Trades</option>
-            <option value="open">Open Trades</option>
-            <option value="win">Winning Trades</option>
-            <option value="loss">Losing Trades</option>
-            <option value="breakeven">Breakeven Trades</option>
+            <option value="all">Filter: All Trades</option>
+            <option value="open">Filter: Open Trades</option>
+            <option value="win">Filter: Winning Trades</option>
+            <option value="loss">Filter: Losing Trades</option>
+            <option value="breakeven">Filter: Breakeven Trades</option>
           </select>
         </div>
         
@@ -1045,9 +1055,9 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                 <td className={entry.trade_type === 'buy' ? 'buy-type' : 'sell-type'}>
                   {entry.trade_type === 'buy' ? 'Buy' : 'Sell'}
                 </td>
-                <td>{formatCurrency(entry.entry_price)}</td>
-                <td>{entry.exit_price ? formatCurrency(entry.exit_price) : '-'}</td>
-                <td>{formatCurrency(entry.quantity)}</td>
+                <td><SubscriptPrice value={entry.entry_price} /></td>
+                <td>{entry.exit_price ? <SubscriptPrice value={entry.exit_price} /> : '-'}</td>
+                <td><SubscriptPrice value={entry.quantity} /></td>
                 <td className="strategy-notes-cell">
                   <div className="tooltip-container">
                     <FaInfoCircle 
@@ -1074,7 +1084,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   </span>
                 </td>
                 <td className={parseFloat(entry.profit_loss) >= 0 ? 'positive' : 'negative'}>
-                  {formatCurrency(entry.profit_loss)}
+                  <SubscriptPrice value={entry.profit_loss} />
                 </td>
                 <td>
                   <div className="action-buttons">
