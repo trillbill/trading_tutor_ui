@@ -140,7 +140,10 @@ function TradingJournal({ onStatsUpdate }) {
       const response = await api.get('/api/journal', {
         params: {
           page,
-          limit: pagination.limit
+          limit: pagination.limit,
+          outcome: filterOutcome,
+          sortField: sortField,
+          sortDirection: sortDirection
         }
       });
       
@@ -167,7 +170,7 @@ function TradingJournal({ onStatsUpdate }) {
         journalEntriesEffectRan.current = true;
       }
     };
-  }, [pagination.currentPage, pagination.limit]); // Dependencies: pagination page and limit
+  }, [pagination.currentPage, pagination.limit, filterOutcome, sortField, sortDirection]); // Dependencies: pagination, filters, and sorting
 
   // Format currency for tooltip and display
   const formatCurrency = (value) => {
@@ -481,32 +484,8 @@ function TradingJournal({ onStatsUpdate }) {
 
   // Sort entries based on current sort field and direction
   const getSortedEntries = () => {
-    if (!journalEntries.length) return [];
-    
-    return [...journalEntries]
-      .filter(entry => filterOutcome === 'all' || entry.outcome === filterOutcome)
-      .sort((a, b) => {
-        let aValue = a[sortField];
-        let bValue = b[sortField];
-        
-        // Handle numeric fields
-        if (['entry_price', 'exit_price', 'position_size', 'profit_loss'].includes(sortField)) {
-          aValue = parseFloat(aValue) || 0;
-          bValue = parseFloat(bValue) || 0;
-        }
-        
-        // Handle date fields
-        if (['trade_date', 'created_at', 'updated_at'].includes(sortField)) {
-          aValue = new Date(aValue);
-          bValue = new Date(bValue);
-        }
-        
-        if (sortDirection === 'asc') {
-          return aValue > bValue ? 1 : -1;
-        } else {
-          return aValue < bValue ? 1 : -1;
-        }
-      });
+    // Backend now handles filtering and sorting, so just return the entries as-is
+    return journalEntries;
   };
 
   // Update stats after entries are loaded
@@ -717,6 +696,22 @@ Can you analyze this trade and provide feedback on what I did well and what I co
   // Update the clearGeneralNotes function to only clear local state
   const clearGeneralNotes = () => {
     setGeneralNotes('');
+  };
+
+  // Add functions to handle filter changes and reset pagination
+  const handleFilterChange = (newFilter) => {
+    setFilterOutcome(newFilter);
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
+  };
+
+  const handleSortChange = (field) => {
+    setSortField(field);
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
+  };
+
+  const handleSortDirectionChange = () => {
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
   return (
@@ -1002,7 +997,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
           <select 
             className="filter-select"
             value={filterOutcome}
-            onChange={(e) => setFilterOutcome(e.target.value)}
+            onChange={(e) => handleFilterChange(e.target.value)}
           >
             <option value="all">Filter: All Trades</option>
             <option value="open">Filter: Open Trades</option>
@@ -1016,7 +1011,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
           <select 
             className="filter-select"
             value={sortField}
-            onChange={(e) => setSortField(e.target.value)}
+            onChange={(e) => handleSortChange(e.target.value)}
           >
             <option value="created_at">Sort by: Date</option>
             <option value="symbol">Sort by: Symbol</option>
@@ -1024,7 +1019,7 @@ Can you analyze this trade and provide feedback on what I did well and what I co
           </select>
           <button 
             className="sort-direction-button"
-            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+            onClick={handleSortDirectionChange}
           >
             {sortDirection === 'asc' ? <FaSortUp /> : <FaSortDown />}
           </button>

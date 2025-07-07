@@ -98,7 +98,7 @@ const VerificationRequired = () => {
         <div className="verification-help">
           <p>
             Can't find the email? Check your spam folder or contact support at{' '}
-            <a href="mailto:support@tradingtutor.com">support@tradingtutor.com</a>
+            <a href="mailto:support@tradingtutorai.com">support@tradingtutorai.com</a>
           </p>
         </div>
       </div>

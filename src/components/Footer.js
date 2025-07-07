@@ -43,13 +43,13 @@ const Footer = () => {
               <>
                 <li><Link to="/dashboard">Dashboard</Link></li>
                 <li><Link to="/learn">Learn</Link></li>
-                <li><Link to="/pricing">Pricing</Link></li>
+                {/* <li><Link to="/pricing">Pricing</Link></li> */}
                 <li><Link to="/account">Account</Link></li>
               </>
             ) : (
               <>
                 <li><Link to="/">Home</Link></li>
-                <li><Link to="/pricing">Pricing</Link></li>
+                {/* <li><Link to="/pricing">Pricing</Link></li> */}
                 <li><Link to="/login">Login</Link></li>
               </>
             )}
@@ -77,7 +77,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>&copy; {currentYear} Trading Tutor. All rights reserved.</p>
         <p className="footer-disclaimer">
-          Trading involves risk. Past performance is not indicative of future results.
+          Nothing on this site constitutes financial advice. Trading involves risk. Past performance is not indicative of future results.
         </p>
       </div>
     </footer>
