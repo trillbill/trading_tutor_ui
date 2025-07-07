@@ -241,6 +241,11 @@
   font-size: 15px;
   width: 100%;
   box-sizing: border-box;
+  
+  /* Ensure consistent appearance across browsers */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .form-group input:focus,
@@ -1332,5 +1337,144 @@
     margin: 10px 0;
     padding: 10px 12px;
     font-size: 13px;
+  }
+}
+
+/* Form input styling with consistent padding */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* Ensure consistent appearance across browsers */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Specific styling for date inputs to ensure consistent padding */
+.form-group input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* iOS Safari specific fixes */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Ensure the date picker icon doesn't cause overflow */
+  background-image: none;
+  
+  /* Add a subtle background for better visibility */
+  background-color: rgba(255, 255, 255, 0.05);
+  
+  /* Ensure proper text alignment */
+  text-align: left;
+}
+
+/* Mobile-specific adjustments for form inputs */
+@media (max-width: 768px) {
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    width: 100%;
+    box-sizing: border-box;
+    
+    /* Additional mobile-specific properties */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Ensure proper spacing */
+    margin: 0;
+  }
+  
+  /* Specific mobile adjustments for date input */
+  .form-group input[type="date"] {
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    
+    /* iOS Safari specific fixes */
+    -webkit-appearance: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    
+    /* Ensure the input doesn't extend beyond container */
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Ensure modal form has proper padding on mobile */
+  .modal-container .journal-form {
+    padding: 15px 20px;
+  }
+  
+  /* Ensure form rows have proper spacing on mobile */
+  .modal-container .form-row {
+    gap: 15px;
+  }
+  
+  /* Ensure form groups have proper spacing */
+  .modal-container .form-group {
+    margin-bottom: 15px;
+  }
+}
+
+/* Additional mobile-specific modal fixes */
+@media (max-width: 768px) {
+  /* Ensure modal has proper padding on mobile */
+  .modal-overlay {
+    padding: 10px;
+  }
+  
+  .modal-container {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+    width: calc(100vw - 20px);
+  }
+  
+  .modal-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-body {
+    padding: 15px 20px;
+  }
+  
+  /* iOS Safari specific date input fixes */
+  .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+    padding: 0;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Ensure all form inputs have consistent width calculation */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    min-width: 0; /* Prevent flex items from growing beyond container */
+    flex-shrink: 1;
+  }
+  
+  /* Specific fixes for iOS Safari date input padding issues */
+  .form-group input[type="date"] {
+    text-indent: 0;
+    
+    /* Prevent the input from extending beyond its container */
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
