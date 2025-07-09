@@ -58,7 +58,7 @@ const UserPerformanceStats = ({ profileData }) => {
             Welcome to your personal trading hub! Here you can track your learning progress, log and analyze your trades, 
             chat with your AI tutor for personalized guidance, get expert chart analysis, and monitor your overall performance.
           </p>
-          <div className="dashboard-features">
+          {/* <div className="dashboard-features">
             <div className="feature">
               <FaChartBar className="feature-icon" />
               <span>Track Trades</span>
@@ -79,7 +79,7 @@ const UserPerformanceStats = ({ profileData }) => {
               <FaChartLine className="feature-icon" />
               <span>Performance Stats</span>
             </div>
-          </div>
+          </div> */}
         </div>
         
         <div className="skill-level-card" style={{ borderColor: skillLevelInfo.color }}>

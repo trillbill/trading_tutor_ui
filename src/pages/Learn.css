@@ -96,7 +96,7 @@
 }
 
 .learn-hero-content p {
-    margin: 10px 0 0; /* Space above the paragraph */
+    margin: 10px 0 10px; /* Space above the paragraph */
     font-size: 16px; /* Adjust font size for the paragraph */
 }
 
