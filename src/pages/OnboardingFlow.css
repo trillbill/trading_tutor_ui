@@ -433,8 +433,23 @@
 
 /* Loading states */
 .next-button:disabled {
-  opacity: 0.6;
+  opacity: 0.8;
   cursor: not-allowed;
+}
+
+/* Ensure loading buttons maintain their visual prominence */
+.next-button:disabled.next-button {
+  background: #4b937b;
+  opacity: 0.9;
+}
+
+/* Ensure button content is properly aligned and maintains size */
+.next-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px; /* Ensure minimum width */
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 /* Animation for step transitions */
