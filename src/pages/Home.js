@@ -65,7 +65,7 @@ const Home = () => {
                         <div className="feature-icon-container">
                             <FaTachometerAlt className="feature-card-icon" />
                         </div>
-                        <h3>Performance Dashboard</h3>
+                        <h3>Dashboard</h3>
                         <p>Get real-time insights into your trading performance, win rates, and progress towards your skill level goals.</p>
                     </div>
                     <div className="feature-card">
@@ -102,11 +102,6 @@ const Home = () => {
                         <h3>AI Assistant</h3>
                         <p>Get instant answers to your questions and personalized explanations from our AI tutor while you learn.</p>
                     </div>
-                    <div className="path-step">
-                        <div className="step-icon"><FaChartLine /></div>
-                        <h3>Chart Analysis</h3>
-                        <p>Upload your trading charts and get instant AI-powered technical analysis, including support/resistance levels, patterns, and trading suggestions.</p>
-                    </div>
                 </div>
             </div>
 
@@ -131,7 +126,7 @@ const Home = () => {
                             <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
                         </div>
                         <p className="review-text">
-                            "The learning resources are top-notch. I went from beginner to intermediate level in just 3 months thanks to the structured courses and quizzes."
+                            "I really found the AI tutor to be helpful. It was able to help me develop a personalized trading stragegy with defined rules and risk management."
                         </p>
                         <div className="review-author">
                             <strong>Mike R.</strong>
@@ -143,11 +138,11 @@ const Home = () => {
                             <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
                         </div>
                         <p className="review-text">
-                            "Finally, a platform that combines practical trading tools with quality education. The dashboard analytics have improved my win rate by 30%."
+                            "I watch the videos over and over again to make sure I understand the concepts and when I have a question, the AI tutor is there to help me."
                         </p>
                         <div className="review-author">
                             <strong>Alex T.</strong>
-                            <span>Options Trader</span>
+                            <span>Crypto Trader</span>
                         </div>
                     </div>
                 </div>
@@ -157,7 +152,6 @@ const Home = () => {
             <div className="cta-section">
                 <div className="cta-content">
                     <h2>Ready to Transform Your Trading?</h2>
-                    <p>Start tracking your trades today and unlock insights that will take your trading to the next level</p>
                     <div className="cta-buttons">
                         <button onClick={handleExploreDashboard} className="primary-button">
                             {isAuthenticated ? 'Go to Your Dashboard' : 'Get Started Today'}

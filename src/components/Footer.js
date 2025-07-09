@@ -21,7 +21,7 @@ const Footer = () => {
             />
           </div>
           <p className="footer-description">
-            Your personal guide to mastering trading concepts and strategies
+            Helping you take your trading to the next level
           </p>
           <div className="social-links">
             <a href="https://x.com/tradingtutorai" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
