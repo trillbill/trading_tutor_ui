@@ -74,6 +74,7 @@
 
 .action-button.primary:hover {
   background-color: #3a7261;
+  box-shadow: none;
 }
 
 .action-button.secondary {
@@ -83,6 +84,7 @@
 
 .action-button.secondary:hover {
   background-color: #333;
+  box-shadow: none;
 }
 
 .action-button.tertiary {

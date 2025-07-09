@@ -13,7 +13,7 @@ const OnboardingFlow = () => {
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [isProfileUpdate, setIsProfileUpdate] = useState(false);
   const navigate = useNavigate();
-  const { fetchProfile } = useTradingProfile();
+  const { fetchProfile, refreshOnboardingStatus } = useTradingProfile();
 
   // Form data for each step
   const [basicInfo, setBasicInfo] = useState({
@@ -180,18 +180,23 @@ const OnboardingFlow = () => {
     try {
       setIsSubmitting(true);
       
-      // Check if this is an update or initial onboarding
-      const statusResponse = await api.get('/api/onboarding/status');
-      const isUpdate = statusResponse.data.onboarding_completed;
-      
-      // Mark onboarding as complete (this is idempotent for updates)
+      // Mark onboarding as complete
       await api.post('/api/onboarding/complete');
+      
+      // Add a small delay to ensure database transaction is committed
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Refresh the trading profile context
       await fetchProfile();
       
-      // Navigate with appropriate messaging
-      if (isUpdate) {
+      // Force a refresh of the onboarding status in the context
+      // This ensures ProtectedRoute will see the updated status
+      if (refreshOnboardingStatus) {
+        await refreshOnboardingStatus();
+      }
+      
+      // Navigate based on whether this is an update or initial onboarding
+      if (isProfileUpdate) {
         navigate('/account', { 
           replace: true,
           state: { 
@@ -223,9 +228,7 @@ const OnboardingFlow = () => {
   };
 
   const renderBasicInfo = () => (
-    <div className="onboarding-step">
-      <h2>Tell us about your trading background</h2>
-      
+    <div className="onboarding-step">      
       <div className="form-group">
         <label>What's your trading experience level?</label>
         <div className="radio-group">
@@ -347,8 +350,6 @@ const OnboardingFlow = () => {
 
   const renderTradingStyle = () => (
     <div className="onboarding-step">
-      <h2>Define your trading style</h2>
-
       <div className="form-group">
         <label>What's your preferred trading style?</label>
         <div className="radio-group">
@@ -489,8 +490,6 @@ const OnboardingFlow = () => {
 
   const renderRiskManagement = () => (
     <div className="onboarding-step">
-      <h2>Set your risk management parameters</h2>
-
       <div className="form-group">
         <label>Maximum risk per trade (% of account)</label>
         <div className="range-input">

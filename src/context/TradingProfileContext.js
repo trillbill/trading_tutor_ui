@@ -17,6 +17,7 @@ export const TradingProfileProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [onboardingStatus, setOnboardingStatus] = useState(null);
   const { isAuthenticated } = useAuth();
 
   // Fetch trading profile
@@ -43,11 +44,19 @@ export const TradingProfileProvider = ({ children }) => {
     
     try {
       const response = await api.get('/api/onboarding/status');
-      return response.data;
+      const status = response.data;
+      setOnboardingStatus(status); // Cache the status
+      return status;
     } catch (error) {
       console.error('Error checking onboarding status:', error);
       return null;
     }
+  };
+
+  // Refresh onboarding status (useful after completing onboarding)
+  const refreshOnboardingStatus = async () => {
+    const status = await checkOnboardingStatus();
+    return status;
   };
 
   // Generate AI context string from profile
@@ -138,6 +147,7 @@ export const TradingProfileProvider = ({ children }) => {
       fetchProfile();
     } else if (!isAuthenticated) {
       setProfile(null);
+      setOnboardingStatus(null);
       setHasInitialized(false);
     }
   }, [isAuthenticated, hasInitialized, loading]);
@@ -146,8 +156,10 @@ export const TradingProfileProvider = ({ children }) => {
     profile,
     loading,
     error,
+    onboardingStatus,
     fetchProfile,
     checkOnboardingStatus,
+    refreshOnboardingStatus,
     getAIContextString,
     hasProfile: !!profile
   };

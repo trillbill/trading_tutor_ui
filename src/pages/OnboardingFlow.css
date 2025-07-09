@@ -1,3 +1,6 @@
+/* Import Poppins font for headers */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .onboarding-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #302e2e 0%, #424242 100%);
@@ -14,6 +17,9 @@
   font-size: 2.5em;
   margin-bottom: 10px;
   color: #4b937b;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.3px;
 }
 
 .onboarding-header p {
@@ -67,6 +73,9 @@
   margin: 0 0 5px 0;
   font-size: 1.1em;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
 .step-info p {
@@ -90,6 +99,9 @@
   margin-bottom: 30px;
   color: #4b937b;
   font-size: 1.8em;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.3px;
 }
 
 .form-group {
@@ -160,13 +172,52 @@
 /* Remove the green highlighting when selected */
 .radio-option:has(input:checked),
 .checkbox-option:has(input:checked) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(75, 147, 123, 0.2);
+  border-color: #4b937b;
 }
 
 /* Style for when the actual radio/checkbox is checked */
-.radio-option input:checked, .checkbox-option input:checked {
+.radio-option input:checked, 
+.checkbox-option input:checked {
   accent-color: #4b937b;
+}
+
+/* Ensure checkboxes are visible and styled properly */
+.checkbox-option input[type="checkbox"] {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4b937b;
+  
+  /* Ensure the checkbox is visible */
+  opacity: 1;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
+}
+
+/* Radio button styling */
+.radio-option input[type="radio"] {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4b937b;
+  
+  /* Ensure the radio is visible */
+  opacity: 1;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
 }
 
 .number-input {
@@ -313,6 +364,9 @@
   
   .step-info h3 {
     text-align: left;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.2px;
   }
   
   .step-info p {
@@ -325,6 +379,9 @@
   
   .onboarding-step h2 {
     font-size: 1.5em;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.3px;
   }
   
   .step-buttons {
@@ -345,11 +402,32 @@
     padding-right: 10px;
   }
   
-  .radio-option input, .checkbox-option input {
+  /* Ensure mobile checkboxes and radios are properly sized and positioned */
+  .radio-option input[type="radio"], 
+  .checkbox-option input[type="checkbox"] {
     right: 12px;
-    transform: translateY(-50%) scale(1.3);
-    width: 18px;
-    height: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    
+    /* Force native appearance on mobile for better compatibility */
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
+    
+    /* Ensure proper visibility */
+    opacity: 1;
+    position: absolute;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #4b937b;
+  }
+  
+  /* Ensure mobile option containers have proper spacing */
+  .radio-option, .checkbox-option {
+    position: relative;
+    padding-right: 50px; /* More space for larger mobile touch targets */
   }
 }
 
