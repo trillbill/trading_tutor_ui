@@ -139,10 +139,15 @@ const OnboardingFlow = () => {
       setIsSubmitting(true);
       await api.post('/api/onboarding/basic-info', basicInfo);
       setCompletedSteps(prev => new Set([...prev, 1]));
+      
+      // Small delay before navigation to show completion
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       setCurrentStep(2);
       // Scroll will happen via useEffect
     } catch (error) {
       console.error('Error saving basic info:', error);
+      alert('There was an error saving your information. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -153,10 +158,15 @@ const OnboardingFlow = () => {
       setIsSubmitting(true);
       await api.post('/api/onboarding/trading-style', tradingStyle);
       setCompletedSteps(prev => new Set([...prev, 2]));
+      
+      // Small delay before navigation to show completion
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       setCurrentStep(3);
       // Scroll will happen via useEffect
     } catch (error) {
       console.error('Error saving trading style:', error);
+      alert('There was an error saving your preferences. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -167,33 +177,48 @@ const OnboardingFlow = () => {
       setIsSubmitting(true);
       await api.post('/api/onboarding/risk-management', riskManagement);
       setCompletedSteps(prev => new Set([...prev, 3]));
+      
+      // Small delay before starting completion process
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       // Complete onboarding after risk management step
       completeOnboarding();
     } catch (error) {
       console.error('Error saving risk management:', error);
-    } finally {
+      alert('There was an error saving your risk settings. Please try again.');
       setIsSubmitting(false);
     }
+    // Note: Don't clear isSubmitting here if successful, let completeOnboarding handle it
   };
 
   const completeOnboarding = async () => {
     try {
       setIsSubmitting(true);
+      console.log('Starting onboarding completion...');
       
       // Mark onboarding as complete
-      await api.post('/api/onboarding/complete');
+      const completionResponse = await api.post('/api/onboarding/complete');
+      console.log('Onboarding completion response:', completionResponse.data);
       
-      // Add a small delay to ensure database transaction is committed
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Add a longer delay to ensure database transaction is committed
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh the trading profile context
+      console.log('Refreshing trading profile...');
       await fetchProfile();
       
       // Force a refresh of the onboarding status in the context
       // This ensures ProtectedRoute will see the updated status
       if (refreshOnboardingStatus) {
-        await refreshOnboardingStatus();
+        console.log('Refreshing onboarding status...');
+        const newStatus = await refreshOnboardingStatus();
+        console.log('New onboarding status:', newStatus);
       }
+      
+      // Add another small delay before navigation
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Navigating to destination...', isProfileUpdate ? 'account' : 'dashboard');
       
       // Navigate based on whether this is an update or initial onboarding
       if (isProfileUpdate) {
@@ -204,18 +229,27 @@ const OnboardingFlow = () => {
           } 
         });
       } else {
+        // For initial onboarding, navigate to dashboard with welcome state
         navigate('/dashboard', { 
           replace: true,
           state: { 
-            showWelcome: true 
+            showWelcome: true,
+            onboardingJustCompleted: true
           } 
         });
       }
+      
+      // Keep loading state active for a bit longer to ensure smooth transition
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
     } catch (error) {
       console.error('Error completing onboarding:', error);
-    } finally {
+      // Show user-friendly error message
+      alert('There was an error completing your setup. Please try again or contact support if the issue persists.');
+      // Only clear loading state on error
       setIsSubmitting(false);
     }
+    // Note: We don't clear isSubmitting on success to maintain loading state during navigation
   };
 
   const handleArrayToggle = (array, value, setter) => {
