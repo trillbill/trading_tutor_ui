@@ -16,14 +16,30 @@ const ProtectedRoute = ({ children }) => {
   // Pages that should be accessible even without completed onboarding
   const skipOnboardingPaths = ['/onboarding', '/account', '/verify-email', '/verification-required', '/update-email'];
   
+  // Reset onboarding status when navigating to onboarding page
+  // This ensures we don't get stuck in a loop
+  useEffect(() => {
+    if (location.pathname === '/onboarding') {
+      setOnboardingCompleted(null);
+    }
+  }, [location.pathname]);
+  
   // Check onboarding status for authenticated users
   useEffect(() => {
     const checkOnboarding = async () => {
       if (isAuthenticated && isEmailVerified && !checkingOnboarding && onboardingCompleted === null) {
         setCheckingOnboarding(true);
         try {
+          console.log('Checking onboarding status...');
           const status = await checkOnboardingStatus();
-          setOnboardingCompleted(status.onboarding_completed);
+          console.log('Onboarding status result:', status);
+          
+          if (status && status.onboarding_completed !== undefined) {
+            setOnboardingCompleted(status.onboarding_completed);
+          } else {
+            console.warn('Invalid onboarding status response:', status);
+            setOnboardingCompleted(false);
+          }
         } catch (error) {
           console.error('Error checking onboarding status:', error);
           setOnboardingCompleted(false);
@@ -69,6 +85,7 @@ const ProtectedRoute = ({ children }) => {
   
   // Redirect to onboarding if not completed (unless on allowed paths)
   if (!onboardingCompleted && !skipOnboardingPaths.includes(location.pathname)) {
+    console.log('Redirecting to onboarding - status:', onboardingCompleted);
     navigate('/onboarding', { replace: true });
     return null;
   }
