@@ -52,6 +52,19 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
+// Route transition wrapper to prevent flashing
+const RouteTransitionWrapper = ({ children }) => {
+  return (
+    <div style={{ 
+      minHeight: 'calc(100vh - 65px)', 
+      backgroundColor: '#302e2e',
+      position: 'relative'
+    }}>
+      {children}
+    </div>
+  );
+};
+
 // Create a new component to conditionally render the AIChatWidget
 const ConditionalAIChatWidget = ({ chatPrompts }) => {
   const location = useLocation();
@@ -71,28 +84,30 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        {/* Public routes */}
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/verification-required" element={<VerificationRequired />} />
-        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        {/* <Route path="/pricing" element={<Pricing />} /> */}
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        
-        {/* Protected routes */}
-        <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-        <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
-        <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />
-        <Route path="/onboarding" element={<ProtectedRoute><OnboardingFlow /></ProtectedRoute>} />
-        
-        {/* Catch-all route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <RouteTransitionWrapper>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/verification-required" element={<VerificationRequired />} />
+          <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          {/* <Route path="/pricing" element={<Pricing />} /> */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          
+          {/* Protected routes */}
+          <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+          <Route path="/risk-quiz" element={<ProtectedRoute><RiskAppetiteQuiz /></ProtectedRoute>} />
+          <Route path="/update-email" element={<ProtectedRoute><UpdateEmail /></ProtectedRoute>} />
+          <Route path="/onboarding" element={<ProtectedRoute><OnboardingFlow /></ProtectedRoute>} />
+          
+          {/* Catch-all route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </RouteTransitionWrapper>
     </>
   );
 }
