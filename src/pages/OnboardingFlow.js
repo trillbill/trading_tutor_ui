@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaChartLine, FaUser, FaCog, FaCheckCircle } from 'react-icons/fa';
 import api from '../api/api';
 import { useTradingProfile } from '../context/TradingProfileContext';
@@ -13,6 +13,7 @@ const OnboardingFlow = () => {
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [isProfileUpdate, setIsProfileUpdate] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { fetchProfile, refreshOnboardingStatus } = useTradingProfile();
 
   // Form data for each step
@@ -61,25 +62,41 @@ const OnboardingFlow = () => {
     }
   ];
 
-  // Check if user should be in onboarding - load existing data if updating profile
+  // Check if this is a profile update based on URL params or navigation state
   useEffect(() => {
-    const checkStatusAndLoadData = async () => {
+    const checkIfProfileUpdate = async () => {
       try {
-        const response = await api.get('/api/onboarding/status');
+        // Check if we came from account page (profile update)
+        const isFromAccount = location.state?.fromAccount || 
+                             location.pathname.includes('update') ||
+                             new URLSearchParams(location.search).get('update') === 'true';
         
-        // If user has completed onboarding, they're updating their profile
-        // Load their existing data instead of redirecting them away
-        if (response.data.onboarding_completed) {
+        if (isFromAccount) {
           setIsProfileUpdate(true);
           await loadExistingProfile();
+        } else {
+          // For initial onboarding, check if user has already completed onboarding
+          // If they have, they shouldn't be here unless it's a profile update
+          const response = await api.get('/api/onboarding/status');
+          
+          if (response.data.onboarding_completed) {
+            // User has completed onboarding but didn't come from account page
+            // This might be a direct URL access or navigation issue
+            // Redirect them to dashboard instead of treating as profile update
+            console.log('User has completed onboarding, redirecting to dashboard');
+            navigate('/dashboard', { replace: true });
+            return;
+          }
         }
       } catch (error) {
         console.error('Error checking onboarding status:', error);
+        // If we can't check status, assume it's initial onboarding
+        setIsProfileUpdate(false);
       }
     };
 
-    checkStatusAndLoadData();
-  }, []); // Only run once on mount
+    checkIfProfileUpdate();
+  }, [location, navigate]);
 
   // Load existing profile data for users updating their profile
   const loadExistingProfile = async () => {
