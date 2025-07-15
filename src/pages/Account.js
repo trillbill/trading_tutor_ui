@@ -75,7 +75,9 @@ function Account() {
   };
 
   const handleRetakeOnboarding = () => {
-    navigate('/onboarding');
+    navigate('/onboarding', { 
+      state: { fromAccount: true } 
+    });
   };
 
   // Handle email update

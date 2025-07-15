@@ -6,6 +6,7 @@ import TradingJournal from '../components/TradingJournal';
 import AIChatModal from '../components/AIChatModal';
 import tips from '../dashboardTips';
 import UserPerformanceStats from '../components/UserPerformanceStats';
+import { scrollToTop } from '../utils/scrollUtils';
 
 function Dashboard() {
   const [profileData, setProfileData] = useState(null);
@@ -30,6 +31,11 @@ function Dashboard() {
     isLoading: true
   });
   const [showTip, setShowTip] = useState(true);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   // Memoize the onStatsUpdate callback to prevent it from changing on every render
   const handleStatsUpdate = useCallback((stats) => {
