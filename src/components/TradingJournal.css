@@ -1109,6 +1109,19 @@
 /* Import the Poppins font if not already imported elsewhere */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
 
+/* Apply Poppins font to all modal headers in trading journal */
+.modal-overlay h1,
+.modal-overlay h2,
+.modal-overlay h3,
+.modal-overlay h4,
+.modal h1,
+.modal h2,
+.modal h3,
+.modal h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
 /* Desktop and mobile journal title row */
 .journal-title-row {
   display: flex;

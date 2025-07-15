@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTradingProfile } from '../context/TradingProfileContext';
@@ -12,8 +12,10 @@ const ProtectedRoute = ({ children }) => {
   const [checkingOnboarding, setCheckingOnboarding] = useState(false);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const hasNavigatedRef = useRef(false);
   
   // Pages that should be accessible even without completed onboarding
   const skipOnboardingPaths = ['/onboarding', '/account', '/verify-email', '/verification-required', '/update-email'];
@@ -24,19 +26,23 @@ const ProtectedRoute = ({ children }) => {
     if (location.pathname === '/onboarding') {
       setOnboardingCompleted(null);
       setRetryCount(0);
+      hasNavigatedRef.current = false;
     }
   }, [location.pathname]);
   
   // Force refresh onboarding status when coming from onboarding with welcome state
   useEffect(() => {
     if ((location.state?.showWelcome || location.state?.onboardingJustCompleted) && !forceRefresh) {
-      console.log('Detected onboarding completion, forcing onboarding status refresh...');
       setOnboardingCompleted(null);
       setForceRefresh(true);
       setRetryCount(0);
       
-      // Clear the navigation state to prevent issues
-      navigate(location.pathname, { replace: true, state: {} });
+      // Clear the navigation state to prevent issues - but do it without causing a re-render flash
+      const timer = setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [location.state, forceRefresh, navigate, location.pathname]);
   
@@ -46,9 +52,7 @@ const ProtectedRoute = ({ children }) => {
       if (isAuthenticated && isEmailVerified && !checkingOnboarding && (onboardingCompleted === null || forceRefresh)) {
         setCheckingOnboarding(true);
         try {
-          console.log('Checking onboarding status...', forceRefresh ? '(forced refresh)' : '', `(attempt ${retryCount + 1})`);
           const status = await checkOnboardingStatus();
-          console.log('Onboarding status result:', status);
           
           if (status && status.onboarding_completed !== undefined) {
             setOnboardingCompleted(status.onboarding_completed);
@@ -56,12 +60,12 @@ const ProtectedRoute = ({ children }) => {
               setForceRefresh(false);
             }
             setRetryCount(0);
+            setIsInitialLoad(false);
           } else {
             console.warn('Invalid onboarding status response:', status);
             
             // If we're forcing a refresh and got an invalid response, retry up to 3 times
             if (forceRefresh && retryCount < 3) {
-              console.log(`Retrying onboarding status check (${retryCount + 1}/3)...`);
               setRetryCount(prev => prev + 1);
               // Retry after a short delay
               setTimeout(() => {
@@ -73,6 +77,7 @@ const ProtectedRoute = ({ children }) => {
               if (forceRefresh) {
                 setForceRefresh(false);
               }
+              setIsInitialLoad(false);
             }
           }
         } catch (error) {
@@ -80,7 +85,6 @@ const ProtectedRoute = ({ children }) => {
           
           // If we're forcing a refresh and got an error, retry up to 3 times
           if (forceRefresh && retryCount < 3) {
-            console.log(`Retrying onboarding status check after error (${retryCount + 1}/3)...`);
             setRetryCount(prev => prev + 1);
             // Retry after a short delay
             setTimeout(() => {
@@ -92,6 +96,7 @@ const ProtectedRoute = ({ children }) => {
             if (forceRefresh) {
               setForceRefresh(false);
             }
+            setIsInitialLoad(false);
           }
         } finally {
           setCheckingOnboarding(false);
@@ -102,12 +107,15 @@ const ProtectedRoute = ({ children }) => {
     checkOnboarding();
   }, [isAuthenticated, isEmailVerified, checkOnboardingStatus, checkingOnboarding, onboardingCompleted, forceRefresh, retryCount]);
   
-  // Show loading while checking authentication
-  if (loading || !initialized) {
+  // Consolidate all loading states to prevent flashing
+  const isLoading = loading || !initialized || checkingOnboarding || (isAuthenticated && isEmailVerified && onboardingCompleted === null);
+  
+  // Show loading while checking authentication or onboarding
+  if (isLoading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading...</p>
+        <p>{loading || !initialized ? 'Loading...' : 'Checking setup...'}</p>
       </div>
     );
   }
@@ -119,24 +127,19 @@ const ProtectedRoute = ({ children }) => {
   
   // Redirect to verification if email not verified
   if (!isEmailVerified) {
-    navigate('/verification-required', { replace: true });
+    if (!hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
+      navigate('/verification-required', { replace: true });
+    }
     return null;
-  }
-  
-  // Show loading while checking onboarding
-  if (checkingOnboarding || onboardingCompleted === null) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Checking setup...</p>
-      </div>
-    );
   }
   
   // Redirect to onboarding if not completed (unless on allowed paths)
   if (!onboardingCompleted && !skipOnboardingPaths.includes(location.pathname)) {
-    console.log('Redirecting to onboarding - status:', onboardingCompleted);
-    navigate('/onboarding', { replace: true });
+    if (!hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
+      navigate('/onboarding', { replace: true });
+    }
     return null;
   }
   

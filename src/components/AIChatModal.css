@@ -1,3 +1,6 @@
+/* Import Poppins font for headers to match learn page styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .ai-chat-modal-overlay {
   position: fixed;
   top: 0;
@@ -26,6 +29,15 @@
   animation: slideUp 0.3s ease;
 }
 
+/* Apply Poppins font to all headers in AI chat modal */
+.ai-chat-modal-content h1,
+.ai-chat-modal-content h2,
+.ai-chat-modal-content h3,
+.ai-chat-modal-content h4 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
 .ai-chat-modal-header {
   display: flex;
   justify-content: space-between;
@@ -39,6 +51,8 @@
   margin: 0;
   font-size: 1.2rem;
   color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
 .close-button {
@@ -456,6 +470,8 @@
 .ai-message .markdown-content h3 {
   color: #4b937b;
   margin: 15px 0 10px 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
 .ai-message .markdown-content h1:first-child,
