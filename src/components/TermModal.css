@@ -1,3 +1,15 @@
+/* Import Poppins font for headers to match learn page styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Apply Poppins font to all headers in term modal */
+.modal h1,
+.modal h2,
+.modal h3,
+.modal h4 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
 .modal {
   position: fixed;
   top: 0;

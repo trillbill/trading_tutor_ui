@@ -32,7 +32,6 @@ html, body {
     min-height: calc(100vh - 65px); /* Account for header height */
     position: relative;
     /* Prevent layout shifts during route transitions */
-    contain: layout style;
 }
 
 /* Optimize loading states to prevent flashing */
@@ -46,7 +45,6 @@ html, body {
     color: white;
     position: relative;
     /* Prevent layout shifts */
-    contain: layout style;
 }
 
 .loading-spinner {
