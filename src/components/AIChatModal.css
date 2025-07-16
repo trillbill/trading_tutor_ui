@@ -494,3 +494,57 @@
   color: #2c5f4f;
   font-weight: 600;
 }
+
+/* AI Chat Credit Information */
+.ai-chat-credit-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(75, 147, 123, 0.05);
+  border-top: 1px solid rgba(75, 147, 123, 0.1);
+  border-radius: 0 0 8px 8px;
+  margin-top: 8px;
+}
+
+.credit-cost-items {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.credit-cost-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.credit-cost-item .credit-icon {
+  font-size: 12px;
+  color: #4b937b;
+}
+
+.credit-cost-item strong {
+  color: #4b937b;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ai-chat-credit-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 10px 12px;
+  }
+  
+  .credit-cost-items {
+    gap: 15px;
+  }
+  
+  .credit-cost-item {
+    font-size: 11px;
+  }
+}

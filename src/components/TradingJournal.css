@@ -1491,3 +1491,51 @@
     text-overflow: ellipsis;
   }
 }
+
+/* Credit cost information styling */
+.credit-cost-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(75, 147, 123, 0.1);
+  border: 1px solid rgba(75, 147, 123, 0.2);
+  border-radius: 8px;
+}
+
+.credit-cost-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b937b;
+  font-size: 14px;
+}
+
+.credit-cost-display .credit-icon {
+  font-size: 16px;
+  color: #4b937b;
+}
+
+.credit-cost-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.credit-cost-text strong {
+  color: #4b937b;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .credit-cost-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .credit-cost-display {
+    font-size: 13px;
+  }
+}
+
+/* Desktop and mobile journal title row */

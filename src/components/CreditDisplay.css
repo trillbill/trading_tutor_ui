@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   margin-right: 15px;
+  position: relative;
+  z-index: 100;
 }
 
 .credit-container {
@@ -13,6 +15,17 @@
   border-radius: 8px;
   padding: 6px 10px;
   min-width: 60px;
+  position: relative;
+}
+
+.credit-container.hoverable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.credit-container.hoverable:hover {
+  background: rgba(75, 147, 123, 0.2);
+  border-color: rgba(75, 147, 123, 0.5);
 }
 
 .credit-count {
@@ -27,6 +40,137 @@
   font-size: 10px;
   line-height: 1;
   margin-top: 2px;
+}
+
+/* Tooltip Styling */
+.credit-cost-tooltip {
+  position: absolute;
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  min-width: 300px;
+  max-width: 400px;
+  animation: fadeIn 0.2s ease-out;
+  pointer-events: auto;
+}
+
+.credit-cost-tooltip.desktop {
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+}
+
+.credit-cost-tooltip.mobile {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(75, 147, 123, 0.1);
+  border-radius: 8px 8px 0 0;
+}
+
+.tooltip-header .header-icon {
+  color: #4b937b;
+  font-size: 16px;
+}
+
+.tooltip-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.tooltip-content {
+  padding: 12px 0;
+}
+
+.cost-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  transition: background 0.2s ease;
+}
+
+.cost-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cost-icon {
+  color: #4b937b;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cost-details {
+  flex: 1;
+}
+
+.cost-feature {
+  font-weight: 500;
+  color: white;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.cost-description {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.3;
+}
+
+.cost-amount {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(75, 147, 123, 0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #4b937b;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.cost-amount .coin-icon {
+  font-size: 10px;
+}
+
+.tooltip-footer {
+  padding: 8px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 8px 8px;
+  text-align: center;
+}
+
+.tooltip-footer small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* Mobile responsive adjustments */
@@ -47,6 +191,23 @@
   .credit-label {
     font-size: 9px;
   }
+  
+  .credit-cost-tooltip {
+    min-width: 280px;
+    max-width: 320px;
+  }
+  
+  .cost-item {
+    padding: 10px 12px;
+  }
+  
+  .cost-feature {
+    font-size: 12px;
+  }
+  
+  .cost-description {
+    font-size: 10px;
+  }
 }
 
 /* Hamburger credit section styling */
@@ -56,6 +217,7 @@
   display: flex;
   justify-content: stretch;
   margin-bottom: 5px;
+  position: relative;
 }
 
 .hamburger-credit-section .header-credit-display {
@@ -73,6 +235,11 @@
   justify-content: space-between; /* Space out the content */
 }
 
+.hamburger-credit-section .credit-container.hoverable:hover {
+  background: rgba(75, 147, 123, 0.25);
+  border-color: rgba(75, 147, 123, 0.6);
+}
+
 .hamburger-credit-section .credit-count {
   font-size: 15px;
   font-weight: 700;
@@ -82,4 +249,16 @@
   font-size: 11px;
   margin-top: 0; /* Remove top margin since we're in row layout */
   margin-left: 8px; /* Add left margin for spacing */
+}
+
+/* Mobile tooltip positioning for hamburger menu */
+.hamburger-credit-section .credit-cost-tooltip.mobile {
+  top: 100%;
+  left: 0;
+  right: 0;
+  transform: none;
+  margin-top: 10px;
+  width: calc(100% - 20px);
+  margin-left: 10px;
+  margin-right: 10px;
 }

@@ -158,7 +158,7 @@ function AppContent() {
         </div>
         <div className="header-column login-column">
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CreditDisplay />
               <Link to="/account">
                 <img src={accountIcon} className="account-icon" alt="Account" />
@@ -178,7 +178,7 @@ function AppContent() {
             {isAuthenticated ? (
               <>
                 <div className="hamburger-credit-section">
-                  <CreditDisplay />
+                  <CreditDisplay isMobile={true} />
                 </div>
                 <Link to="/dashboard" className="hamburger-item" onClick={toggleMenu}>
                   <img src={dashboardIcon} className="hamburger-icon" alt="Dashboard" />Dashboard
