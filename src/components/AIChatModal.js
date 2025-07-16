@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaTimes, FaArrowRight, FaImage } from 'react-icons/fa';
+import { FaTimes, FaArrowRight, FaImage, FaCoins } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 import api from '../api/api';
@@ -491,6 +491,20 @@ const AIChatModal = ({ isOpen, onClose, initialTerm, initialDescription, initial
               >
                 <FaArrowRight />
               </button>
+            </div>
+          </div>
+          
+          {/* Credit Cost Information */}
+          <div className="ai-chat-credit-info">
+            <div className="credit-cost-items">
+              <div className="credit-cost-item">
+                <FaCoins className="credit-icon" />
+                <span>Text message: <strong>1 credit</strong></span>
+              </div>
+              <div className="credit-cost-item">
+                <FaImage className="credit-icon" />
+                <span>Image analysis: <strong>10 credits</strong></span>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaBook, FaPen, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaRobot, FaInfoCircle, FaChevronLeft, FaChevronRight, FaSortUp, FaSortDown, FaBook, FaPen, FaTimes, FaCoins } from 'react-icons/fa';
 import api from '../api/api';
 import './TradingJournal.css';
 import { 
@@ -978,6 +978,16 @@ Can you analyze this trade and provide feedback on what I did well and what I co
                   {modalError}
                 </div>
               )}
+
+              {/* Credit Cost Information */}
+              <div className="credit-cost-info">
+                <div className="credit-cost-display">
+                  <FaCoins className="credit-icon" />
+                  <span className="credit-cost-text">
+                    Logging a trade costs <strong>2 credits</strong>
+                  </span>
+                </div>
+              </div>
 
               <div className="modal-actions">
                 <button type="button" className="action-button secondary" onClick={closeJournalModal}>
