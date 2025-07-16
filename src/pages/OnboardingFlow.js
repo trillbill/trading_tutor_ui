@@ -83,7 +83,6 @@ const OnboardingFlow = () => {
             // User has completed onboarding but didn't come from account page
             // This might be a direct URL access or navigation issue
             // Redirect them to dashboard instead of treating as profile update
-            console.log('User has completed onboarding, redirecting to dashboard');
             navigate('/dashboard', { replace: true });
             return;
           }
@@ -211,32 +210,25 @@ const OnboardingFlow = () => {
   const completeOnboarding = async () => {
     try {
       setIsSubmitting(true);
-      console.log('Starting onboarding completion...');
       
       // Mark onboarding as complete
       const completionResponse = await api.post('/api/onboarding/complete');
-      console.log('Onboarding completion response:', completionResponse.data);
       
       // Add a longer delay to ensure database transaction is committed
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh the trading profile context
-      console.log('Refreshing trading profile...');
       await fetchProfile();
       
       // Force a refresh of the onboarding status in the context
       // This ensures ProtectedRoute will see the updated status
       if (refreshOnboardingStatus) {
-        console.log('Refreshing onboarding status...');
         const newStatus = await refreshOnboardingStatus();
-        console.log('New onboarding status:', newStatus);
       }
       
       // Add another small delay before navigation
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log('Navigating to destination...', isProfileUpdate ? 'account' : 'dashboard');
-      
+            
       // Navigate based on whether this is an update or initial onboarding
       if (isProfileUpdate) {
         navigate('/account', { 

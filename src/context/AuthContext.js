@@ -112,7 +112,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     const handleAuthError = (event) => {
-      console.log('Authentication error:', event.detail?.error);
       // Handle other auth errors as needed
     };
 
