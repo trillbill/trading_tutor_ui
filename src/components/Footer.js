@@ -68,7 +68,7 @@ const Footer = () => {
           <h3>Contact</h3>
           <div className="not-found-help">
             <p>
-              <a href="mailto:support@tradingtutorai.com">support@tradingtutorai.com</a>
+              <a href="mailto:tradingtutorhelp@gmail.com">tradingtutorhelp@gmail.com</a>
             </p>
           </div>
         </div>

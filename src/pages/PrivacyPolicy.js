@@ -97,7 +97,7 @@ const PrivacyPolicy = () => {
         <section className="legal-section">
           <h2>10. Contact Us</h2>
           <p>
-            If you have any questions about this Privacy Policy, please contact us at support@tradingtutorai.com.
+            If you have any questions about this Privacy Policy, please contact us at tradingtutorhelp@gmail.com.
           </p>
         </section>
       </div>
