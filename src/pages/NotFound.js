@@ -29,7 +29,7 @@ const NotFound = () => {
         <div className="not-found-help">
           <p>
             If you believe this is an error, please contact our support team at{' '}
-            <a href="mailto:support@tradingtutorai.com">support@tradingtutorai.com</a>
+            <a href="mailto:tradingtutorhelp@gmail.com">tradingtutorhelp@gmail.com</a>
           </p>
         </div>
       </div>
