@@ -1,70 +1,169 @@
-# Getting Started with Create React App
+# Trading Tutor UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive trading education platform built with React. This frontend application provides an interactive learning experience for traders of all levels, featuring AI-powered chat assistance, progress tracking, and personalized learning paths.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### 📚 Educational Content
+- **Interactive Lessons** - Structured learning modules covering trading fundamentals
+- **Video Content** - Embedded video lessons with progress tracking
+- **Quiz System** - Interactive quizzes to test knowledge retention
+- **Risk Assessment** - Personalized risk appetite evaluation
 
-### `npm start`
+### 🤖 AI-Powered Features
+- **AI Chat Assistant** - Intelligent trading tutor with context-aware responses
+- **Personalized Prompts** - Custom chat prompts based on user progress
+- **Learning Recommendations** - AI driven content suggestions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 📊 Trading Tools
+- **Trading Journal** - Track and analyze trading performance
+- **Chart Integration** - Interactive charts using Lightweight Charts library
+- **Performance Analytics** - Visual performance metrics and statistics
+- **Currency Settings** - Multi-currency support and conversion
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🔐 User Management
+- **Authentication System** - Secure user registration and login
+- **Email Verification** - Account verification workflow
+- **Password Reset** - Secure password recovery system
+- **User Profiles** - Personalized user accounts and settings
 
-### `npm test`
+### 💳 Credit System
+- **Credit-Based Access** - Usage based credit system
+- **Credit Display** - Real time credit balance tracking
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🎨 Modern UI/UX
+- **Responsive Design** - Mobile-first responsive layout
+- **Progress Tracking** - Visual progress indicators and completion status
 
-### `npm run build`
+## Technology Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Frontend**: React 19 + JavaScript
+- **Routing**: React Router DOM v7
+- **Charts**: Lightweight Charts, Recharts
+- **Icons**: Font Awesome, React Icons
+- **HTTP Client**: Axios
+- **Markdown**: React Markdown with sanitization
+- **Build Tool**: Create React App
+- **Styling**: CSS3 with modern features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Project Structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+├── components/          # Reusable UI components
+│   ├── AIChatModal.js   # AI chat interface
+│   ├── ChartDisplay.js  # Trading chart components
+│   ├── QuizComponent.js # Interactive quiz system
+│   ├── TradingJournal.js # Trading performance tracking
+│   └── ...
+├── pages/              # Main application pages
+│   ├── Dashboard.js    # User dashboard
+│   ├── Learn.js        # Learning modules
+│   ├── Login.js        # Authentication
+│   └── ...
+├── context/            # React Context providers
+│   ├── AuthContext.js  # Authentication state
+│   ├── AIChatContext.js # AI chat state
+│   ├── CreditContext.js # Credit system
+│   └── ...
+├── utils/              # Utility functions
+└── assets/             # Images and static assets
+```
 
-### `npm run eject`
+## Key Components
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### AI Chat System
+- Context-aware trading assistant
+- Customizable chat prompts
+- Integration with learning progress
+- Real-time response handling
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Trading Journal
+- Performance tracking
+- Trade analysis tools
+- Visual performance metrics
+- Export capabilities
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Quiz System
+- Interactive question formats
+- Progress tracking
+- Immediate feedback
+- Knowledge assessment
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Chart Integration
+- Real-time price charts
+- Technical analysis tools
+- Multiple chart types
+- Responsive design
 
-## Learn More
+## API Integration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This frontend connects to a private backend API that handles:
+- User authentication and management
+- Learning progress tracking
+- AI chat processing
+- Credit system management
+- Content delivery
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Note**: The backend API repository is currently private and not included in this codebase.
 
-### Code Splitting
+## Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
-### Analyzing the Bundle Size
+### Available Scripts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+# Install dependencies
+npm install
 
-### Making a Progressive Web App
+# Start development server
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Build for production
+npm run build
 
-### Advanced Configuration
+# Run tests
+npm test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Environment Setup
+The application requires environment variables for API endpoints and configuration. These are typically set in a `.env` file (not included in this repository).
 
-### Deployment
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+The application is built using Create React App and produces a static build that can be deployed to any static hosting service:
 
-### `npm run build` fails to minify
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The `build` folder contains the production-ready files.
+
+## Code Overview
+
+This repository showcases:
+- **Modern React Patterns** - Hooks, Context API, and functional components
+- **State Management** - Multiple context providers for different features
+- **Component Architecture** - Reusable, modular component design
+- **API Integration** - Axios-based HTTP client with error handling
+- **Responsive Design** - Mobile-first CSS with modern layout techniques
+- **User Experience** - Loading states, error handling, and smooth transitions
+
+## Author
+
+**Will Finnegan**
+- LinkedIn: [William Finnegan](https://www.linkedin.com/in/william-finnegan-4b64819a)
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Create React App for the development tooling
+- Lightweight Charts for the charting library
+- Font Awesome for the icon system
+- All contributors to the open-source libraries used in this project
